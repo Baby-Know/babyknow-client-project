@@ -12,8 +12,8 @@ CREATE TABLE "users" (
 	"id" serial NOT NULL,
 	"email" varchar(255) NOT NULL UNIQUE,
 	"password" varchar(255) NOT NULL,
-	"first-name" varchar(255) NOT NULL,
-	"last-name" varchar(255) NOT NULL,
+	"firstName" varchar(255) NOT NULL,
+	"lastName" varchar(255) NOT NULL,
 	"access" integer NOT NULL,
 	"organization" varchar(255) NOT NULL,
 	CONSTRAINT "users_pk" PRIMARY KEY ("id")
@@ -26,7 +26,7 @@ CREATE TABLE "users" (
 CREATE TABLE "units" (
 	"id" serial NOT NULL,
 	"name" varchar(255) NOT NULL UNIQUE,
-	"unit-order" integer NOT NULL,
+	"unitOrder" integer NOT NULL,
 	"subtitle" varchar(255) NOT NULL,
 	CONSTRAINT "units_pk" PRIMARY KEY ("id")
 ) WITH (
@@ -40,8 +40,8 @@ CREATE TABLE "content" (
 	"content" varchar(400) NOT NULL UNIQUE,
 	"title" varchar(200) NOT NULL UNIQUE,
 	"description" varchar(350) NOT NULL,
-	"is-survey" BOOLEAN NOT NULL,
-	"is-required" BOOLEAN NOT NULL,
+	"isSurvey" BOOLEAN NOT NULL,
+	"isRequired" BOOLEAN NOT NULL,
 	CONSTRAINT "content_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -53,7 +53,7 @@ CREATE TABLE "lessons_content" (
 	"id" serial NOT NULL,
 	"lessons_id" integer NOT NULL,
 	"content_id" integer NOT NULL,
-	"content-order" integer NOT NULL,
+	"contentOrder" integer NOT NULL,
 	CONSTRAINT "lessons_content_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -65,7 +65,7 @@ CREATE TABLE "users_lessons_content" (
 	"id" serial NOT NULL,
 	"user_id" integer NOT NULL,
 	"lessons_content_id" integer NOT NULL,
-	"is-complete" BOOLEAN NOT NULL,
+	"isComplete" BOOLEAN NOT NULL,
 	"media" varchar(300) NOT NULL,
 	"comment" TEXT NOT NULL,
 	CONSTRAINT "users_lessons_content_pk" PRIMARY KEY ("id")
