@@ -17,10 +17,11 @@ import Footer from "../Footer/Footer";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
 import AboutPage from "../AboutPage/AboutPage";
-import UserPage from "../UserPage/UserPage";
+import CoursePage from "../CoursePage/CoursePage";
 import LandingPage from "../LandingPage/LandingPage";
 import LoginPage from "../LoginPage/LoginPage";
 import RegisterPage from "../RegisterPage/RegisterPage";
+import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
 
 function App() {
   //giving app access to theme and color mode
@@ -43,34 +44,37 @@ function App() {
             <Nav />
             <Switch>
               {/* Visiting localhost:3000 will redirect to localhost:3000/home */}
-              <Redirect exact from="/" to="/home" />
+              <Redirect exact from="/" to="/registration" />
 
-              {/* Visiting localhost:3000/about will show the about page. */}
-              <Route
-                // shows AboutPage at all times (logged in or not)
+              <ProtectedRoute
+                // logged in shows CoursePage else shows LoginPage
+                exact
+                path="/course"
+              >
+                <CoursePage />
+              </ProtectedRoute>
+
+              <ProtectedRoute
+                // logged in shows RegistrantsPage else shows LoginPage
+                exact
+                path="/registrants"
+              >
+                <RegistrantsPage />
+              </ProtectedRoute>
+
+              <ProtectedRoute
+                // logged in shows AboutPage else shows LoginPage
                 exact
                 path="/about"
               >
                 <AboutPage />
-              </Route>
-
-              {/* For protected routes, the view could show one of several things on the same route.
-            Visiting localhost:3000/user will show the UserPage if the user is logged in.
-            If the user is not logged in, the ProtectedRoute will show the LoginPage (component).
-            Even though it seems like they are different pages, the user is always on localhost:3000/user */}
-              <ProtectedRoute
-                // logged in shows UserPage else shows LoginPage
-                exact
-                path="/user"
-              >
-                <UserPage />
               </ProtectedRoute>
 
               <Route exact path="/login">
                 {user.id ? (
                   // If the user is already logged in,
-                  // redirect to the /user page
-                  <Redirect to="/user" />
+                  // redirect to the /course page
+                  <Redirect to="/course" />
                 ) : (
                   // Otherwise, show the login page
                   <LoginPage />
@@ -81,21 +85,10 @@ function App() {
                 {user.id ? (
                   // If the user is already logged in,
                   // redirect them to the /user page
-                  <Redirect to="/user" />
+                  <Redirect to="/course" />
                 ) : (
                   // Otherwise, show the registration page
                   <RegisterPage />
-                )}
-              </Route>
-
-              <Route exact path="/home">
-                {user.id ? (
-                  // If the user is already logged in,
-                  // redirect them to the /user page
-                  <Redirect to="/user" />
-                ) : (
-                  // Otherwise, show the Landing page
-                  <LandingPage />
                 )}
               </Route>
 
