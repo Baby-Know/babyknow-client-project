@@ -1,22 +1,36 @@
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, useTheme } from "@mui/system";
 import { tokens } from "../../../theme";
-import { IconButton } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import Close from "@mui/icons-material/Close";
+import { useState } from "react";
+import axios from "axios";
 
-function AddOrganizationForm() {
+function AddCohortForm() {
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [ cohort, setCohort ] = useState("")
 
-  //Variable to show whether the add organization form is showing
+  //Variable to show whether the add cohort form is showing
   const showForm = useSelector(
-    (store) => store.conditionalForms?.showOrganizationForm
+    (store) => store.conditionalForms?.showCohortForm
   );
+
+  async function addCohort () {
+    console.log(cohort)
+    try { 
+      axios.post("/api/cohort", {cohort})
+
+      setCohort("")
+    }
+    catch (error) {
+      console.log("Error posting Cohort:", error)
+    }
+  }
 
   return (
     <Box>
@@ -29,11 +43,11 @@ function AddOrganizationForm() {
         }}
       >
         <DialogTitle variant="h3" color={colors.primary[500]} mb="5%">
-          Add New Organization
+          Add New Cohort
           <IconButton
             onClick={() => {
               dispatch({
-                type: "SET_SHOW_ADD_ORGANIZATION",
+                type: "SET_SHOW_ADD_COHORT",
                 payload: false,
               });
             }}
@@ -41,8 +55,20 @@ function AddOrganizationForm() {
             <Close />
           </IconButton>
         </DialogTitle>
+        <DialogContent>
+            <TextField 
+            autoFocus 
+            margin="dense"
+            fullWidth
+            type="text"
+            label="Cohort Name"
+            value={cohort}
+            onChange={(event) => setCohort(event.target.value)}
+            />
+          <button onClick={addCohort}>Add Cohort</button>
+        </DialogContent>
       </Dialog>
     </Box>
   );
 }
-export default AddOrganizationForm;
+export default AddCohortForm;
