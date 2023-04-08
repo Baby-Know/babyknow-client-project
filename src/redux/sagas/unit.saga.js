@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {put, takeLatest} from 'redux-saga/effects';
 
-// get units
 function* getUnits() {
     try{
         let response = yield axios.get('/api/unit');
@@ -11,8 +10,18 @@ function* getUnits() {
     }
 }
 
+function* deleteUnit(action) {
+    try{
+        yield axios.delete(`/api/unit/${action.payload}`);
+        yield put ({type: 'GET_UNITS'})
+    }catch(error) {
+        console.error('Error deleting unit', error);
+    }
+}
+
 function* unitSaga() {
     yield takeLatest('GET_UNITS', getUnits);
+    yield takeLatest('DELETE_UNIT', deleteUnit);
 }
 
 export default unitSaga;
