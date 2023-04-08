@@ -1,12 +1,18 @@
-import React from "react";
+import { useEffect, React } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import AddUnitForm from "./AddUnitForm/AddUnitForm";
 import AddCohortForm from "./AddCohortForm/AddCohortForm";
+import { Card, CardContent, Grid } from '@mui/material';
 
-function UserPage() {
+function CoursePage() {
   const dispatch = useDispatch();
-  // this component doesn't do much to start, just renders some user reducer info to the DOM
   const user = useSelector((store) => store.user);
+  const units = useSelector((store) => store.unit);
+
+
+  useEffect(() => {
+    dispatch({ type: 'GET_UNITS' })
+  }, [])
 
   return (
     <div className="container">
@@ -34,9 +40,43 @@ function UserPage() {
       </button>
       <AddUnitForm />
       <AddCohortForm />
-    </div>
-  );
+
+      <div>
+        {units.map((unit, i) => {
+          return (
+            <div key={i}>
+              <Grid
+                container
+                display="flex"
+                direction="column"
+                alignItems="center"
+                justify="center"
+                spacing={3}
+              >
+                <Grid
+                  item m={2}
+                  display="flex"
+                >
+                  <Card sx={{ maxWidth: 320, maxHeight: 1000 }}>
+                    <CardContent>
+                      <p>{unit.name}</p>
+                      <p>{unit.subtitle}</p>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+
+            </div>
+
+          )
+        })}
+
+      </div>
+      </div>
+)
 }
 
+
+
 // this allows us to use <App /> in index.js
-export default UserPage;
+      export default CoursePage;
