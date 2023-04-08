@@ -27,7 +27,8 @@ function AddUnitForm() {
   //Function to handle sending new unit to the database
   async function handleAddUnit() {
     try {
-      axios.post("/api/unit", unitToSend);
+     await axios.post("/api/unit", unitToSend);
+     dispatch({type: 'GET_UNITS'});
 
       //Clear inputs
       setUnitToSend({

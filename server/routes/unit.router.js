@@ -7,11 +7,20 @@ const {
 
 const { rejectNonAdmin } = require("../modules/admin-middleware");
 
-/**
- * GET route template
- */
-router.get("/", (req, res) => {
-  // GET route code here
+//GET units
+router.get("/", rejectUnauthenticated, async (req, res) => {
+  try{
+    const queryText = `
+    SELECT * FROM "units"
+    `;
+     const unitResult = await pool.query(queryText)
+    units = unitResult.rows
+    res.send(units)
+    console.log("units", units)
+  } catch(error){
+    res.sendStatus(500);
+    console.log("Error getting unit:", error);
+  }
 });
 
 //POST new unit
