@@ -2,16 +2,32 @@ import React from "react";
 import { Link } from "react-router-dom";
 import LogOutButton from "../LogOutButton/LogOutButton";
 import { useSelector } from "react-redux";
-import "./Nav.css";
+import logo from "../../images/BabyKnowLogo.png"
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../theme";
+
+
 function Nav() {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const user = useSelector((store) => store.user);
 
+
   return (
-    <div className="nav">
-      <Link to="/home">
-        <h2 className="nav-title">Prime Solo Project</h2>
-      </Link>
+    <div
+      className="nav"
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        backgroundColor: `${colors.primary[500]}`,
+      }}
+    >
       <div>
+        <Link to="/about">
+          <img src={logo}/>
+        </Link>
+      </div>
+      <div style={{ backgroundColor: `${colors.greenAccent[500]}` }}>
         {/* If no user is logged in, show these links */}
         {!user.id && (
           // If there's no user, show login/registration links
@@ -23,21 +39,21 @@ function Nav() {
         {/* If a user is logged in, show these links */}
         {user.id && (
           <>
-            <Link className="navLink" to="/user">
-              Home
+            <Link className="navLink" to="/course">
+              Course
             </Link>
 
-            <Link className="navLink" to="/info">
-              Info Page
+            <Link className="navLink" to="/registrants">
+              Registrants
+            </Link>
+
+            <Link className="navLink" to="/about">
+              About
             </Link>
 
             <LogOutButton className="navLink" />
           </>
         )}
-
-        <Link className="navLink" to="/about">
-          About
-        </Link>
       </div>
     </div>
   );
