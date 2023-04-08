@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Typography } from "@mui/material";
 import { Button, TextField, Box } from "@mui/material";
 import { useTheme } from "@emotion/react";
@@ -78,15 +77,15 @@ function LoginPage() {
           />
         </Box>
         <Box display="flex" justifyContent="space-between">
-          <Button type="submit" name="submit" value="Log In">
-            Log In
-          </Button>
           <Button
             onClick={() => {
               history.push("/registration");
             }}
           >
             Register
+          </Button>
+          <Button type="submit" name="submit" value="Log In">
+            Log In
           </Button>
         </Box>
       </form>
