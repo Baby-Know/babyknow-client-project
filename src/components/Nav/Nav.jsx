@@ -2,16 +2,29 @@ import React from "react";
 import { Link } from "react-router-dom";
 import LogOutButton from "../LogOutButton/LogOutButton";
 import { useSelector } from "react-redux";
-import "./Nav.css";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../theme";
+
 function Nav() {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const user = useSelector((store) => store.user);
 
   return (
-    <div className="nav">
-      <Link to="/about">
-        <h2 className="nav-title">(LOGO)</h2>
-      </Link>
+    <div
+      className="nav"
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        backgroundColor: `${colors.primary[500]}`,
+      }}
+    >
       <div>
+        <Link to="/about">
+          <h2 className="nav-title">(LOGO)</h2>
+        </Link>
+      </div>
+      <div style={{ backgroundColor: `${colors.greenAccent[500]}` }}>
         {/* If no user is logged in, show these links */}
         {!user.id && (
           // If there's no user, show login/registration links
@@ -38,7 +51,6 @@ function Nav() {
             <LogOutButton className="navLink" />
           </>
         )}
-
       </div>
     </div>
   );
