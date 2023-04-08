@@ -2,13 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import LogOutButton from "../LogOutButton/LogOutButton";
 import { useSelector } from "react-redux";
+import logo from "../../images/BabyKnowLogo.png"
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
+
 
 function Nav() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const user = useSelector((store) => store.user);
+
 
   return (
     <div
@@ -21,7 +24,7 @@ function Nav() {
     >
       <div>
         <Link to="/about">
-          <h2 className="nav-title">(LOGO)</h2>
+          <img src={logo}/>
         </Link>
       </div>
       <div style={{ backgroundColor: `${colors.greenAccent[500]}` }}>
