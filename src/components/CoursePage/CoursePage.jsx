@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import AddUnitForm from "./AddUnitForm/AddUnitForm";
-import AddOrganizationForm from "./AddOrganizationForm/AddOrganizationForm";
+import AddCohortForm from "./AddCohortForm/AddCohortForm";
 
 function UserPage() {
   const dispatch = useDispatch();
@@ -25,15 +25,15 @@ function UserPage() {
       <button
         onClick={() => {
           dispatch({
-            type: "SET_SHOW_ADD_ORGANIZATION",
+            type: "SET_SHOW_ADD_COHORT",
             payload: true,
           });
         }}
       >
-        Add Organization
+        Add Cohort
       </button>
       <AddUnitForm />
-      <AddOrganizationForm />
+      <AddCohortForm />
     </div>
   );
 }
