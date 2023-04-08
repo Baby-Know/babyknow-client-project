@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import errors from "./errors.reducer";
 import user from "./user.reducer";
+import unit from './unit.reducer';
 import conditionalForms from "./conditionalForms";
 
 // rootReducer is the primary reducer for our entire project
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   errors, // contains registrationMessage and loginMessage
   user, // will have an id and username if someone is logged in
   conditionalForms, // This contains all of the boolean values for conditional forms
+  unit
 });
 
 export default rootReducer;
