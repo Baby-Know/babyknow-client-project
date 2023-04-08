@@ -2,7 +2,8 @@ import { useEffect, React } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import AddUnitForm from "./AddUnitForm/AddUnitForm";
 import AddCohortForm from "./AddCohortForm/AddCohortForm";
-import { Card, CardContent, Grid } from '@mui/material';
+import { Card, CardContent, Grid, IconButton } from '@mui/material';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 function CoursePage() {
   const dispatch = useDispatch();
@@ -12,6 +13,13 @@ function CoursePage() {
   useEffect(() => {
     dispatch({ type: 'GET_UNITS' })
   }, [])
+
+  const deleteUnit = (id) => {
+    dispatch({ 
+      type: 'DELETE_UNIT',
+      payload: id
+     })
+  }
 
   return (
     <div className="container">
@@ -61,6 +69,7 @@ function CoursePage() {
                       <p>{unit.name}</p>
                       <p>{unit.subtitle}</p>
                     </CardContent>
+                    <IconButton onClick={() => deleteUnit(unit.id)}><DeleteForeverIcon /></IconButton>
                   </Card>
                 </Grid>
               </Grid>
