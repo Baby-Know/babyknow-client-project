@@ -1,5 +1,7 @@
 import axios from 'axios';
 import {put, takeLatest} from 'redux-saga/effects';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 function* getUnits() {
     try{
@@ -11,9 +13,22 @@ function* getUnits() {
 }
 
 function* deleteUnit(action) {
+    const swal = withReactContent(Swal);
     try{
-        yield axios.delete(`/api/unit/${action.payload}`);
-        yield put ({type: 'GET_UNITS'})
+        let sweet = yield swal.
+        fire({
+            title: 'Are you sure you want to delete this unit?',
+            confirmButtonText: 'Delete',
+            confirmButtonColor:'#D21304',
+            cancelButtonColor:'#263549',
+            showConfirmButton: true,
+            showCancelButton: true
+        })
+        if(sweet.isConfirmed) {
+            yield axios.delete(`/api/unit/${action.payload}`);
+            yield put ({type: 'GET_UNITS'})
+        }
+            
     }catch(error) {
         console.error('Error deleting unit', error);
     }
