@@ -2,7 +2,17 @@ import { useEffect, React } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import AddUnitForm from "./AddUnitForm/AddUnitForm";
 import AddCohortForm from "./AddCohortForm/AddCohortForm";
-import { Card, CardContent, Grid, IconButton } from '@mui/material';
+import { 
+  Card, 
+  CardContent, 
+  Grid, 
+  IconButton, 
+  Dialog, 
+  Button, 
+  DialogActions, 
+  DialogContent,
+  DialogContentText,
+  DialogTitle } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 function CoursePage() {
