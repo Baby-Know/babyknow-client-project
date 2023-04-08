@@ -10,7 +10,6 @@ function CoursePage() {
   const user = useSelector((store) => store.user);
   const units = useSelector((store) => store.unit);
 
-
   useEffect(() => {
     dispatch({ type: 'GET_UNITS' })
   }, [])
