@@ -3,16 +3,19 @@ import { Link } from "react-router-dom";
 import LogOutButton from "../LogOutButton/LogOutButton";
 import { useSelector } from "react-redux";
 import "./Nav.css";
+import logo from "../../images/BabyKnowLogo.png"
+
 function Nav() {
   const user = useSelector((store) => store.user);
+
 
   return (
     <div className="nav">
       <Link to="/about">
-        <h2 className="nav-title">(LOGO)</h2>
+        <img src={logo}/>
       </Link>
+
       <div>
-        {/* If no user is logged in, show these links */}
         {!user.id && (
           // If there's no user, show login/registration links
           <Link className="navLink" to="/login">
