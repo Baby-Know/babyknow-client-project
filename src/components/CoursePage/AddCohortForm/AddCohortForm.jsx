@@ -24,7 +24,10 @@ function AddCohortForm() {
     console.log(cohort)
     try { 
       axios.post("/api/cohort", {cohort})
-
+      dispatch({
+        type: "SET_SHOW_ADD_COHORT",
+        payload: false,
+      });
       setCohort("")
     }
     catch (error) {

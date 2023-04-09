@@ -30,6 +30,10 @@ function AddUnitForm() {
      await axios.post("/api/unit", unitToSend);
      dispatch({type: 'GET_UNITS'});
 
+     dispatch({
+      type: "SET_SHOW_ADD_UNIT",
+      payload: false });
+
       //Clear inputs
       setUnitToSend({
         name: "",
@@ -57,7 +61,7 @@ function AddUnitForm() {
             onClick={() => {
               dispatch({
                 type: "SET_SHOW_ADD_UNIT",
-                payload: false,
+                payload: false
               });
             }}
           >

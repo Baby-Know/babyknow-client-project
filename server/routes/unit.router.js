@@ -9,15 +9,14 @@ const { rejectNonAdmin } = require("../modules/admin-middleware");
 
 //GET units
 router.get("/", rejectUnauthenticated, async (req, res) => {
-  try{
+  try {
     const queryText = `
     SELECT * FROM "units"
     `;
-     const unitResult = await pool.query(queryText)
-    units = unitResult.rows
-    res.send(units)
-    console.log("units", units)
-  } catch(error){
+    const unitResult = await pool.query(queryText);
+    units = unitResult.rows;
+    res.send(units);
+  } catch (error) {
     res.sendStatus(500);
     console.log("Error getting unit:", error);
   }
@@ -42,6 +41,45 @@ router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     res.sendStatus(500);
     console.log("Error posting unit :", error);
   }
+});
+
+router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
+    UPDATE "units"
+    SET "name" = $1, "unitOrder" = $2, "subtitle" = $3
+    WHERE "id" = $4
+    `;
+
+    await pool.query(queryText, [
+      req.body.name,
+      req.body.unitOrder,
+      req.body.subtitle,
+      req.params.id,
+    ]);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log("Error editing unit :", error);
+  }
+});
+
+//DELETE new unit
+router.delete("/:id", rejectUnauthenticated, rejectNonAdmin, (req, res) => {
+  const query = `
+    DELETE FROM "units"
+    WHERE "units".id = $1;`;
+
+  params = [req.params.id];
+
+  pool
+    .query(query, params)
+    .then((result) => {
+      res.sendStatus(200);
+    })
+    .catch((err) => {
+      res.sendStatus(500);
+    });
 });
 
 module.exports = router;
