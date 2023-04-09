@@ -43,4 +43,25 @@ router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   }
 });
 
+router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
+    UPDATE "units"
+    SET "name" = $1, "unitOrder" = $2, "subtitle" = $3
+    WHERE "id" = $4
+    `;
+
+    await pool.query(queryText, [
+      req.body.name,
+      req.body.unitOrder,
+      req.body.subtitle,
+      req.params.id,
+    ]);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log("Error editing unit :", error);
+  }
+});
+
 module.exports = router;

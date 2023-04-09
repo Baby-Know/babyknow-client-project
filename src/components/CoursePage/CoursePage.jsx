@@ -5,6 +5,7 @@ import AddCohortForm from "./AddCohortForm/AddCohortForm";
 import { Card, CardContent, Grid, IconButton, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
+import axios from "axios";
 
 function CoursePage() {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ function CoursePage() {
   const [updatedUnitToSend, setUpdatedUnitToSend] = useState({
     id: "",
     name: "",
-    unitOrder: null,
+    unitOrder: "",
     subtitle: "",
   });
 
@@ -23,8 +24,7 @@ function CoursePage() {
     dispatch({ type: "GET_UNITS" });
   }, []);
 
-  //Function to set the updated unit to send's initial values
-  //to the current values
+  //Function to set the updatedUnitToSend's initial values to the current values
   const handleEditField = (event, key) => {
     setUpdatedUnitToSend({
       ...updatedUnitToSend,
@@ -32,17 +32,23 @@ function CoursePage() {
     });
   };
 
-  //Function to handle editing a unit
-  function postEditedUnit() {
-    console.log("Updated Unit", updatedUnitToSend);
+  //Function to handle editing a unit in the database
+  async function postEditedUnit() {
+    try {
+      await axios.put(`/api/unit/${updatedUnitToSend.id}`, updatedUnitToSend);
 
-    //Unselecting the unit
-    setUpdatedUnitToSend({
-      id: "",
-      name: "",
-      unitOrder: "",
-      subtitle: "",
-    });
+      dispatch({ type: "GET_UNITS" });
+
+      //Unselecting the unit
+      setUpdatedUnitToSend({
+        id: "",
+        name: "",
+        unitOrder: "",
+        subtitle: "",
+      });
+    } catch (error) {
+      console.log("Error updating unit", error);
+    }
   }
 
   return (
