@@ -9,15 +9,14 @@ const { rejectNonAdmin } = require("../modules/admin-middleware");
 
 //GET units
 router.get("/", rejectUnauthenticated, async (req, res) => {
-  try{
+  try {
     const queryText = `
     SELECT * FROM "units"
     `;
-     const unitResult = await pool.query(queryText)
-    units = unitResult.rows
-    res.send(units)
-    console.log("units", units)
-  } catch(error){
+    const unitResult = await pool.query(queryText);
+    units = unitResult.rows;
+    res.send(units);
+  } catch (error) {
     res.sendStatus(500);
     console.log("Error getting unit:", error);
   }
