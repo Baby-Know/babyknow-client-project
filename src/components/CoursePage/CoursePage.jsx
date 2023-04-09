@@ -2,10 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import AddUnitForm from "./AddUnitForm/AddUnitForm";
 import AddCohortForm from "./AddCohortForm/AddCohortForm";
-import { Card, CardContent, Grid, IconButton, TextField } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import axios from "axios";
+import {
+  Card,
+  CardContent,
+  Grid,
+  IconButton,
+  Dialog,
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogTitle,
+} from "@mui/material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 function CoursePage() {
   const dispatch = useDispatch();
@@ -50,6 +63,13 @@ function CoursePage() {
       console.log("Error updating unit", error);
     }
   }
+
+  const deleteUnit = (id) => {
+    dispatch({
+      type: "DELETE_UNIT",
+      payload: id,
+    });
+  };
 
   return (
     <div className="container">
@@ -160,6 +180,9 @@ function CoursePage() {
                         }}
                       >
                         <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => deleteUnit(unit.id)}>
+                        <DeleteForeverIcon />
                       </IconButton>
                     </Card>
                   </Grid>

@@ -64,4 +64,22 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   }
 });
 
+//DELETE new unit
+router.delete("/:id", rejectUnauthenticated, rejectNonAdmin, (req, res) => {
+  const query = `
+    DELETE FROM "units"
+    WHERE "units".id = $1;`;
+
+  params = [req.params.id];
+
+  pool
+    .query(query, params)
+    .then((result) => {
+      res.sendStatus(200);
+    })
+    .catch((err) => {
+      res.sendStatus(500);
+    });
+});
+
 module.exports = router;
