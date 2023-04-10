@@ -4,6 +4,12 @@ import user from './user.reducer';
 import unit from './unit.reducer';
 import conditionalForms from './conditionalForms';
 import studentsReducer from './students.reducer';
+import { combineReducers } from "redux";
+import errors from "./errors.reducer";
+import user from "./user.reducer";
+import unit from "./unit.reducer";
+import conditionalForms from "./conditionalForms";
+import newRegistrantsReducer from "./newRegistrants.reducer";
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -17,6 +23,7 @@ const rootReducer = combineReducers({
   conditionalForms, // This contains all of the boolean values for conditional forms
   unit,
   studentsReducer, //Contains all users with access level 1, meaning all students
+  newRegistrantsReducer,
 });
 
 export default rootReducer;
