@@ -13,19 +13,19 @@ const NewRegistrants = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const newRegistrants = useSelector((store) => store.newRegistrants);
+
   //Fetch user's inventory on page load
   useEffect(() => {
     dispatch({
-      type: "FETCH_INVENTORY",
+      type: "FETCH_NEW_REGISTRANTS",
     });
+
+    console.log(newRegistrants);
   }, []);
 
   // New state variable to hold the modified inventory
   const [modifiedInventory, setModifiedInventory] = useState([]);
-
-  useEffect(() => {
-    //FETCH REGISTRANTS HERE
-  }, []);
 
   //Function for handling deleting a row
   function handleDelete(event, cellValues) {
@@ -138,8 +138,8 @@ const NewRegistrants = () => {
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: `${
               theme.palette.mode === "light"
-                ? colors.khakiAccent[900]
-                : colors.khakiAccent[700]
+                ? colors.darkTealAccent[900]
+                : colors.darkTealAccent[700]
             }`,
             fontSize: "0.9rem",
           },
@@ -171,7 +171,6 @@ const NewRegistrants = () => {
           onCellEditCommit={handleEditCell}
           onEditCellChange={handleEditCellChange}
         />
-        <AddToInventoryForm />
       </Box>
     </Box>
   );

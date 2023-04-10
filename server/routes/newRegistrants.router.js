@@ -7,19 +7,26 @@ const {
 
 const { rejectNonAdmin } = require("../modules/admin-middleware");
 
-router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+//GET NEW REGISTRANTS
+router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
-    const query = `
-    INSERT INTO "cohorts" ("name")
-    VALUES ($1)`;
+    const queryText = `
+    SELECT * FROM "users" WHERE "access" = 0
+    `;
+    const response = await pool.query(queryText);
 
-    await pool.query(query, [req.body.cohort]);
-
-    res.sendStatus(201);
+    res.send(response.rows);
   } catch (error) {
     res.sendStatus(500);
     console.log("Error posting Cohort :", error);
   }
+});
+
+/**
+ * POST route template
+ */
+router.post("/", (req, res) => {
+  // POST route code here
 });
 
 module.exports = router;
