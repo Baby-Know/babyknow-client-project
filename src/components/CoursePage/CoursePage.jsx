@@ -160,8 +160,8 @@ function CoursePage() {
                   </form>
                 ) : (
                   <Grid item m={2} display="flex">
-                    <Card key={unit.id} sx={{ maxWidth: 320, maxHeight: 1000 }} onClick={() => selectUnit(unit.id)}>
-                      <CardContent>
+                    <Card key={unit.id} sx={{ maxWidth: 320, maxHeight: 1000 }}>
+                      <CardContent onClick={() => selectUnit(unit.id)}>
                         <p>{unit.name}</p>
                         <p>{unit.subtitle}</p>
                       </CardContent>
