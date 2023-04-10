@@ -1,33 +1,56 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import LogOutButton from "../LogOutButton/LogOutButton";
-import { useSelector } from "react-redux";
-import logo from "../../images/BabyKnowLogo.png"
+import { React, useContext } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import logo from "../../images/BabyKnowLogo.png";
 import { useTheme } from "@emotion/react";
-import { tokens } from "../../theme";
-
+import { tokens, ColorModeContext } from "../../theme";
+import { IconButton, Button, Box, Typography } from "@mui/material";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
 function Nav() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const user = useSelector((store) => store.user);
-
+  const colorMode = useContext(ColorModeContext);
+  const history = useHistory();
+  const dispatch = useDispatch();
 
   return (
-    <div
+    <Box
       className="nav"
-      style={{
+      sx={{
         display: "flex",
         justifyContent: "space-between",
         backgroundColor: `${colors.primary[500]}`,
+        "& .MuiButton-sizeMedium": {
+          width: "5.7vw",
+          borderRadius: "0px",
+          color: "#fcfcfc",
+        },
+        "& .MuiButton-sizeMedium:hover": {
+          backgroundColor: colors.darkTealAccent[500],
+        },
+        "& #color-mode-btn": {
+          color: "#fcfcfc",
+        },
+        "& #color-mode-btn:hover": {
+          color: colors.darkTealAccent[500],
+        },
       }}
     >
-      <div>
+      <Box>
         <Link to="/about">
-          <img src={logo}/>
+          <img src={logo} />
         </Link>
-      </div>
-      <div style={{ backgroundColor: `${colors.greenAccent[500]}` }}>
+      </Box>
+      <Box
+        sx={{
+          width: "30vw",
+          display: "flex",
+          justifyContent: "right",
+        }}
+      >
         {/* If no user is logged in, show these links */}
         {!user.id && (
           // If there's no user, show login/registration links
@@ -39,23 +62,48 @@ function Nav() {
         {/* If a user is logged in, show these links */}
         {user.id && (
           <>
-            <Link className="navLink" to="/course">
-              Course
-            </Link>
+            {/* Switch Buttons depending on light or dark mode */}
+            <IconButton
+              onClick={colorMode.toggleColorMode}
+              id="color-mode-btn"
+              disableRipple
+            >
+              {theme.palette.mode === "dark" ? (
+                <DarkModeOutlinedIcon />
+              ) : (
+                <LightModeOutlinedIcon />
+              )}
+            </IconButton>
+            <Button
+              to="/course"
+              onClick={() => {
+                history.push("/course");
+              }}
+            >
+              <Typography variant="body1">Courses</Typography>
+            </Button>
+            <Button
+              onClick={() => {
+                history.push("/registrants");
+              }}
+            >
+              <Typography variant="body1">Registrants</Typography>
+            </Button>
+            <Button
+              onClick={() => {
+                history.push("/about");
+              }}
+            >
+              <Typography variant="body1">About</Typography>
+            </Button>
 
-            <Link className="navLink" to="/registrants">
-              Registrants
-            </Link>
-
-            <Link className="navLink" to="/about">
-              About
-            </Link>
-
-            <LogOutButton className="navLink" />
+            <Button onClick={() => dispatch({ type: "LOGOUT" })}>
+              <Typography variant="body1">Log Out</Typography>
+            </Button>
           </>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
