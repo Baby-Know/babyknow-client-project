@@ -30,6 +30,7 @@ function AddLessonForm({id}) {
      await axios.post(`/api/lesson/${id}`, lessonToSend);
      dispatch({type: 'GET_UNIT', payload: id});
 
+
      dispatch({
       type: "SET_SHOW_ADD_LESSON",
       payload: false });
