@@ -10,7 +10,12 @@ import {
     Grid,
     IconButton,
     TextField,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Typography,
 } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddLessonForm from './AddLessonForm/AddLessonForm';
 
@@ -19,17 +24,13 @@ function UnitPage() {
     const dispatch = useDispatch();
     const unit = useSelector(store => store.unit);
 
-    console.log(id)
-
     useEffect(() => {
-        dispatch({ 
+        dispatch({
             type: "GET_UNIT",
             payload: id
         });
 
     }, []);
-
-    console.log(unit)
 
     return (
         <>
@@ -43,19 +44,33 @@ function UnitPage() {
             >
                 Add Lesson
             </button>
-            <AddLessonForm id={id}/>
+
+            <AddLessonForm id={id} />
 
             {unit.map((lesson, i) => {
-                return(
+                return (
                     <div key={i}>
-                        { i === 0 ? 
-                        <>
-                            <h1>{lesson.unitsName}</h1>
-                            <h2>{lesson.subtitle}</h2>
-                        </>
-                         : <></> }
-                        <h2>{lesson.lessonsName}</h2>
-                        <p>{lesson.description}</p>
+                        {i === 0 ?
+                            <>
+                                <h1>{lesson.unitsName}</h1>
+                                <h2>{lesson.subtitle}</h2>
+                            </>
+                            : <></>}
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography>{lesson.lessonsName}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography>
+                                {lesson.description}
+                                </Typography>
+                            </AccordionDetails>
+                        </Accordion>
+                        
                     </div>
                 )
             })}
