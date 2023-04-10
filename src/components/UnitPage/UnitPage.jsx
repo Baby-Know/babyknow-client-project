@@ -19,8 +19,6 @@ function UnitPage() {
     const dispatch = useDispatch();
     const unit = useSelector(store => store.unit);
 
-    console.log(id)
-
     useEffect(() => {
         dispatch({ 
             type: "GET_UNIT",
@@ -28,8 +26,6 @@ function UnitPage() {
         });
 
     }, []);
-
-    console.log(unit)
 
     return (
         <>
