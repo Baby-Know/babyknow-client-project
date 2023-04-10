@@ -13,19 +13,22 @@ const NewRegistrants = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const newRegistrants = useSelector((store) => store.newRegistrants);
+  const newRegistrants = useSelector((store) => store.newRegistrantsReducer);
 
-  //Fetch user's inventory on page load
+  //Fetch new registrants on page load
   useEffect(() => {
     dispatch({
       type: "FETCH_NEW_REGISTRANTS",
     });
-
-    console.log(newRegistrants);
   }, []);
 
-  // New state variable to hold the modified inventory
-  const [modifiedInventory, setModifiedInventory] = useState([]);
+  // Set the new copy of the registrants as the state
+  useEffect(() => {
+    setModifiedNewRegistrants(newRegistrants);
+  }, [newRegistrants]);
+
+  // New state variable to hold the modified newRegistrants list
+  const [modifiedNewRegistrants, setModifiedNewRegistrants] = useState([]);
 
   //Function for handling deleting a row
   function handleDelete(event, cellValues) {
@@ -33,71 +36,68 @@ const NewRegistrants = () => {
 
     axios.delete(`/api/inventory/${rowToDelete.id}`).then(() => {
       dispatch({
-        type: "FETCH_INVENTORY",
+        type: "FETCH_NEW_REGISTRANTS",
       });
     });
   }
 
-  //Change the value of the item in the modified inventory array
+  //Change the value of the item in the modifiedRegistrants array
   const handleEditCellChange = useCallback((params) => {
     const { id, field, value } = params;
-    setModifiedInventory((prevInventory) =>
-      prevInventory.map((item) =>
+    setModifiedNewRegistrants((prevNewRegistrants) =>
+      prevNewRegistrants.map((item) =>
         item.id === id ? { ...item, [field]: value } : item
       )
     );
   }, []);
 
-  //Handle sending the item to update to the database
+  //Handle sending the newRegistrants to update to the database
   const handleEditCell = useCallback(
     (params) => {
       const { id, field, value } = params;
-      const itemToBeUpdated = modifiedInventory.find((item) => item.id === id);
+      const itemToBeUpdated = modifiedNewRegistrants.find(
+        (item) => item.id === id
+      );
       itemToBeUpdated[field] = value;
-      console.log(id, itemToBeUpdated);
       axios
-        .put(`/api/inventory/${id}`, { payload: itemToBeUpdated })
+        .put(`/api/newRegistrants/${id}`, { payload: itemToBeUpdated })
         .then(() => {
           dispatch({
-            type: "FETCH_INVENTORY",
+            type: "FETCH_NEW_REGISTRANTS",
           });
         })
         .catch((error) => {
           console.log("PUT ERROR", error);
         });
     },
-    [modifiedInventory]
+    [modifiedNewRegistrants]
   );
 
   //For every row this grabs the value from the key to put into the "headerName" column
   const columns = [
     {
-      field: "item",
-      headerName: "Item",
+      field: "email",
+      headerName: "E-mail",
       // flex is allowing the cells to grow
       flex: 1,
-      cellClassName: "item-column-cell",
       editable: true,
     },
     {
-      field: "quantity",
-      headerName: "Quantity In Stock",
+      field: "firstName",
+      headerName: "First Name",
       flex: 1,
-      cellClassName: "quantity-column-cell",
       editable: true,
     },
     {
-      field: "minimumStock",
-      headerName: "Minimum Desired Stock",
+      field: "lastName",
+      headerName: "Last Name",
       flex: 1,
-      cellClassName: "minStock-column-cell",
       editable: true,
     },
     {
-      field: "unit",
-      headerName: "Unit",
-      flex: 0.2,
-      cellClassName: "unit-column-cell",
+      field: "organization",
+      headerName: "Organization",
+      flex: 1,
       editable: true,
     },
     {
@@ -151,12 +151,6 @@ const NewRegistrants = () => {
             borderTop: "none",
             backgroundColor: colors.darkTealAccent[800],
           },
-          "& .unit-column-cell": {
-            color: colors.greenAccent[400],
-          },
-          "& .item-column-cell": {
-            color: colors.greenAccent[400],
-          },
           "& .MuiButton-sizeMedium": {
             backgroundColor: colors.greenAccent[500],
           },
@@ -166,7 +160,7 @@ const NewRegistrants = () => {
         }}
       >
         <DataGrid
-          rows={modifiedInventory}
+          rows={modifiedNewRegistrants}
           columns={columns}
           onCellEditCommit={handleEditCell}
           onEditCellChange={handleEditCellChange}
