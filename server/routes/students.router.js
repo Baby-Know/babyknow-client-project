@@ -12,12 +12,14 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
   try {
     const queryText = `
         SELECT * FROM "users" 
-        WHERE 'access' = 1;
+        WHERE "access" = 1
         `;
     const students = await pool.query(queryText);
     res.send(students.rows);
   } catch (error) {
     res.sendStatus(500);
-    console.log("Error getting students:", error);
+    console.log('Error getting students:', error);
   }
 });
+
+module.exports = router;

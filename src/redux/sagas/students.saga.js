@@ -7,7 +7,6 @@ function* getStudents() {
   try {
     let response = yield axios.get('/api/students');
     yield put({ type: 'SET_STUDENTS', payload: response.data });
-    console.log(response.data);
   } catch (error) {
     console.error('Error getting students', error);
   }
