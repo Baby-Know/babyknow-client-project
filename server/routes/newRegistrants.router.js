@@ -13,7 +13,7 @@ router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     const queryText = `
     SELECT 
     	"email", "id", "firstName", "lastName", "access", "organization"
-     FROM "users" WHERE "users".access = 0;
+     FROM "users" WHERE "access" = 0;
     `;
     const response = await pool.query(queryText);
 
