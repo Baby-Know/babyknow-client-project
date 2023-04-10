@@ -34,10 +34,9 @@ const NewRegistrants = () => {
   function handleDelete(event, cellValues) {
     let rowToDelete = cellValues.row;
 
-    axios.delete(`/api/inventory/${rowToDelete.id}`).then(() => {
-      dispatch({
-        type: "FETCH_NEW_REGISTRANTS",
-      });
+    dispatch({
+      type: "DELETE_NEW_REGISTRANT",
+      payload: rowToDelete.id,
     });
   }
 
@@ -45,8 +44,8 @@ const NewRegistrants = () => {
   const handleEditCellChange = useCallback((params) => {
     const { id, field, value } = params;
     setModifiedNewRegistrants((prevNewRegistrants) =>
-      prevNewRegistrants.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
+      prevNewRegistrants.map((registrant) =>
+        registrant.id === id ? { ...registrant, [field]: value } : registrant
       )
     );
   }, []);
@@ -55,20 +54,18 @@ const NewRegistrants = () => {
   const handleEditCell = useCallback(
     (params) => {
       const { id, field, value } = params;
-      const itemToBeUpdated = modifiedNewRegistrants.find(
+      const registrantToUpdate = modifiedNewRegistrants.find(
         (item) => item.id === id
       );
-      itemToBeUpdated[field] = value;
-      axios
-        .put(`/api/newRegistrants/${id}`, { payload: itemToBeUpdated })
-        .then(() => {
-          dispatch({
-            type: "FETCH_NEW_REGISTRANTS",
-          });
-        })
-        .catch((error) => {
-          console.log("PUT ERROR", error);
-        });
+      registrantToUpdate[field] = value;
+
+      dispatch({
+        type: "UPDATE_NEW_REGISTRANT",
+        payload: {
+          id: id,
+          registrantToUpdate: registrantToUpdate,
+        },
+      });
     },
     [modifiedNewRegistrants]
   );
@@ -101,6 +98,12 @@ const NewRegistrants = () => {
       editable: true,
     },
     {
+      field: "access",
+      headerName: "Access",
+      flex: 1,
+      editable: true,
+    },
+    {
       field: "actions",
       headerName: "Actions",
       flex: 0.5,
@@ -123,7 +126,6 @@ const NewRegistrants = () => {
     { field: "id", headerName: "ID", hide: true },
   ];
   return (
-    // HEADER
     <Box>
       <Box
         //All styling on the table and box holding it
