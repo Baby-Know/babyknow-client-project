@@ -80,7 +80,7 @@ CREATE TABLE "lessons" (
 	"units_id" integer NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"description" varchar(255) NOT NULL,
-	"lesson-order" integer NOT NULL,
+	"lessonOrder" integer NOT NULL,
 	CONSTRAINT "lessons_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
