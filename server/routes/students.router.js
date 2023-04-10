@@ -5,13 +5,19 @@ const {
   rejectUnauthenticated,
 } = require('../modules/authentication-middleware');
 
-const { rejectNonAdmin } = require('../modules/admin-middleware');
+const { rejectStudent } = require('../modules/teacher-middleware');
 
-//GET units
-router.get('/', rejectUnauthenticated, async (req, res) => {
+//GET all students
+router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
   try {
     const queryText = `
         SELECT * FROM "users" 
-        WHERE`;
-  } catch (error) {}
+        WHERE 'access' = 1;
+        `;
+    const students = await pool.query(queryText);
+    res.send(students.rows);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log("Error getting students:", error);
+  }
 });
