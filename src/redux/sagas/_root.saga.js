@@ -19,5 +19,6 @@ export default function* rootSaga() {
     registrationSaga(),
     userSaga(),
     unitSaga(),
+    newRegistrantsSaga(),
   ]);
 }

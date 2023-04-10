@@ -2,6 +2,7 @@ const conditionalForms = (
   state = {
     showUnitForm: false,
     showCohortForm: false,
+    showLessonForm: false,
   },
   action
 ) => {
@@ -16,6 +17,11 @@ const conditionalForms = (
         ...state,
         showCohortForm: action.payload,
       };
+    case "SET_SHOW_ADD_LESSON":
+      return {
+        ...state, 
+        showLessonForm: action.payload
+      }
     default:
       return state;
   }
