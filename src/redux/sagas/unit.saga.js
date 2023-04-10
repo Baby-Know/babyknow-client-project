@@ -41,10 +41,21 @@ function* updateUnit(action) {
   }
 }
 
+function* getUnit(action) {
+  try {
+    let response = yield axios.get(`/api/unit/${action.payload}`);
+    yield put({ type: "SET_UNIT", payload: response.data });
+  } catch (error) {
+    console.error("Error getting unit", error);
+  }
+}
+
 function* unitSaga() {
   yield takeLatest("GET_UNITS", getUnits);
   yield takeLatest("DELETE_UNIT", deleteUnit);
   yield takeLatest("UPDATE_UNIT", updateUnit);
+
+  yield takeLatest("GET_UNIT", getUnit);
 }
 
 export default unitSaga;
