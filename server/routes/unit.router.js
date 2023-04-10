@@ -7,7 +7,7 @@ const {
 
 const { rejectNonAdmin } = require("../modules/admin-middleware");
 
-//GET units
+//GET all units
 router.get("/", rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `
@@ -21,6 +21,27 @@ router.get("/", rejectUnauthenticated, async (req, res) => {
     console.log("Error getting unit:", error);
   }
 });
+
+//GET specific unit
+router.get("/:id", rejectUnauthenticated, async (req, res) => {
+  console.log(req.params.id)
+  try {
+    const queryText = `
+    SELECT "units".name AS "unitsName", "units".subtitle, "lessons".name AS "lessonsName", "lessons".description, "lessonOrder" FROM "units"
+    JOIN "lessons" ON "lessons".units_id = "units".id
+    WHERE "units".id = $1
+    ORDER BY "lessonOrder" ASC
+    `;
+    const params = [req.params.id]
+    const unitResult = await pool.query(queryText, params);
+    units = unitResult.rows;
+    res.send(units);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log("Error getting unit:", error);
+  }
+});
+
 
 //POST new unit
 router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
