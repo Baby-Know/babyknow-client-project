@@ -1,5 +1,6 @@
-import React from 'react';
-import {useSelector} from 'react-redux';
+import React from "react";
+import { useSelector } from "react-redux";
+import NewRegistrants from "./NewRegistrants/NewRegistrants";
 
 function RegistrantsPage() {
   // this component doesn't do much to start, just renders some user reducer info to the DOM
@@ -7,6 +8,7 @@ function RegistrantsPage() {
   return (
     <div className="container">
       <h1>Registrants Page!</h1>
+      <NewRegistrants />
     </div>
   );
 }
