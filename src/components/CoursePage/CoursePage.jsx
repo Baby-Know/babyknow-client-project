@@ -47,21 +47,18 @@ function CoursePage() {
 
   //Function to handle editing a unit in the database
   async function postEditedUnit() {
-    try {
-      await axios.put(`/api/unit/${updatedUnitToSend.id}`, updatedUnitToSend);
+    dispatch({
+      type: "UPDATE_UNIT",
+      payload: updatedUnitToSend,
+    });
 
-      dispatch({ type: "GET_UNITS" });
-
-      //Unselecting the unit
-      setUpdatedUnitToSend({
-        id: "",
-        name: "",
-        unitOrder: "",
-        subtitle: "",
-      });
-    } catch (error) {
-      console.log("Error updating unit", error);
-    }
+    //Unselecting the unit
+    setUpdatedUnitToSend({
+      id: "",
+      name: "",
+      unitOrder: "",
+      subtitle: "",
+    });
   }
 
   const deleteUnit = (id) => {
