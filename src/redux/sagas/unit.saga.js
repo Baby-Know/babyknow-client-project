@@ -55,7 +55,6 @@ function* unitSaga() {
   yield takeLatest("DELETE_UNIT", deleteUnit);
   yield takeLatest("UPDATE_UNIT", updateUnit);
 
-
   yield takeLatest("GET_UNIT", getUnit);
 }
 

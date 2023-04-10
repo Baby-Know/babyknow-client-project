@@ -30,6 +30,7 @@ router.get("/:id", rejectUnauthenticated, async (req, res) => {
     SELECT "units".name AS "unitsName", "units".subtitle, "lessons".name AS "lessonsName", "lessons".description, "lessonOrder" FROM "units"
     JOIN "lessons" ON "lessons".units_id = "units".id
     WHERE "units".id = $1
+    ORDER BY "lessonOrder" ASC
     `;
     const params = [req.params.id]
     const unitResult = await pool.query(queryText, params);
