@@ -2,8 +2,10 @@ const unitReducer = (state = [], action) => {
     switch(action.type) {
         case 'SET_UNITS':
             return action.payload;
-            default:
-                return state;
+        case 'SET_UNIT':
+            return action.payload;
+        default:
+            return state;
     }
 }
 
