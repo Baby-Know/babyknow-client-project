@@ -11,22 +11,39 @@ const { rejectNonAdmin } = require("../modules/admin-middleware");
 router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const queryText = `
-    SELECT * FROM "users" WHERE "access" = 0
+    SELECT 
+    	"email", "id", "firstName", "lastName", "access", "organization"
+     FROM "users" WHERE "users".access = 0
     `;
     const response = await pool.query(queryText);
 
     res.send(response.rows);
   } catch (error) {
     res.sendStatus(500);
-    console.log("Error posting Cohort :", error);
+    console.log("Error getting new registrants :", error);
   }
 });
 
-/**
- * POST route template
- */
-router.post("/", (req, res) => {
-  // POST route code here
+//UPDATE NEW USER
+router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
+    UPDATE "users" 
+    SET "email" = $1, "firstName" = $2, "lastName" = $3, "access" = $4, "organization" = $5
+    WHERE id = $6
+    `;
+    await pool.query(queryText, [
+      req.body.email,
+      req.body.firstName,
+      req.body.lastName,
+      req.body.access,
+      req.body.organization,
+      req.params.id,
+    ]);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log("Error updating new registrant :", error);
+  }
 });
 
 module.exports = router;
