@@ -13,19 +13,22 @@ const Students = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    //Fetch all students on load
+    const students = useSelector((store) => store.studentsReducer);
+
+    //Fetch new registrants on page load
     useEffect(() => {
         dispatch({
             type: "GET_STUDENTS",
         });
     }, []);
 
-    // New state variable to hold the modified student
-    const [modifiedStudent, setModifiedStudent] = useState([]);
-
+    // Set the new copy of the registrants as the state
     useEffect(() => {
-        //FETCH REGISTRANTS HERE
-    }, []);
+        setStudents(students);
+    }, [students]);
+
+    // New state variable to hold the modified newRegistrants list
+    const [modifiedStudents, setStudents] = useState([]);
 
     //Function for handling deleting a row
     function handleDelete(event, cellValues) {
@@ -38,66 +41,63 @@ const Students = () => {
         });
     }
 
-    //Change the value of the item in the modified student array
+    //Change the value of the item in the modifiedRegistrants array
     const handleEditCellChange = useCallback((params) => {
         const { id, field, value } = params;
-        setModifiedStudent((prevStudent) =>
+        setStudents((prevStudent) =>
             prevStudent.map((item) =>
                 item.id === id ? { ...item, [field]: value } : item
             )
         );
     }, []);
 
-    //Handle sending the item to update to the database
+    //Handle sending the newRegistrants to update to the database
     const handleEditCell = useCallback(
         (params) => {
             const { id, field, value } = params;
-            const itemToBeUpdated = modifiedStudent.find((item) => item.id === id);
+            const itemToBeUpdated = modifiedStudents.find(
+                (item) => item.id === id
+            );
             itemToBeUpdated[field] = value;
-            console.log(id, itemToBeUpdated);
             axios
-                .put(`/api/inventory/${id}`, { payload: itemToBeUpdated })
+                .put(`/api/students/${id}`, { payload: itemToBeUpdated })
                 .then(() => {
                     dispatch({
-                        type: "FETCH_INVENTORY",
+                        type: "GET_STUDENTS",
                     });
                 })
                 .catch((error) => {
                     console.log("PUT ERROR", error);
                 });
         },
-        [modifiedStudent]
+        [modifiedStudents]
     );
 
     //For every row this grabs the value from the key to put into the "headerName" column
     const columns = [
         {
-            field: "item",
-            headerName: "Item",
+            field: "email",
+            headerName: "E-mail",
             // flex is allowing the cells to grow
             flex: 1,
-            cellClassName: "item-column-cell",
             editable: true,
         },
         {
-            field: "quantity",
-            headerName: "Quantity In Stock",
+            field: "firstName",
+            headerName: "First Name",
             flex: 1,
-            cellClassName: "quantity-column-cell",
             editable: true,
         },
         {
-            field: "minimumStock",
-            headerName: "Minimum Desired Stock",
+            field: "lastName",
+            headerName: "Last Name",
             flex: 1,
-            cellClassName: "minStock-column-cell",
             editable: true,
         },
         {
-            field: "unit",
-            headerName: "Unit",
-            flex: 0.2,
-            cellClassName: "unit-column-cell",
+            field: "organization",
+            headerName: "Organization",
+            flex: 1,
             editable: true,
         },
         {
@@ -137,8 +137,8 @@ const Students = () => {
                     },
                     "& .MuiDataGrid-virtualScroller": {
                         backgroundColor: `${theme.palette.mode === "light"
-                            ? colors.khakiAccent[900]
-                            : colors.khakiAccent[700]
+                            ? colors.darkTealAccent[900]
+                            : colors.darkTealAccent[700]
                             }`,
                         fontSize: "0.9rem",
                     },
@@ -150,12 +150,6 @@ const Students = () => {
                         borderTop: "none",
                         backgroundColor: colors.darkTealAccent[800],
                     },
-                    "& .unit-column-cell": {
-                        color: colors.greenAccent[400],
-                    },
-                    "& .item-column-cell": {
-                        color: colors.greenAccent[400],
-                    },
                     "& .MuiButton-sizeMedium": {
                         backgroundColor: colors.greenAccent[500],
                     },
@@ -165,12 +159,11 @@ const Students = () => {
                 }}
             >
                 <DataGrid
-                    rows={modifiedStudent}
+                    rows={modifiedStudents}
                     columns={columns}
                     onCellEditCommit={handleEditCell}
                     onEditCellChange={handleEditCellChange}
                 />
-                <AddToInventoryForm />
             </Box>
         </Box>
     );
