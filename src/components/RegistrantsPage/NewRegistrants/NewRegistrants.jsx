@@ -35,7 +35,7 @@ const NewRegistrants = () => {
     let rowToDelete = cellValues.row;
 
     dispatch({
-      type: "DELETE_NEW_REGISTRANTS",
+      type: "DELETE_NEW_REGISTRANT",
       payload: rowToDelete.id,
     });
   }
