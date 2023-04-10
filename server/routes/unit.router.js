@@ -24,7 +24,6 @@ router.get("/", rejectUnauthenticated, async (req, res) => {
 
 //GET specific unit
 router.get("/:id", rejectUnauthenticated, async (req, res) => {
-  console.log(req.params.id)
   try {
     const queryText = `
     SELECT "units".name AS "unitsName", "units".subtitle, "lessons".name AS "lessonsName", "lessons".description, "lessonOrder" FROM "units"

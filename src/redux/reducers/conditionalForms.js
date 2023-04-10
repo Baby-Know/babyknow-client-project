@@ -21,6 +21,11 @@ const conditionalForms = (
       return {
         ...state, 
         showLessonForm: action.payload
+      };
+    case "SET_SET_ADD_CONTENT":
+      return {
+        ...state,
+        showContentForm: action.payload
       }
     default:
       return state;

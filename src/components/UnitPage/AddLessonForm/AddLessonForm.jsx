@@ -29,7 +29,7 @@ function AddLessonForm({id}) {
   async function handleAddLesson() {
     try {
      await axios.post("/api/lesson", lessonToSend);
-     dispatch({type: 'GET_UNIT', payload: id});
+    //  dispatch({type: 'GET_LESSONS'});
 
      dispatch({
       type: "SET_SHOW_ADD_LESSON",
