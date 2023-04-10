@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import AddUnitForm from "./AddUnitForm/AddUnitForm";
 import AddCohortForm from "./AddCohortForm/AddCohortForm";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
-import axios from "axios";
 import {
   Card,
   CardContent,
   Grid,
   IconButton,
-  Dialog,
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
   TextField,
-  DialogTitle,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 function CoursePage() {
   const dispatch = useDispatch();
+  const history = useHistory();
   const user = useSelector((store) => store.user);
   const units = useSelector((store) => store.unit);
 
@@ -45,7 +40,7 @@ function CoursePage() {
     });
   };
 
-  //Function to handle editing a unit in the database
+  // Function to handle editing a unit in the database
   async function postEditedUnit() {
     dispatch({
       type: "UPDATE_UNIT",
@@ -67,6 +62,10 @@ function CoursePage() {
       payload: id,
     });
   };
+
+  const selectUnit = (id) => {
+    history.push(`/unit/${id}`)
+  }
 
   return (
     <div className="container">
@@ -161,7 +160,7 @@ function CoursePage() {
                   </form>
                 ) : (
                   <Grid item m={2} display="flex">
-                    <Card key={unit.id} sx={{ maxWidth: 320, maxHeight: 1000 }}>
+                    <Card key={unit.id} sx={{ maxWidth: 320, maxHeight: 1000 }} onClick={() => selectUnit(unit.id)}>
                       <CardContent>
                         <p>{unit.name}</p>
                         <p>{unit.subtitle}</p>
