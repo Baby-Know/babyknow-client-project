@@ -20,6 +20,6 @@ export default function* rootSaga() {
     userSaga(),
     unitSaga(),
     newRegistrantsSaga(),
-    studentsSaga()
+    studentsSaga(),
   ]);
 }
