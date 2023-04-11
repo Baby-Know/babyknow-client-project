@@ -5,11 +5,7 @@ import { useHistory } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import {
-    Card,
-    CardContent,
-    Grid,
-    IconButton,
-    TextField,
+    Button,
     Accordion,
     AccordionSummary,
     AccordionDetails,
@@ -18,11 +14,14 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddLessonForm from './AddLessonForm/AddLessonForm';
+import AddContentForm from './AddContentForm/AddContentForm'
 
 function UnitPage() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const unit = useSelector(store => store.unit);
+
+    const [selectedId, setSelectedId] = useState(0);
 
     useEffect(() => {
         dispatch({
@@ -31,6 +30,7 @@ function UnitPage() {
         });
 
     }, []);
+
 
     return (
         <>
@@ -66,7 +66,17 @@ function UnitPage() {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                {lesson.description}
+                                    {lesson.description}
+                                    <Button onClick={() => {
+                                        setSelectedId(lesson.id);
+                                        dispatch({
+                                            type: "SET_SHOW_ADD_CONTENT",
+                                            payload: true,
+                                        });
+                                    }}>
+                                        Add Content
+                                    </Button>
+                                    
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
@@ -74,6 +84,8 @@ function UnitPage() {
                     </div>
                 )
             })}
+            <AddContentForm selectedId={selectedId}/>
+            
         </>
     )
 }
