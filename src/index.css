@@ -27,3 +27,28 @@ body,
 ::-webkit-scrollbar-track:hover {
   background: #555;
 }
+
+#addLesson {
+  width: 50%
+}
+
+#unitHeader {
+  margin: auto;
+  width: 30%;
+  text-align: center;
+  border-radius: 16px;
+  background-color: #5ba0c4;
+  padding: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+#addLessonParent {
+  display: flex;
+  justify-content: center;
+}
+
+#accordian {
+  margin: auto;
+  width: 60%;
+}
