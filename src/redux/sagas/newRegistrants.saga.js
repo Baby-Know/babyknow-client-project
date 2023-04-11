@@ -34,10 +34,7 @@ function* deleteNewRegistrant(action) {
 
 function* updateNewRegistrant(action) {
   try {
-    yield axios.put(
-      `/api/newRegistrants/${action.payload.id}`,
-      action.payload.registrantToUpdate
-    );
+    yield axios.put(`/api/newRegistrants/${action.payload.id}`, action.payload);
     yield put({ type: "FETCH_NEW_REGISTRANTS" });
   } catch (error) {
     console.error("Error getting unit", error);

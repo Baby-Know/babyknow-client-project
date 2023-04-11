@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/system";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, useGridApi } from "@mui/x-data-grid";
 import { tokens } from "../../../theme";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckIcon from "@mui/icons-material/Check";
-import { Select, MenuItem } from "@mui/material";
-import { useMemo } from "react";
+import { Select, MenuItem, Tooltip } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const NewRegistrants = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const NewRegistrants = () => {
   const newRegistrants = useSelector((store) => store.newRegistrantsReducer);
 
   //Variable stating whether a row is being edited or not
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(null);
 
   const accessOptions = [
     { value: 0, label: "New" },
@@ -57,7 +57,6 @@ const NewRegistrants = () => {
   const handleSelectAccessChange = useCallback(
     (cellValues) => {
       const value = cellValues.value;
-      //   const { id, field, value } = cellValues.cellValues;
       setModifiedNewRegistrants((prevNewRegistrants) =>
         prevNewRegistrants.map((registrant) =>
           registrant.id === cellValues.cellValues.id
@@ -69,7 +68,7 @@ const NewRegistrants = () => {
     [modifiedNewRegistrants]
   );
 
-  function handleEditRow(cellValues) {
+  function handleEditSelectAccess(cellValues) {
     const { id, field, value } = cellValues;
     const registrantToUpdate = cellValues.row;
 
@@ -83,17 +82,38 @@ const NewRegistrants = () => {
 
     dispatch({
       type: "UPDATE_NEW_REGISTRANT",
-      payload: {
-        id: id,
-        registrantToUpdate: registrantToUpdate,
-      },
-    });
-
-    dispatch({
-      type: "FETCH_NEW_REGISTRANTS",
+      payload: registrantToUpdate,
     });
   }
 
+  //Change the value of the item in the modifiedRegistrants array
+  const handleEditCellChange = useCallback((params) => {
+    const { id, field, value } = params;
+    setModifiedNewRegistrants((prevNewRegistrants) =>
+      prevNewRegistrants.map((registrant) =>
+        registrant.id === id ? { ...registrant, [field]: value } : registrant
+      )
+    );
+  }, []);
+
+  //Handle sending the newRegistrants to update to the database
+  const handleEditCell = useCallback(
+    (params) => {
+      const { id, field, value } = params;
+      const registrantToUpdate = modifiedNewRegistrants.find(
+        (item) => item.id === id
+      );
+      registrantToUpdate[field] = value;
+      dispatch({
+        type: "UPDATE_NEW_REGISTRANT",
+        payload: {
+          id: id,
+          registrantToUpdate: registrantToUpdate,
+        },
+      });
+    },
+    [modifiedNewRegistrants]
+  );
   //For every row this grabs the value from the key to put into the "headerName" column
   const columns = [
     {
@@ -130,7 +150,7 @@ const NewRegistrants = () => {
           variant="standard"
           value={cellValues.row.access}
           onChange={(event) => {
-            setIsEditing(true);
+            setIsEditing(cellValues.id);
             handleSelectAccessChange({
               cellValues: cellValues,
               value: event.target.value,
@@ -148,7 +168,7 @@ const NewRegistrants = () => {
     {
       field: "actions",
       headerName: "Actions",
-      flex: 0.5,
+      flex: 0.6,
       cellClassName: "delete-btn-column-cell",
       editable: false,
       headerAlign: "center",
@@ -156,25 +176,43 @@ const NewRegistrants = () => {
       renderCell: (cellValues) => {
         return (
           <>
-            <IconButton
-              onClick={(event) => {
-                handleDelete(event, cellValues);
-              }}
-            >
-              <DeleteForeverIcon />
-            </IconButton>
-            {/* Toggling the start and complete edit buttons */}
-            {isEditing ? (
-              <IconButton
-                onClick={() => {
-                  handleEditRow(cellValues);
-                }}
-              >
-                <CheckIcon />
-              </IconButton>
+            {isEditing === cellValues.id ? (
+              <>
+                <Tooltip title="Confirm Edit">
+                  <IconButton
+                    onClick={() => {
+                      handleEditSelectAccess(cellValues);
+                      setIsEditing(null);
+                    }}
+                  >
+                    <CheckIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Cancel Edit">
+                  <IconButton
+                    onClick={() => {
+                      setIsEditing(null);
+                      dispatch({
+                        type: "FETCH_NEW_REGISTRANTS",
+                      });
+                    }}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </Tooltip>
+              </>
             ) : (
               <></>
             )}
+            <Tooltip title="Delete Registrant">
+              <IconButton
+                onClick={(event) => {
+                  handleDelete(event, cellValues);
+                }}
+              >
+                <DeleteForeverIcon />
+              </IconButton>
+            </Tooltip>
           </>
         );
       },
@@ -220,9 +258,8 @@ const NewRegistrants = () => {
         <DataGrid
           rows={modifiedNewRegistrants}
           columns={columns}
-          editMode="row"
-          onRowEditStart={() => setIsEditing(true)}
-          onRowEditStop={() => setIsEditing(false)}
+          onCellEditCommit={handleEditCell}
+          onEditCellChange={handleEditCellChange}
         />
       </Box>
     </Box>
