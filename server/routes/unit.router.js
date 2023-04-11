@@ -12,6 +12,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `
     SELECT * FROM "units"
+    ORDER BY "unitOrder" ASC
     `;
     const unitResult = await pool.query(queryText);
     units = unitResult.rows;
