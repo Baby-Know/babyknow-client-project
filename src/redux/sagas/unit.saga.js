@@ -41,6 +41,7 @@ function* updateUnit(action) {
   }
 }
 
+// get unit with id
 function* getUnit(action) {
   try {
     let response = yield axios.get(`/api/unit/${action.payload}`);

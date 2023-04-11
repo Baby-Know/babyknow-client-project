@@ -3,6 +3,7 @@ const conditionalForms = (
     showUnitForm: false,
     showCohortForm: false,
     showLessonForm: false,
+    showContentForm: false
   },
   action
 ) => {
@@ -22,7 +23,7 @@ const conditionalForms = (
         ...state, 
         showLessonForm: action.payload
       };
-    case "SET_SET_ADD_CONTENT":
+    case "SET_SHOW_ADD_CONTENT":
       return {
         ...state,
         showContentForm: action.payload

@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
   conditionalForms, // This contains all of the boolean values for conditional forms
   unit,
   studentsReducer, //Contains all users with access level 1, meaning all students
-  newRegistrantsReducer,
+  newRegistrantsReducer
 });
 
 export default rootReducer;

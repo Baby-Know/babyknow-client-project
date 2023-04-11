@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddLessonForm from './AddLessonForm/AddLessonForm';
+import AddContentForm from './AddContentForm/AddContentForm'
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 
@@ -30,6 +31,8 @@ function UnitPage() {
         });
 
     }, []);
+
+    const [selectedId, setSelectedId] = useState(0);
 
     return (
         <Box sx={{ 
@@ -61,13 +64,26 @@ function UnitPage() {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
-                                - {lesson.description}
+                                    {lesson.description}
+                                    <Button onClick={() => {
+                                        dispatch({
+                                            type: "SET_SHOW_ADD_CONTENT",
+                                            payload: true,
+                                        });
+                                        setSelectedId(lesson.lessonsId)
+                                    }}>
+                                        Add Content
+                                    </Button>
+
                                 </Typography>
                             </AccordionDetails>
-                        </Accordion>   
+                        </Accordion>
+
                     </div>
                 )
             })}
+            <AddContentForm selectedId={selectedId} />
+
             <div id="addLessonParent">
             <Button
             id='addLesson'
