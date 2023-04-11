@@ -6,6 +6,8 @@ import AddCohortForm from "./AddCohortForm/AddCohortForm";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import {
+  Box,
+  Button,
   Card,
   CardContent,
   Grid,
@@ -13,10 +15,14 @@ import {
   TextField,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { tokens } from "../../theme";
+import { useTheme } from "@emotion/react";
 
 function CoursePage() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode)
   const user = useSelector((store) => store.user);
   const units = useSelector((store) => store.unit);
 
@@ -68,52 +74,39 @@ function CoursePage() {
   }
 
   return (
-    <div className="container">
-      <h1>Course Page!</h1>
-      <h2>Welcome, {user.firstName}!</h2>
-      <button
-        onClick={() => {
-          dispatch({
-            type: "SET_SHOW_ADD_UNIT",
-            payload: true,
-          });
-        }}
-      >
-        Add Unit
-      </button>
-      <button
-        onClick={() => {
-          dispatch({
-            type: "SET_SHOW_ADD_COHORT",
-            payload: true,
-          });
-        }}
-      >
-        Add Cohort
-      </button>
+    <Box
+      sx={{
+        "& .MuiButton-sizeMedium": {
+          backgroundColor: colors.tealAccent[500],
+        },
+        "& .MuiButton-sizeMedium:hover": {
+          backgroundColor: colors.tealAccent[700],
+        },
+         display: 'box',
+         gridTemplateColumns: 'repeat(3, 1fr)'
+      }}
+      className="container">
+      <h1 style={{ marginLeft: 20}} >Course</h1>
+      <h2 style={{ marginLeft: 20}} >Welcome, {user.firstName}!</h2>
       <AddUnitForm />
       <AddCohortForm />
 
       <div>
-        {units.map((unit, i) => {
-          //Variable to check if this card is currently being edited
-          const isCurrentlyEditing = updatedUnitToSend.id === unit.id;
-          return (
-            <div key={i}>
               <Grid
                 container
-                display="flex"
-                direction="column"
-                alignItems="center"
-                justify="center"
-                spacing={3}
+                m={4}
+                sx={{ display: 'flex', justifyContent: 'space-around', marginLeft: 0}}
               >
+              {units.map((unit, i) => {
+              //Variable to check if this card is currently being edited
+              const isCurrentlyEditing = updatedUnitToSend.id === unit.id;
+              return (
+                <div id='unitGrid' key={i} style={{ display: 'grid',  justifyContent:'space-between', cursor: 'pointer', marginLeft: 100, marginRight: 100 , marginBottom: 25 , marginTop: 25}} >
                 {isCurrentlyEditing ? (
                   <form>
-                    <Grid item m={2} display="flex">
                       <Card
                         key={unit.id}
-                        sx={{ maxWidth: 320, maxHeight: 1000 }}
+                        sx={{ maxWidth: 320, maxHeight: 1000, justifyContent: 'center' }}
                       >
                         <CardContent>
                           <TextField
@@ -156,15 +149,13 @@ function CoursePage() {
                           <DoneIcon />
                         </IconButton>
                       </Card>
-                    </Grid>
                   </form>
                 ) : (
-                  <Grid item m={2} display="flex">
-                    <Card key={unit.id} sx={{ width: 200, height: 200 }}>
-                      <CardContent onClick={() => selectUnit(unit.id)}>
-                        <p>{unit.name}</p>
+                    <Card key={unit.id} sx={{ width: 200, height: 200, textAlign: 'center', justifyContent: 'center'  }}>
+                      <CardContent sx={{ mb: 4 }} onClick={() => selectUnit(unit.id)}>
+                        <p style={{ fontWeight: 'bold', fontSize: 18 }} >{unit.name}</p>
                         <p>{unit.subtitle}</p>
-                      </CardContent>
+                      </CardContent >
                       <IconButton
                         onClick={() => {
                           setUpdatedUnitToSend({
@@ -181,14 +172,40 @@ function CoursePage() {
                         <DeleteForeverIcon />
                       </IconButton>
                     </Card>
-                  </Grid>
                 )}
+                </div>
+                );
+              })}
               </Grid>
-            </div>
-          );
-        })}
+
       </div>
-    </div>
+      <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
+        <Button
+          sx={{ margin: 10 }}
+          onClick={() => {
+          dispatch({
+            type: "SET_SHOW_ADD_UNIT",
+            payload: true,
+          });
+          }}
+          
+          >
+            Add Unit
+          </Button>
+          <Button
+            sx={{ margin: 10 }}
+            onClick={() => {
+              dispatch({
+                type: "SET_SHOW_ADD_COHORT",
+                payload: true,
+              });
+            }}
+      
+          >
+            Add Cohort
+          </Button>
+        </div>
+    </Box>
   );
 }
 
