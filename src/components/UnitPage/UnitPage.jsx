@@ -1,25 +1,28 @@
 import { useParams } from "react-router-dom"
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
-import DoneIcon from "@mui/icons-material/Done";
+
 import {
+    Box,
     Button,
+    Card,
     Accordion,
     AccordionSummary,
     AccordionDetails,
     Typography,
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddLessonForm from './AddLessonForm/AddLessonForm';
 import AddContentForm from './AddContentForm/AddContentForm'
+import { tokens } from "../../theme";
+import { useTheme } from "@emotion/react";
 
 function UnitPage() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const unit = useSelector(store => store.unit);
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode)
 
     useEffect(() => {
         dispatch({
@@ -32,17 +35,13 @@ function UnitPage() {
     const [selectedId, setSelectedId] = useState(0);
 
     return (
-        <>
-            <button
-                onClick={() => {
-                    dispatch({
-                        type: "SET_SHOW_ADD_LESSON",
-                        payload: true,
-                    });
-                }}
-            >
-                Add Lesson
-            </button>
+        <Box sx={{ 
+            "& .MuiButton-sizeMedium": {
+            backgroundColor: colors.tealAccent[500],
+            },
+            "& .MuiButton-sizeMedium:hover": {
+            backgroundColor: colors.tealAccent[700],
+            }}}>
 
             <AddLessonForm id={id} />
 
@@ -50,18 +49,18 @@ function UnitPage() {
                 return (
                     <div key={i}>
                         {i === 0 ?
-                            <>
-                                <h1>{lesson.unitsName}</h1>
+                            <Card id='unitHeader'>
+                                <h1 style={{ fontWeight: 'bold', fontSize: 24, textDecoration: 'underline' }} >{lesson.unitsName}</h1>
                                 <h2>{lesson.subtitle}</h2>
-                            </>
+                            </Card>
                             : <></>}
-                        <Accordion>
+                        <Accordion id="accordian">
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
                             >
-                                <Typography>{lesson.lessonsName}</Typography>
+                                <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>{lesson.lessonsName}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography>
@@ -85,7 +84,21 @@ function UnitPage() {
             })}
             <AddContentForm selectedId={selectedId} />
 
-        </>
+            <div id="addLessonParent">
+            <Button
+            id='addLesson'
+            onClick={() => {
+                dispatch({
+                    type: "SET_SHOW_ADD_LESSON",
+                    payload: true,
+                });
+                }}
+            >
+                Add Lesson
+            </Button>
+            </div>
+        </Box>
+        
     )
 }
 

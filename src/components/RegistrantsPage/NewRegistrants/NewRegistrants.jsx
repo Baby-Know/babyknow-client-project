@@ -7,6 +7,9 @@ import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import CheckIcon from "@mui/icons-material/Check";
+import { Select, MenuItem } from "@mui/material";
+import { useMemo } from "react";
 
 const NewRegistrants = () => {
   const dispatch = useDispatch();
@@ -14,6 +17,19 @@ const NewRegistrants = () => {
   const colors = tokens(theme.palette.mode);
 
   const newRegistrants = useSelector((store) => store.newRegistrantsReducer);
+
+  //Variable stating whether a row is being edited or not
+  const [isEditing, setIsEditing] = useState(false);
+
+  const accessOptions = [
+    { value: 0, label: "New" },
+    { value: 1, label: "Student" },
+    { value: 2, label: "Teacher" },
+    { value: 3, label: "Admin" },
+  ];
+
+  // New state variable to hold the modified newRegistrants list
+  const [modifiedNewRegistrants, setModifiedNewRegistrants] = useState([]);
 
   //Fetch new registrants on page load
   useEffect(() => {
@@ -27,9 +43,6 @@ const NewRegistrants = () => {
     setModifiedNewRegistrants(newRegistrants);
   }, [newRegistrants]);
 
-  // New state variable to hold the modified newRegistrants list
-  const [modifiedNewRegistrants, setModifiedNewRegistrants] = useState([]);
-
   //Function for handling deleting a row
   function handleDelete(event, cellValues) {
     let rowToDelete = cellValues.row;
@@ -40,35 +53,46 @@ const NewRegistrants = () => {
     });
   }
 
-  //Change the value of the item in the modifiedRegistrants array
-  const handleEditCellChange = useCallback((params) => {
-    const { id, field, value } = params;
-    setModifiedNewRegistrants((prevNewRegistrants) =>
-      prevNewRegistrants.map((registrant) =>
-        registrant.id === id ? { ...registrant, [field]: value } : registrant
-      )
-    );
-  }, []);
-
-  //Handle sending the newRegistrants to update to the database
-  const handleEditCell = useCallback(
-    (params) => {
-      const { id, field, value } = params;
-      const registrantToUpdate = modifiedNewRegistrants.find(
-        (item) => item.id === id
+  //Handle changing the value of the access select in the modifiedRegistrants array
+  const handleSelectAccessChange = useCallback(
+    (cellValues) => {
+      const value = cellValues.value;
+      //   const { id, field, value } = cellValues.cellValues;
+      setModifiedNewRegistrants((prevNewRegistrants) =>
+        prevNewRegistrants.map((registrant) =>
+          registrant.id === cellValues.cellValues.id
+            ? { ...registrant, access: value }
+            : registrant
+        )
       );
-      registrantToUpdate[field] = value;
-
-      dispatch({
-        type: "UPDATE_NEW_REGISTRANT",
-        payload: {
-          id: id,
-          registrantToUpdate: registrantToUpdate,
-        },
-      });
     },
     [modifiedNewRegistrants]
   );
+
+  function handleEditRow(cellValues) {
+    const { id, field, value } = cellValues;
+    const registrantToUpdate = cellValues.row;
+
+    setModifiedNewRegistrants((prevNewRegistrants) =>
+      prevNewRegistrants.map((registrant) =>
+        registrant.id === cellValues.id
+          ? { ...registrant, [field]: value }
+          : registrant
+      )
+    );
+
+    dispatch({
+      type: "UPDATE_NEW_REGISTRANT",
+      payload: {
+        id: id,
+        registrantToUpdate: registrantToUpdate,
+      },
+    });
+
+    dispatch({
+      type: "FETCH_NEW_REGISTRANTS",
+    });
+  }
 
   //For every row this grabs the value from the key to put into the "headerName" column
   const columns = [
@@ -99,9 +123,27 @@ const NewRegistrants = () => {
     },
     {
       field: "access",
-      headerName: "Access",
-      flex: 1,
-      editable: true,
+      headerName: "Roles",
+      editable: false,
+      renderCell: (cellValues) => (
+        <Select
+          variant="standard"
+          value={cellValues.row.access}
+          onChange={(event) => {
+            setIsEditing(true);
+            handleSelectAccessChange({
+              cellValues: cellValues,
+              value: event.target.value,
+            });
+          }}
+        >
+          {accessOptions.map((option, i) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      ),
     },
     {
       field: "actions",
@@ -113,13 +155,27 @@ const NewRegistrants = () => {
       align: "center",
       renderCell: (cellValues) => {
         return (
-          <IconButton
-            onClick={(event) => {
-              handleDelete(event, cellValues);
-            }}
-          >
-            <DeleteForeverIcon />
-          </IconButton>
+          <>
+            <IconButton
+              onClick={(event) => {
+                handleDelete(event, cellValues);
+              }}
+            >
+              <DeleteForeverIcon />
+            </IconButton>
+            {/* Toggling the start and complete edit buttons */}
+            {isEditing ? (
+              <IconButton
+                onClick={() => {
+                  handleEditRow(cellValues);
+                }}
+              >
+                <CheckIcon />
+              </IconButton>
+            ) : (
+              <></>
+            )}
+          </>
         );
       },
     },
@@ -164,8 +220,9 @@ const NewRegistrants = () => {
         <DataGrid
           rows={modifiedNewRegistrants}
           columns={columns}
-          onCellEditCommit={handleEditCell}
-          onEditCellChange={handleEditCellChange}
+          editMode="row"
+          onRowEditStart={() => setIsEditing(true)}
+          onRowEditStop={() => setIsEditing(false)}
         />
       </Box>
     </Box>

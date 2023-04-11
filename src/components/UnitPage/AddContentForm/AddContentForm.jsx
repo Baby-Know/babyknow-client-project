@@ -26,9 +26,6 @@ function AddContentForm({selectedId}) {
 
     const showForm = useSelector((store) => store.conditionalForms?.showContentForm);
 
-    const lessonId = useSelector((store) => store.contentReducer);
-    console.log("lesson id reducer", lessonId)
-
     const [contentToSend, setContentToSend] = useState({
         content: "",
         title: "",
