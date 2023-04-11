@@ -77,7 +77,7 @@ CREATE TABLE "users_lessons_content" (
 
 CREATE TABLE "lessons" (
 	"id" serial NOT NULL,
-	"units_id" integer NOT NULL,
+	"units_id" integer NOT NULL REFERENCES "units" ON DELETE CASCADE,
 	"name" varchar(255) NOT NULL,
 	"description" varchar(255) NOT NULL,
 	"lessonOrder" integer NOT NULL,
