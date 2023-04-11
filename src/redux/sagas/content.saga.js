@@ -29,8 +29,8 @@ function* addContent(action) {
         console.error('error posting content', error)
 
     }
-
 }
+
 
 function* contentSaga() {
     yield takeLatest("ADD_CONTENT", addContent);

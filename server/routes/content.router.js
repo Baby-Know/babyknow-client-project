@@ -25,7 +25,7 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
         INSERT INTO "lessons_content" ("content_id", "lessons_id", "contentOrder")
         VALUES ($1, $2, $3)
         `
-        pool.query(lessonsContentSqlQuery, [createdContentId, req.body.contentOrder.lessonsId, req.body.contentOrder.contentOrder])
+        pool.query(lessonsContentSqlQuery, [createdContentId, req.body.contentOrder.lessons_id, req.body.contentOrder.contentOrder])
         res.sendStatus(200)
     } catch (error) {
         console.error('error posting content', error)

@@ -26,6 +26,9 @@ function AddContentForm({selectedId}) {
 
     const showForm = useSelector((store) => store.conditionalForms?.showContentForm);
 
+    const lessonId = useSelector((store) => store.contentReducer);
+    console.log("lesson id reducer", lessonId)
+
     const [contentToSend, setContentToSend] = useState({
         content: "",
         title: "",
@@ -36,9 +39,10 @@ function AddContentForm({selectedId}) {
 
     const [contentOrder, setContentOrder] = useState({
         contentOrder: "",
-        lessons_id: selectedId,
+        lessons_id: selectedId
     })
     console.log("lesson id passed as prop", selectedId);
+    // console.log('contentOrder payload', contentOrder)
 
     function handleAddContent() {
         dispatch({
@@ -124,9 +128,12 @@ function AddContentForm({selectedId}) {
                                     setContentOrder({
                                         ...contentOrder,
                                         contentOrder: event.target.value,
+                                        
                                     });
+                                    console.log("content order", contentOrder)
                                 }}
                             />
+        
                             <TextField
                                 autoFocus
                                 margin="dense"
@@ -142,7 +149,7 @@ function AddContentForm({selectedId}) {
                                 }}
                             />
                             <FormControlLabel control={<Checkbox />} label="Required" />
-                            <Button variant="outlined" type='submit' value='Submit' >Save</Button>
+                            <Button variant="outlined" type='submit' value='Submit'> Save</Button>
                         </RadioGroup>
                     </FormControl>
                     </form>

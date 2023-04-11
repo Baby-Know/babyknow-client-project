@@ -21,8 +21,6 @@ function UnitPage() {
     const dispatch = useDispatch();
     const unit = useSelector(store => store.unit);
 
-    const [selectedId, setSelectedId] = useState(0);
-
     useEffect(() => {
         dispatch({
             type: "GET_UNIT",
@@ -31,6 +29,7 @@ function UnitPage() {
 
     }, []);
 
+    const [selectedId, setSelectedId] = useState(0);
 
     return (
         <>
@@ -68,24 +67,24 @@ function UnitPage() {
                                 <Typography>
                                     {lesson.description}
                                     <Button onClick={() => {
-                                        setSelectedId(lesson.id);
                                         dispatch({
                                             type: "SET_SHOW_ADD_CONTENT",
                                             payload: true,
                                         });
+                                        setSelectedId(lesson.lessonsId)
                                     }}>
                                         Add Content
                                     </Button>
-                                    
+
                                 </Typography>
                             </AccordionDetails>
                         </Accordion>
-                        
+
                     </div>
                 )
             })}
-            <AddContentForm selectedId={selectedId}/>
-            
+            <AddContentForm selectedId={selectedId} />
+
         </>
     )
 }
