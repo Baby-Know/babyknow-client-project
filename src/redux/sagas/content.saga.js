@@ -31,9 +31,28 @@ function* addContent(action) {
     }
 }
 
+function* uploadVideo(action) {
+    try {
+      const newFile = action.payload.file;
+      const data = new FormData(); // IMPORTANT STEP! declare FormData
+      data.append('file', newFile) 
+      
+      yield console.log('Put it gûd', data);
+      const response = yield axios.put('/api/content/files', data, {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+      });
+      yield put({type: 'SET_VIDEO_UPLOAD', payload: response.data})
+    } catch (error) {
+        console.log('error uploading video', error)
+    }
+}
+
 
 function* contentSaga() {
     yield takeLatest("ADD_CONTENT", addContent);
+    yield takeLatest("UPLOAD_VIDEO", uploadVideo);
     // yield takeLatest("GET_CONTENT", getContent);
 }
 

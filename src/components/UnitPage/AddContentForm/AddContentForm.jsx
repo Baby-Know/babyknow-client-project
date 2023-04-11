@@ -38,8 +38,6 @@ function AddContentForm({selectedId}) {
         contentOrder: "",
         lessons_id: selectedId
     })
-    // console.log("lesson id passed as prop", selectedId);
-    // console.log('contentOrder payload', contentOrder)
 
     function handleAddContent() {
         dispatch({
@@ -48,6 +46,16 @@ function AddContentForm({selectedId}) {
             callback: setContentToSend
         })
     };
+
+    function submitVideo(event) {
+        const selectedFile = event.target.files[0];
+        dispatch({
+          type: 'UPLOAD_VIDEO',
+          payload: {
+            file: selectedFile
+          }
+    })
+};
 
     return (
         <Box>
@@ -74,7 +82,7 @@ function AddContentForm({selectedId}) {
                 </DialogTitle>
                 <DialogContent>
                     
-                    <form onSubmit={handleAddContent} >
+                    <form onSubmit={handleAddContent} encType="multipart/form-data">
                     <FormControl>
                         <FormLabel id="radio-buttons-group-label">Select upload type:</FormLabel>
                         <RadioGroup
@@ -87,20 +95,23 @@ function AddContentForm({selectedId}) {
                             <FormControlLabel value={false} control={<Radio />} label="Video Upload" />
                             <FormControlLabel value={true} control={<Radio />} label="Survey" />
                             </RadioGroup>
-                            <TextField
+                            <form encType="multipart/form-data" onSubmit={submitVideo}>
+                            <input
                                 autoFocus
                                 margin="dense"
-                                fullWidth
                                 type={contentToSend.isSurvey ? "text" : "file"}
-                                label={contentToSend.isSurvey && "Survey Link" }
-                                value={contentToSend.content}
+                                label={contentToSend.isSurvey ? "Survey Link" : contentToSend.content}
+                                value={contentToSend.isSurvey ? contentToSend.content : ""}
                                 onChange={(event) => {
                                     setContentToSend({
                                         ...contentToSend,
-                                        content: event.target.value,
+                                        content: contentToSend.isSurvey ? event.target.value : event.target.files[0]
                                     });
                                 }}
                             />
+                            <Button type='submit' color='secondary'>Upload Video</Button>
+                            </form>
+                            
                             <TextField
                                 autoFocus
                                 margin="dense"
