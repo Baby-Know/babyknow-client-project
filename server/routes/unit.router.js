@@ -26,7 +26,7 @@ router.get("/", rejectUnauthenticated, async (req, res) => {
 router.get("/:id", rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `
-    SELECT "units".name AS "unitsName", "units".subtitle, "lessons".name AS "lessonsName", "lessons".description, "lessonOrder" FROM "units"
+    SELECT "units".name AS "unitsName", "units".subtitle, "lessons".id AS "lessonsId", "lessons".name AS "lessonsName", "lessons".description, "lessonOrder" FROM "units"
     JOIN "lessons" ON "lessons".units_id = "units".id
     WHERE "units".id = $1
     ORDER BY "lessonOrder" ASC
