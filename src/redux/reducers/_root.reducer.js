@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import errors from './errors.reducer';
 import user from './user.reducer';
 import unit from './unit.reducer';
+import contentReducer from './content.reducer';
 import conditionalForms from './conditionalForms';
 import newRegistrantsReducer from './newRegistrants.reducer';
 import studentsReducer from './students.reducer';
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   user, // will have an id and username if someone is logged in
   conditionalForms, // This contains all of the boolean values for conditional forms
   unit,
+  contentReducer,
   studentsReducer, //Contains all users with access level 1, meaning all students
   newRegistrantsReducer,
 });

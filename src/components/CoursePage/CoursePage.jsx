@@ -106,7 +106,7 @@ function CoursePage() {
                   <form>
                       <Card
                         key={unit.id}
-                        sx={{ maxWidth: 320, maxHeight: 1000, justifyContent: 'center' }}
+                        sx={{ maxWidth: 320, maxHeight: 1000, justifyContent: 'center', backgroundColor: 'rgb(245, 245, 245)' }}
                       >
                         <CardContent>
                           <TextField
@@ -151,7 +151,7 @@ function CoursePage() {
                       </Card>
                   </form>
                 ) : (
-                    <Card key={unit.id} sx={{ width: 200, height: 200, textAlign: 'center', justifyContent: 'center'  }}>
+                    <Card key={unit.id} sx={{ width: 200, height: 200, textAlign: 'center', justifyContent: 'center', backgroundColor: 'rgb(245, 245, 245)' }}>
                       <CardContent sx={{ mb: 4 }} onClick={() => selectUnit(unit.id)}>
                         <p style={{ fontWeight: 'bold', fontSize: 18 }} >{unit.name}</p>
                         <p>{unit.subtitle}</p>
