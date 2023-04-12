@@ -1,7 +1,6 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/system";
-import { DataGrid, useGridApi } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../../theme";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -106,10 +105,7 @@ const NewRegistrants = () => {
       registrantToUpdate[field] = value;
       dispatch({
         type: "UPDATE_NEW_REGISTRANT",
-        payload: {
-          id: id,
-          registrantToUpdate: registrantToUpdate,
-        },
+        payload: registrantToUpdate,
       });
     },
     [modifiedNewRegistrants]
