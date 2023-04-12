@@ -20,13 +20,13 @@ import Close from "@mui/icons-material/Close";
 import { useState } from "react";
 
 
-function AddContentForm({selectedId}) {
+function AddContentForm({ selectedId }) {
     const dispatch = useDispatch();
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
     const showForm = useSelector((store) => store.conditionalForms?.showContentForm);
-    // const [file, setFile] = useState(null);
+    const [file, setFile] = useState(null);
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
@@ -41,27 +41,30 @@ function AddContentForm({selectedId}) {
         lessons_id: selectedId
     })
 
-    // useEffect(()=> {
-    //     console.log('File has been set.', file)
-    // }, [file]);
+    useEffect(() => {
+        console.log('File has been set.', file)
+    }, [file]);
 
     function handleAddContent() {
-        dispatch({
-            type: "ADD_CONTENT",
-            payload: {contentToSend, contentOrder},
-            callback: setContentToSend
-        });
-           
-};
+        console.log('in handleAddContent', file)
 
-    function uploadVideo(event) {
-        dispatch({
-            type: 'UPLOAD_VIDEO',
-            payload: {
-              file: event
-            }
-        })  
+        {
+            contentToSend.isSurvey ? dispatch({
+                type: "ADD_CONTENT",
+                payload: { contentToSend, contentOrder },
+                callback: setContentToSend
+            })
+    :
+            // dispatching video content
+            dispatch({
+                type: "ADD_CONTENT_WITH_UPLOAD",
+                payload: { contentToSend, contentOrder },
+                callback: setContentToSend
+            })
+        };
     }
+
+
 
 
     return (
@@ -88,95 +91,165 @@ function AddContentForm({selectedId}) {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    
-                    <form onSubmit={handleAddContent} >
-                    <FormControl>
-                        <FormLabel id="radio-buttons-group-label">Select upload type:</FormLabel>
-                        <RadioGroup
-                            aria-labelledby="radio-buttons-group-label"
-                            defaultValue="video"
-                            name="radio-buttons-group"
-                            value={contentToSend.isSurvey}
-                            onChange={() => {setContentToSend({...contentToSend, isSurvey: !contentToSend.isSurvey})}}
-                        >
-                            <FormControlLabel value={false} control={<Radio />} label="Video Upload" />
-                            <FormControlLabel value={true} control={<Radio />} label="Survey" />
-                            </RadioGroup>
-                            
-                            {/* form to upload video and set file for multer */}
-                            <form encType="multipart/form-data" onSubmit={uploadVideo}>
-                            {!contentToSend.isSurvey && <TextField
-                                autoFocus
-                                margin="dense"
-                                type={contentToSend.isSurvey ? "text" : "file"}
-                                label={contentToSend.isSurvey ? "Survey Link" : ""}
-                                value={contentToSend.isSurvey ? contentToSend.content : ""}
-                                onChange={(event) => {
-                                    setContentToSend({
-                                        ...contentToSend,
-                                        content: contentToSend.isSurvey ? event.target.value : event.target.files[0]
-                                    });
-                                }}
-                            />
-}
-                            {contentToSend.isSurvey ? "" : <Button type='submit' color='secondary'>Upload Video</Button>}
-                            </form>
-                            
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                fullWidth
-                                type="text"
-                                label={contentToSend.isSurvey ? "Survey Title" : "Video Title"}
-                                value={contentToSend.title}
-                                onChange={(event) => {
-                                    setContentToSend({
-                                        ...contentToSend,
-                                        title: event.target.value,
-                                    });
-                                }}
-                            />
 
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                fullWidth
-                                type="number"
-                                label={contentToSend.isSurvey ? "Survey Order" : "Video Order"}
-                                value={contentOrder.contentOrder}
-                                onChange={(event) => {
-                                    setContentOrder({
-                                        ...contentOrder,
-                                        contentOrder: event.target.value,
-                                        
-                                    });
-                                    console.log("content order", contentOrder)
-                                }}
-                            />
-        
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                fullWidth
-                                type="text"
-                                label="Description"
-                                value={contentToSend.description}
-                                onChange={(event) => {
-                                    setContentToSend({
-                                        ...contentToSend,
-                                        description: event.target.value
-                                    });
-                                }}
-                            />
-                            <FormControlLabel control={<Checkbox />} label="Required" 
-                            onChange={() => {setContentToSend({...contentToSend, isRequired: !contentToSend.isRequired})}}/>
-                            <Button variant="outlined" type='submit' value='Submit'> Save</Button>
-                    </FormControl>
+                    <form onSubmit={handleAddContent} >
+                        <FormControl>
+                            <FormLabel id="radio-buttons-group-label">Select upload type:</FormLabel>
+                            <RadioGroup
+                                aria-labelledby="radio-buttons-group-label"
+                                defaultValue="video"
+                                name="radio-buttons-group"
+                                value={contentToSend.isSurvey}
+                                onChange={() => { setContentToSend({ ...contentToSend, isSurvey: !contentToSend.isSurvey }) }}
+                            >
+                                <FormControlLabel value={false} control={<Radio />} label="Video Upload" />
+                                <FormControlLabel value={true} control={<Radio />} label="Survey" />
+                            </RadioGroup>
+
+                            {/* Video Upload */}
+                            {!contentToSend.isSurvey ?
+                                <>
+                                    <input
+                                        autoFocus
+                                        margin="dense"
+                                        type="file"
+                                        onChange={(event) => {
+                                            setFile(event.target.files[0])
+                                            setContentToSend({
+                                                ...contentToSend,
+                                                content: file
+                                            });
+                                            console.log('in onChange', file)
+                                        }}
+                                    />
+
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        fullWidth
+                                        type="text"
+                                        label="Video Title"
+                                        value={contentToSend.title}
+                                        onChange={(event) => {
+                                            setContentToSend({
+                                                ...contentToSend,
+                                                title: event.target.value,
+                                            });
+                                        }}
+                                    />
+
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        fullWidth
+                                        type="number"
+                                        label="Video Order"
+                                        value={contentOrder.contentOrder}
+                                        onChange={(event) => {
+                                            setContentOrder({
+                                                ...contentOrder,
+                                                contentOrder: event.target.value,
+                                            });
+                                        }}
+                                    />
+
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        fullWidth
+                                        type="text"
+                                        label="Description"
+                                        value={contentToSend.description}
+                                        onChange={(event) => {
+                                            setContentToSend({
+                                                ...contentToSend,
+                                                description: event.target.value
+                                            });
+                                        }}
+                                    />
+
+                                    <FormControlLabel control={<Checkbox />} label="Required"
+                                        onChange={() => { setContentToSend({ ...contentToSend, isRequired: !contentToSend.isRequired }) }} />
+                                    <Button variant="outlined" type='submit' value='Submit'> Save</Button>
+
+                                </>
+                                :
+                                <>
+                                    {/* Survey Upload */}
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        type="text"
+                                        label="Survey Link"
+                                        onChange={(event) => {
+                                            setContentToSend({
+                                                ...contentToSend,
+                                                content: event.target.value
+                                            });
+                                        }}>
+
+                                    </TextField>
+
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        fullWidth
+                                        type="text"
+                                        label="Survey Title"
+                                        value={contentToSend.title}
+                                        onChange={(event) => {
+                                            setContentToSend({
+                                                ...contentToSend,
+                                                title: event.target.value,
+                                            });
+                                        }}
+                                    />
+
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        fullWidth
+                                        type="number"
+                                        label="Survey Order"
+                                        value={contentOrder.contentOrder}
+                                        onChange={(event) => {
+                                            setContentOrder({
+                                                ...contentOrder,
+                                                contentOrder: event.target.value,
+
+                                            });
+                                            console.log("content order", contentOrder)
+                                        }}
+                                    />
+
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        fullWidth
+                                        type="text"
+                                        label="Description"
+                                        value={contentToSend.description}
+                                        onChange={(event) => {
+                                            setContentToSend({
+                                                ...contentToSend,
+                                                description: event.target.value
+                                            });
+                                        }}
+                                    />
+                                    <FormControlLabel control={<Checkbox />} label="Required"
+                                        onChange={() => { setContentToSend({ ...contentToSend, isRequired: !contentToSend.isRequired }) }} />
+                                    <Button variant="outlined" type='submit' value='Submit'> Save</Button>
+                                </>
+                            }
+
+                        </FormControl>
                     </form>
+
                 </DialogContent>
             </Dialog>
         </Box>
     );
+
 };
 
 

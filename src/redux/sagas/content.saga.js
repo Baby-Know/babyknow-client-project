@@ -31,7 +31,7 @@ function* addContent(action) {
     }
 }
 
-function* uploadVideo(action) {
+function* addContentWithUpload(action) {
     try {
       const newFile = action.payload.file;
       const data = new FormData(); // IMPORTANT STEP! declare FormData
@@ -52,7 +52,7 @@ function* uploadVideo(action) {
 
 function* contentSaga() {
     yield takeLatest("ADD_CONTENT", addContent);
-    yield takeLatest("UPLOAD_VIDEO", uploadVideo);
+    yield takeLatest("ADD_CONTENT_WITH_UPLOAD", addContentWithUpload);
     // yield takeLatest("GET_CONTENT", getContent);
 }
 

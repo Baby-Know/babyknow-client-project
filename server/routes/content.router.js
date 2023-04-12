@@ -47,16 +47,16 @@ router.get('/:id', async (req, res) => {
 })
 
 // uploading files into AWS
-router.put('/files', rejectUnauthenticated, upload.single('file'), async (req, res) => {
+router.put('/files', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
     console.log('req.file', req.file)
-    console.log(req.body.Location);
+    console.log('req.body.Location', req.body.Location);
     try {
         const results = await s3Upload(req.file);
         console.log('AWS S3 upload success');
         const sqlText = `UPDATE "content" 
         SET "content" = $1 
         WHERE id = $2`
-        pool.query(sqlText, [results.Location, req.user.id]) 
+        pool.query(sqlText, [results.Location, req.body.id]) 
     } catch (err) {
         res.sendStatus(500);
         console.log('AWS S3 upload fail', err);
