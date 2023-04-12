@@ -15,8 +15,10 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
         VALUES ($1, $2, $3, $4, $5)
         RETURNING "id";
         `
+        const params = [req.body.contentToSend.content, req.body.contentToSend.title, req.body.contentToSend.description, req.body.contentToSend.isSurvey, req.body.contentToSend.isRequired]
+        
         //RETURNING 'id' will give us back the id of the created content
-        result = await pool.query(contentSqlQuery, [req.body.contentToSend.content, req.body.contentToSend.title, req.body.contentToSend.description, req.body.contentToSend.isSurvey, req.body.contentToSend.isRequired])
+        result = await pool.query(contentSqlQuery, params)
         createdContentId = result.rows[0].id 
 
         console.log("createdcontentID", createdContentId)
@@ -25,7 +27,7 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
         INSERT INTO "lessons_content" ("content_id", "lessons_id", "contentOrder")
         VALUES ($1, $2, $3)
         `
-        pool.query(lessonsContentSqlQuery, [createdContentId, req.body.contentOrder.lessons_id, req.body.contentOrder.contentOrder])
+        pool.query(lessonsContentSqlQuery, [createdContentId, req.body.selectedId, req.body.contentToSend.contentOrder])
         res.sendStatus(200)
     } catch (error) {
         console.error('error posting content', error)
