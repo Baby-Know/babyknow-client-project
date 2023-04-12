@@ -40,6 +40,8 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
       req.body.organization,
       req.params.id,
     ]);
+
+    res.sendStatus(200);
   } catch (error) {
     res.sendStatus(500);
     console.log("Error updating new registrant :", error);

@@ -1,29 +1,30 @@
-const express = require("express");
-const pool = require("../modules/pool");
+const express = require('express');
+const pool = require('../modules/pool');
 const router = express.Router();
 const {
   rejectUnauthenticated,
-} = require("../modules/authentication-middleware");
+} = require('../modules/authentication-middleware');
 
-const { rejectNonAdmin } = require("../modules/admin-middleware");
+const { rejectNonAdmin } = require('../modules/admin-middleware');
 
 //GET all units
-router.get("/", rejectUnauthenticated, async (req, res) => {
+router.get('/', rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `
     SELECT * FROM "units"
+    ORDER BY "unitOrder" ASC
     `;
     const unitResult = await pool.query(queryText);
     units = unitResult.rows;
     res.send(units);
   } catch (error) {
     res.sendStatus(500);
-    console.log("Error getting unit:", error);
+    console.log('Error getting unit:', error);
   }
 });
 
 //GET specific unit
-router.get("/:id", rejectUnauthenticated, async (req, res) => {
+router.get('/:id', rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `
     SELECT "units".name AS "unitName", "units".subtitle AS "unitSubtitle", 
@@ -36,19 +37,18 @@ router.get("/:id", rejectUnauthenticated, async (req, res) => {
     GROUP BY "units".name, "units".subtitle, "lessons".id, "lessons".name, "lessons".description, "lessonOrder"
     ORDER BY "lessonOrder" ASC;
     `;
-    const params = [req.params.id]
+    const params = [req.params.id];
     const unitResult = await pool.query(queryText, params);
     units = unitResult.rows;
     res.send(units);
   } catch (error) {
     res.sendStatus(500);
-    console.log("Error getting unit:", error);
+    console.log('Error getting unit:', error);
   }
 });
 
-
 //POST new unit
-router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const queryText = `
     INSERT INTO "units" ("name", "unitOrder", "subtitle")
@@ -64,11 +64,11 @@ router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     res.sendStatus(201);
   } catch (error) {
     res.sendStatus(500);
-    console.log("Error posting unit :", error);
+    console.log('Error posting unit :', error);
   }
 });
 
-router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.put('/:id', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const queryText = `
     UPDATE "units"
@@ -85,13 +85,13 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
 
     res.sendStatus(200);
   } catch (error) {
-    console.log("Error editing unit :", error);
+    console.log('Error editing unit :', error);
   }
 });
 
 //DELETE new unit
 router.delete(
-  "/:id",
+  '/:id',
   rejectUnauthenticated,
   rejectNonAdmin,
   async (req, res) => {
@@ -105,7 +105,7 @@ router.delete(
       await pool.query(query, params);
       res.sendStatus(200);
     } catch (error) {
-      console.log("Error deleting unit :", error);
+      console.log('Error deleting unit :', error);
       res.sendStatus(500);
     }
   }

@@ -37,6 +37,7 @@ function AddContentForm({selectedId}) {
 
     console.log("lesson id passed as prop", selectedId);
 
+
     function handleAddContent() {
         console.log(selectedId)
         dispatch({
@@ -70,24 +71,26 @@ function AddContentForm({selectedId}) {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <form onSubmit={handleAddContent}>
+                    
+                    <form onSubmit={handleAddContent} >
                     <FormControl>
                         <FormLabel id="radio-buttons-group-label">Select upload type:</FormLabel>
                         <RadioGroup
                             aria-labelledby="radio-buttons-group-label"
                             defaultValue="video"
                             name="radio-buttons-group"
+                            value={contentToSend.isSurvey}
+                            onChange={() => {setContentToSend({...contentToSend, isSurvey: !contentToSend.isSurvey})}}
                         >
-                            <FormControlLabel value={contentToSend.isSurvey} control={<Radio />} label="Video Upload" />
-                            <FormControlLabel value={!contentToSend.isSurvey} control={<Radio />} label="Survey" />
-
-
+                            <FormControlLabel value={false} control={<Radio />} label="Video Upload" />
+                            <FormControlLabel value={true} control={<Radio />} label="Survey" />
+                            </RadioGroup>
                             <TextField
                                 autoFocus
                                 margin="dense"
                                 fullWidth
-                                type="text"
-                                label="Content"
+                                type={contentToSend.isSurvey ? "text" : "file"}
+                                label={contentToSend.isSurvey && "Survey Link" }
                                 value={contentToSend.content}
                                 onChange={(event) => {
                                     setContentToSend({
@@ -101,7 +104,7 @@ function AddContentForm({selectedId}) {
                                 margin="dense"
                                 fullWidth
                                 type="text"
-                                label="Video Title"
+                                label={contentToSend.isSurvey ? "Survey Title" : "Video Title"}
                                 value={contentToSend.title}
                                 onChange={(event) => {
                                     setContentToSend({
@@ -116,7 +119,7 @@ function AddContentForm({selectedId}) {
                                 margin="dense"
                                 fullWidth
                                 type="number"
-                                label="Content Order"
+                                label={contentToSend.isSurvey ? "Survey Order" : "Video Order"}
                                 value={contentToSend.contentOrder}
                                 onChange={(event) => {
                                     setContentToSend({
@@ -132,18 +135,18 @@ function AddContentForm({selectedId}) {
                                 margin="dense"
                                 fullWidth
                                 type="text"
-                                label="Video Description"
+                                label="Description"
                                 value={contentToSend.description}
                                 onChange={(event) => {
                                     setContentToSend({
                                         ...contentToSend,
-                                        description: event.target.value,
+                                        description: event.target.value
                                     });
                                 }}
                             />
-                            <FormControlLabel control={<Checkbox />} label="Required" />
+                            <FormControlLabel control={<Checkbox />} label="Required" 
+                            onChange={() => {setContentToSend({...contentToSend, isRequired: !contentToSend.isRequired})}}/>
                             <Button variant="outlined" type='submit' value='Submit'> Save</Button>
-                        </RadioGroup>
                     </FormControl>
                     </form>
                 </DialogContent>
