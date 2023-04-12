@@ -37,7 +37,7 @@ function* uploadVideo(action) {
       const data = new FormData(); // IMPORTANT STEP! declare FormData
       data.append('file', newFile) 
       
-      yield console.log('Put it gûd', data);
+      yield console.log('here is the data!', data);
       const response = yield axios.put('/api/content/files', data, {
         headers: {
             'content-type': 'multipart/form-data'

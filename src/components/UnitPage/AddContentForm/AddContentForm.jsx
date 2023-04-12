@@ -2,6 +2,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import { Box, useTheme } from "@mui/system";
 import { tokens } from "../../../theme";
 import {
@@ -25,6 +26,7 @@ function AddContentForm({selectedId}) {
     const colors = tokens(theme.palette.mode);
 
     const showForm = useSelector((store) => store.conditionalForms?.showContentForm);
+    // const [file, setFile] = useState(null);
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
@@ -39,23 +41,28 @@ function AddContentForm({selectedId}) {
         lessons_id: selectedId
     })
 
+    // useEffect(()=> {
+    //     console.log('File has been set.', file)
+    // }, [file]);
+
     function handleAddContent() {
         dispatch({
             type: "ADD_CONTENT",
             payload: {contentToSend, contentOrder},
             callback: setContentToSend
-        })
-    };
-
-    function submitVideo(event) {
-        const selectedFile = event.target.files[0];
-        dispatch({
-          type: 'UPLOAD_VIDEO',
-          payload: {
-            file: selectedFile
-          }
-    })
+        });
+           
 };
+
+    function uploadVideo(event) {
+        dispatch({
+            type: 'UPLOAD_VIDEO',
+            payload: {
+              file: event
+            }
+        })  
+    }
+
 
     return (
         <Box>
@@ -82,7 +89,7 @@ function AddContentForm({selectedId}) {
                 </DialogTitle>
                 <DialogContent>
                     
-                    <form onSubmit={handleAddContent} encType="multipart/form-data">
+                    <form onSubmit={handleAddContent} >
                     <FormControl>
                         <FormLabel id="radio-buttons-group-label">Select upload type:</FormLabel>
                         <RadioGroup
@@ -95,12 +102,14 @@ function AddContentForm({selectedId}) {
                             <FormControlLabel value={false} control={<Radio />} label="Video Upload" />
                             <FormControlLabel value={true} control={<Radio />} label="Survey" />
                             </RadioGroup>
-                            <form encType="multipart/form-data" onSubmit={submitVideo}>
-                            <input
+                            
+                            {/* form to upload video and set file for multer */}
+                            <form encType="multipart/form-data" onSubmit={uploadVideo}>
+                            {!contentToSend.isSurvey && <TextField
                                 autoFocus
                                 margin="dense"
                                 type={contentToSend.isSurvey ? "text" : "file"}
-                                label={contentToSend.isSurvey ? "Survey Link" : contentToSend.content}
+                                label={contentToSend.isSurvey ? "Survey Link" : ""}
                                 value={contentToSend.isSurvey ? contentToSend.content : ""}
                                 onChange={(event) => {
                                     setContentToSend({
@@ -109,7 +118,8 @@ function AddContentForm({selectedId}) {
                                     });
                                 }}
                             />
-                            <Button type='submit' color='secondary'>Upload Video</Button>
+}
+                            {contentToSend.isSurvey ? "" : <Button type='submit' color='secondary'>Upload Video</Button>}
                             </form>
                             
                             <TextField
