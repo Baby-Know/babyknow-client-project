@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom"
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
 import {
     Box,
     Button,
@@ -50,8 +49,8 @@ function UnitPage() {
                     <div key={i}>
                         {i === 0 ?
                             <Card id='unitHeader'>
-                                <h1 style={{ fontWeight: 'bold', fontSize: 24, textDecoration: 'underline' }} >{lesson.unitsName}</h1>
-                                <h2>{lesson.subtitle}</h2>
+                                <h1 style={{ fontWeight: 'bold', fontSize: 24, textDecoration: 'underline' }} >{lesson.unitName}</h1>
+                                <h2>{lesson.unitSubtitle}</h2>
                             </Card>
                             : <></>}
                         <Accordion id="accordian">
@@ -60,22 +59,39 @@ function UnitPage() {
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
                             >
-                                <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>{lesson.lessonsName}</Typography>
+                                <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>{lesson.lessonName}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
+
                                 <Typography>
-                                    {lesson.description}
-                                    <Button onClick={() => {
+                                    {lesson.lessonDescription}
+                                </Typography>
+
+                                {unit[i].contentOrder?.map((order, index) => {
+                                    return (
+                                    <div key={index}>
+                                        <Typography>
+                                            {unit[i].contentTitle[index]}
+                                        </Typography>
+
+                                        <Typography>
+                                            {unit[i].contentDescription[index]}
+                                        </Typography>
+                                    </ div>
+                                    )
+
+                                })}
+
+                                <Button onClick={() => {
                                         dispatch({
                                             type: "SET_SHOW_ADD_CONTENT",
                                             payload: true,
                                         });
-                                        setSelectedId(lesson.lessonsId)
+                                        console.log(lesson.lessonId)
+                                        setSelectedId(lesson.lessonId)
                                     }}>
                                         Add Content
-                                    </Button>
-
-                                </Typography>
+                                </Button>
                             </AccordionDetails>
                         </Accordion>
 
