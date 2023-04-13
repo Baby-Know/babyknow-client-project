@@ -47,7 +47,7 @@ function AddContentForm({ selectedId }) {
 
     function handleAddContent() {
         console.log('in handleAddContent', file)
-
+        //dispatching survey content
         {
             contentToSend.isSurvey ? dispatch({
                 type: "ADD_CONTENT",
@@ -114,7 +114,7 @@ function AddContentForm({ selectedId }) {
                                         margin="dense"
                                         type="file"
                                         onChange={(event) => {
-                                            setFile(event.target.files[0])
+                                            setFile(event.target.files[0]);
                                             setContentToSend({
                                                 ...contentToSend,
                                                 content: file

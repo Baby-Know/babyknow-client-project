@@ -49,6 +49,7 @@ router.get('/:id', async (req, res) => {
 // uploading files into AWS
 router.put('/files', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
     console.log('req.file', req.file)
+    console.log('req.body', req.body)
     console.log('req.body.Location', req.body.Location);
     try {
         const results = await s3Upload(req.file);
