@@ -26,7 +26,7 @@ function AddContentForm({ selectedId }) {
     const colors = tokens(theme.palette.mode);
 
     const showForm = useSelector((store) => store.conditionalForms?.showContentForm);
-    const [file, setFile] = useState(null);
+    // const [file, setFile] = useState(null);
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
@@ -41,12 +41,12 @@ function AddContentForm({ selectedId }) {
         lessons_id: selectedId
     })
 
-    useEffect(() => {
-        console.log('File has been set.', file)
-    }, [file]);
+    // useEffect(() => {
+    //     console.log('File has been set.', file)
+    // }, [file]);
 
     function handleAddContent() {
-        console.log('in handleAddContent', file)
+        console.log('in handleAddContent', contentToSend)
         //dispatching survey content
         {
             contentToSend.isSurvey ? 
@@ -115,12 +115,11 @@ function AddContentForm({ selectedId }) {
                                         margin="dense"
                                         type="file"
                                         onChange={(event) => {
-                                            setFile(event.target.files[0]);
                                             setContentToSend({
                                                 ...contentToSend,
-                                                content: file
+                                                content: event.target.files[0]
                                             });
-                                            console.log('in onChange', file)
+                                            console.log('in onChange', event.target.files[0])
                                         }}
                                     />
 

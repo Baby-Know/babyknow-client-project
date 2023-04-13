@@ -12,6 +12,7 @@ import withReactContent from "sweetalert2-react-content";
 //     }
 // }
 
+// survey upload generator function
 function* addContent(action) {
     try {
         yield axios.post('/api/content', action.payload);
@@ -31,18 +32,28 @@ function* addContent(action) {
     }
 }
 
+// video upload generator function
 function* addContentWithUpload(action) {
     try {
-      const newFile = action.payload.file;
+    console.log('action.payload.contentToSend.content', action.payload.contentToSend.content)
+    console.log('action.payload', action.payload.contentToSend)
+
+      const newFile = action.payload.contentToSend.content;
       const data = new FormData(); // IMPORTANT STEP! declare FormData
       data.append('file', newFile) 
-      
+      data.append('title', action.payload.contentToSend.title)
+      data.append('description', action.payload.contentToSend.description)
+      data.append('isSurvey', action.payload.contentToSend.isSurvey)
+      data.append('isRequired', action.payload.contentToSend.isRequired)
+      data.append('contentOrder', action.payload.contentOrder.contentOrder)
+
+      //posting to AWS
       yield console.log('here is the data!', data);
-      const response = yield axios.put('/api/content/files', data, {
+      const response = yield axios.post('/api/content', data, {
         headers: {
             'content-type': 'multipart/form-data'
         }
-      });
+      });   
       yield put({type: 'SET_VIDEO_UPLOAD', payload: response.data})
     } catch (error) {
         console.log('error uploading video', error)

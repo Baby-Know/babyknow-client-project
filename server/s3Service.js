@@ -1,7 +1,7 @@
 const { S3 } = require("aws-sdk");
 const uuid = require('uuid').v4
 
-
+// this file is uploading the files passed through from the content.saga
 exports.s3Upload = async (files) => {
     const s3 = new S3()
 
