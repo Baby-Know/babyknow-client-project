@@ -12,7 +12,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 
-const NewRegistrants = () => {
+const Students = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -30,8 +30,6 @@ const NewRegistrants = () => {
     units: [],
   });
 
-  const [selectDataPerStudent, setSelectDataPerStudent] = useState([]);
-
   //Fetch new registrants on page load
   useEffect(() => {
     dispatch({
@@ -42,18 +40,6 @@ const NewRegistrants = () => {
   // Set the new copy of the registrants as the state
   useEffect(() => {
     setModifiedStudentData(studentsData);
-
-    const selectNewData = studentsData?.students?.map((student) => {
-      return {
-        id: student.id,
-        units: studentsData?.units?.reduce((data, unit) => {
-          //   const isPartOf = student.userUnits.some((u) => u.name === unit.name);
-          data[unit.id] = unit.name;
-          return data;
-        }, {}),
-      };
-    });
-    setSelectDataPerStudent(selectNewData);
   }, [studentsData]);
 
   //Function for handling deleting a row
@@ -70,27 +56,31 @@ const NewRegistrants = () => {
   //of the modifiedStudentData object
   const handleSelectChange = useCallback(
     (cellValues) => {
-      const value = cellValues.value;
-      setModifiedStudentData((prevStudents) =>
-        prevStudents.students.map((student) =>
-          student.id === cellValues.cellValues.id
-            ? { ...student, access: value }
-            : student
-        )
-      );
+      const { field, value, id } = cellValues;
+      setModifiedStudentData((prevStudentData) => {
+        return {
+          ...prevStudentData,
+          students: prevStudentData.students.map((student) =>
+            student.id === id ? { ...student, [field]: value } : student
+          ),
+        };
+      });
     },
     [modifiedStudentData]
   );
 
   function handleEditSelect(cellValues) {
-    const { id, field, value } = cellValues;
+    const { field, value, id } = cellValues;
     const studentToUpdate = cellValues.row;
 
-    setModifiedStudentData((prevStudents) =>
-      prevStudents.map((student) =>
-        student.id === cellValues.id ? { ...student, [field]: value } : student
-      )
-    );
+    setModifiedStudentData((prevStudentData) => {
+      return {
+        ...prevStudentData,
+        students: prevStudentData.students.map((student) =>
+          student.id === id ? { ...student, [field]: value } : student
+        ),
+      };
+    });
 
     dispatch({
       type: "UPDATE_STUDENT",
@@ -99,21 +89,25 @@ const NewRegistrants = () => {
   }
 
   //Change the value of the item in the modifiedRegistrants array
-  const handleEditCellChange = useCallback((params) => {
-    const { id, field, value } = params;
-    setModifiedStudentData((prevStudents) =>
-      prevStudents.students.map((student) =>
-        student.id === id ? { ...student, [field]: value } : student
-      )
-    );
+  const handleEditCellChange = useCallback((cellValues) => {
+    const { id, field, value } = cellValues;
+    //Resetting the students array with the updated student
+    setModifiedStudentData((prevStudentData) => {
+      return {
+        ...prevStudentData,
+        students: prevStudentData.students.map((student) =>
+          student.id === id ? { ...student, [field]: value } : student
+        ),
+      };
+    });
   }, []);
 
   //Handle sending the modified student to update to the database
   const handleEditCell = useCallback(
-    (params) => {
-      const { id, field, value } = params;
-      const studentToUpdate = modifiedStudentData.find(
-        (item) => item.id === id
+    (cellValues) => {
+      const { id, field, value } = cellValues;
+      const studentToUpdate = modifiedStudentData.students.find(
+        (student) => student.id === id
       );
       studentToUpdate[field] = value;
       dispatch({
@@ -124,7 +118,44 @@ const NewRegistrants = () => {
     [modifiedStudentData]
   );
 
-  function handleEditUnitChange() {}
+  const handleEditUnitChange = useCallback(
+    (cellValues, value) => {
+      const { id } = cellValues;
+      let studentUnits = [];
+
+      //Find the id of the units that have been changed
+      value.map((unit) => {
+        let matchingUnit = modifiedStudentData.units.find(
+          (availableUnit) => unit === availableUnit.name
+        );
+        studentUnits.push(matchingUnit);
+      });
+
+      //Find the student that has updated units
+      let studentToModify = modifiedStudentData.students.find(
+        (student) => student.id === id
+      );
+
+      //Add the units to the student
+      studentToModify = {
+        ...studentToModify,
+        userUnits: studentUnits,
+      };
+
+      //Resetting the students array with the updated student
+      setModifiedStudentData((prevStudentData) => {
+        return {
+          ...prevStudentData,
+          students: prevStudentData.students.map((student) =>
+            student.id === id
+              ? { ...student, userUnits: studentUnits }
+              : student
+          ),
+        };
+      });
+    },
+    [modifiedStudentData]
+  );
 
   //For every row this grabs the value from the key to put into the "headerName" column
   const columns = [
@@ -200,19 +231,24 @@ const NewRegistrants = () => {
       headerName: "Units",
       editable: false,
       renderCell: (cellValues) => {
-        const [selectedOptions, setSelectedOptions] = useState([]);
-        let studentObject = selectDataPerStudent?.find(
-          (student) => student.id === cellValues.id
-        );
+        //Finding specific student
+        let studentObject = modifiedStudentData.students.find((student) => {
+          return student.id === cellValues.id;
+        });
+
+        //Convert students current units keys to an array
+        const studentUnitsIdArr = Object.keys(studentObject.userUnits);
+
+        //Mapping over student's current unit's keys (mapping over units object)
+        let initialSelected = studentUnitsIdArr?.map((unitId) => {
+          return studentObject?.userUnits[unitId].name;
+        });
+
+        const [selectedOptions, setSelectedOptions] = useState(initialSelected);
+
         const handleChange = (event) => {
           setSelectedOptions(event.target.value);
         };
-
-        const studentUnitsIdArr = Object.keys(studentObject.units);
-
-        // studentUnitsIdArr?.map((unitId) => {
-        //   setSelectedOptions([...selectedOptions, studentObject.units[unitId]]);
-        // });
 
         return (
           <>
@@ -220,17 +256,15 @@ const NewRegistrants = () => {
               variant="standard"
               multiple
               value={selectedOptions}
-              input={<Input />}
+              //   input={<Input />}
               renderValue={(selected) => selected.join(", ")}
               onChange={(event) => {
                 setIsEditing(cellValues.id);
-                handleEditUnitChange(cellValues);
+                handleEditUnitChange(cellValues, event.target.value);
                 handleChange(event);
               }}
-              onClick={() => {
-                console.log("STUDENT OBJECT", studentObject.units);
-              }}
             >
+              {/* Mapping over available units and checking if the user is signed up for them */}
               {modifiedStudentData?.units?.map((unit, i) => {
                 return (
                   <MenuItem key={unit.id} value={unit.name}>
@@ -342,7 +376,7 @@ const NewRegistrants = () => {
       </Box>
       <button
         onClick={() => {
-          console.log(modifiedStudentData);
+          console.log(modifiedStudentData.students);
         }}
       >
         clll
@@ -351,4 +385,4 @@ const NewRegistrants = () => {
   );
 };
 
-export default NewRegistrants;
+export default Students;
