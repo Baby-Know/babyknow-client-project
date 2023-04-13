@@ -40,7 +40,7 @@ function UnitPage() {
         });
     };
 
-    console.log(unit);
+    console.log('unitunitunit', unit);
 
     return (
         <Box sx={{

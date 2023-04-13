@@ -23,7 +23,7 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
   }
 });
 
-//GET lessons and content from a specific unit 
+//GET lessons and content from a specific unit
 router.get('/:id', rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `

@@ -26,15 +26,9 @@ function ContentPage({ lessonBreadCrumb }) {
         <>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/">
-                    MUI
+                    {lessonBreadCrumb.unitName}
                 </Link>
-                <Link
-                    underline="hover"
-                    color="inherit"
-                    href="/material-ui/getting-started/installation/"
-                >
-                    {lessonBreadCrumb.lessonName}
-                </Link>
+                <Typography color="text.primary">{lessonBreadCrumb.lessonName}</Typography>
                 <Typography color="text.primary">{content?.title}</Typography>
             </Breadcrumbs>
             <Card id='contentHeader'>
