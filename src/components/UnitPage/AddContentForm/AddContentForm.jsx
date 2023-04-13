@@ -49,7 +49,8 @@ function AddContentForm({ selectedId }) {
         console.log('in handleAddContent', file)
         //dispatching survey content
         {
-            contentToSend.isSurvey ? dispatch({
+            contentToSend.isSurvey ? 
+            dispatch({
                 type: "ADD_CONTENT",
                 payload: { contentToSend, contentOrder },
                 callback: setContentToSend

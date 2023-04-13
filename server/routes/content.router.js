@@ -9,6 +9,7 @@ const aws = require('aws-sdk');
 const secretAccessKey = process.env.AWS_ACCESS_SECRET
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID
 const region = process.env.AWS_REGION
+const bucket = process.env.BUCKET_NAME
 
 const s3 = new aws.S3({
     region,
@@ -32,7 +33,8 @@ const upload = multer({ storage, fileFilter });
 
 // get video upload by content id
 router.get('/:id', async (req, res) => {
-    const contentId = req.params.userId;
+    console.log('content router get by id', req.params);
+    const contentId = req.params.contentId;
     const sqlValue = [contentId]
     const sqlText = `
     SELECT "content" from "content" 
