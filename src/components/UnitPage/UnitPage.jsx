@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -19,27 +19,34 @@ import { useTheme } from "@emotion/react";
 function UnitPage() {
     const { id } = useParams();
     const dispatch = useDispatch();
+    const history = useHistory();
     const unit = useSelector(store => store.unit);
     const theme = useTheme();
     const colors = tokens(theme.palette.mode)
+    const [selectedId, setSelectedId] = useState(0);
 
     useEffect(() => {
         dispatch({
             type: "GET_UNIT",
             payload: id
         });
-
     }, []);
 
-    const [selectedId, setSelectedId] = useState(0);
+    const selectContent = (id) => {
+        history.push(`/content/${id}`)
+    }
+
+    console.log(unit)
 
     return (
         <Box sx={{ 
             "& .MuiButton-sizeMedium": {
-            backgroundColor: colors.tealAccent[500],
+            backgroundColor: colors.darkTealAccent[400],
+            color: 'white'
             },
             "& .MuiButton-sizeMedium:hover": {
-            backgroundColor: colors.tealAccent[700],
+            backgroundColor: colors.darkTealAccent[600],
+            color: 'white'
             }}}>
 
             <AddLessonForm id={id} />
@@ -67,14 +74,14 @@ function UnitPage() {
                                     {lesson.lessonDescription}
                                 </Typography>
 
-                                {unit[i].contentOrder?.map((order, index) => {
+                                {unit[i].contentId?.map((id, index) => {
                                     return (
-                                    <div key={index}>
-                                        <Typography>
+                                    <div id='content' onClick={() => selectContent(id)} key={index}>
+                                        <Typography id='contentTitle'>
                                             {unit[i].contentTitle[index]}
                                         </Typography>
 
-                                        <Typography>
+                                        <Typography id='contentDescription'>
                                             {unit[i].contentDescription[index]}
                                         </Typography>
                                     </ div>
@@ -82,7 +89,7 @@ function UnitPage() {
 
                                 })}
 
-                                <Button onClick={() => {
+                                {lesson.lessonName ? <Button onClick={() => {
                                         dispatch({
                                             type: "SET_SHOW_ADD_CONTENT",
                                             payload: true,
@@ -90,8 +97,8 @@ function UnitPage() {
                                         console.log(lesson.lessonId)
                                         setSelectedId(lesson.lessonId)
                                     }}>
-                                        Add Content
-                                </Button>
+                                        Add Content to {lesson.lessonName}
+                                </Button> : <></>}
                             </AccordionDetails>
                         </Accordion>
 
