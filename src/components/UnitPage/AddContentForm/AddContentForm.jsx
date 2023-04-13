@@ -28,23 +28,21 @@ function AddContentForm({selectedId}) {
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
+        contentOrder: "",
         title: "",
         description: "",
         isSurvey: false,
         isRequired: false,
     });
 
-    const [contentOrder, setContentOrder] = useState({
-        contentOrder: "",
-        lessons_id: selectedId
-    })
-    // console.log("lesson id passed as prop", selectedId);
-    // console.log('contentOrder payload', contentOrder)
+    console.log("lesson id passed as prop", selectedId);
+
 
     function handleAddContent() {
+        console.log(selectedId)
         dispatch({
             type: "ADD_CONTENT",
-            payload: {contentToSend, contentOrder},
+            payload: {contentToSend, selectedId},
             callback: setContentToSend
         })
     };
@@ -122,14 +120,13 @@ function AddContentForm({selectedId}) {
                                 fullWidth
                                 type="number"
                                 label={contentToSend.isSurvey ? "Survey Order" : "Video Order"}
-                                value={contentOrder.contentOrder}
+                                value={contentToSend.contentOrder}
                                 onChange={(event) => {
-                                    setContentOrder({
-                                        ...contentOrder,
+                                    setContentToSend({
+                                        ...contentToSend,
                                         contentOrder: event.target.value,
                                         
                                     });
-                                    console.log("content order", contentOrder)
                                 }}
                             />
         
