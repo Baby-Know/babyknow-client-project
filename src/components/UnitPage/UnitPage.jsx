@@ -1,4 +1,4 @@
-import { useParams, useHistory } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddLessonForm from './AddLessonForm/AddLessonForm';
-import AddContentForm from './AddContentForm/AddContentForm'
+import AddContentForm from './AddContentForm/AddContentForm';
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 
@@ -22,7 +22,7 @@ function UnitPage() {
     const history = useHistory();
     const unit = useSelector(store => store.unit);
     const theme = useTheme();
-    const colors = tokens(theme.palette.mode)
+    const colors = tokens(theme.palette.mode);
     const [selectedId, setSelectedId] = useState(0);
 
     useEffect(() => {
@@ -32,22 +32,27 @@ function UnitPage() {
         });
     }, []);
 
-    const selectContent = (id) => {
-        history.push(`/content/${id}`)
-    }
+    const selectContent = (id, lessonBreadcrumb) => {
+        console.log('lessonBreadcrumb', lessonBreadcrumb);
+        history.push({
+            pathname: `/content/${id}`,
+            state: { detail: lessonBreadcrumb }
+        });
+    };
 
-    console.log(unit)
+    console.log(unit);
 
     return (
-        <Box sx={{ 
+        <Box sx={{
             "& .MuiButton-sizeMedium": {
-            backgroundColor: colors.darkTealAccent[400],
-            color: 'white'
+                backgroundColor: colors.darkTealAccent[400],
+                color: 'white'
             },
             "& .MuiButton-sizeMedium:hover": {
-            backgroundColor: colors.darkTealAccent[600],
-            color: 'white'
-            }}}>
+                backgroundColor: colors.darkTealAccent[600],
+                color: 'white'
+            }
+        }}>
 
             <AddLessonForm id={id} />
 
@@ -56,7 +61,8 @@ function UnitPage() {
                     <div key={i}>
                         {i === 0 ?
                             <Card id='unitHeader'>
-                                <h1 style={{ fontWeight: 'bold', fontSize: 24, textDecoration: 'underline' }} >{lesson.unitName}</h1>
+                                <h1 style={{ fontWeight: 'bold', fontSize: 24, textDecoration: 'underline' }}
+                                >{lesson.unitName}</h1>
                                 <h2>{lesson.unitSubtitle}</h2>
                             </Card>
                             : <></>}
@@ -76,53 +82,53 @@ function UnitPage() {
 
                                 {unit[i].contentId?.map((id, index) => {
                                     return (
-                                    <div id='content' onClick={() => selectContent(id)} key={index}>
-                                        <Typography id='contentTitle'>
-                                            {unit[i].contentTitle[index]}
-                                        </Typography>
+                                        <div id='content' onClick={() => selectContent(id, lesson)} key={index}>
+                                            <Typography id='contentTitle'>
+                                                {unit[i].contentTitle[index]}
+                                            </Typography>
 
-                                        <Typography id='contentDescription'>
-                                            {unit[i].contentDescription[index]}
-                                        </Typography>
-                                    </ div>
-                                    )
+                                            <Typography id='contentDescription'>
+                                                {unit[i].contentDescription[index]}
+                                            </Typography>
+                                        </ div>
+                                    );
 
                                 })}
 
                                 {lesson.lessonName ? <Button onClick={() => {
-                                        dispatch({
-                                            type: "SET_SHOW_ADD_CONTENT",
-                                            payload: true,
-                                        });
-                                        console.log(lesson.lessonId)
-                                        setSelectedId(lesson.lessonId)
-                                    }}>
-                                        Add Content to {lesson.lessonName}
+                                    dispatch({
+                                        type: "SET_SHOW_ADD_CONTENT",
+                                        payload: true,
+                                    });
+                                    console.log('LESSON', lesson);
+                                    setSelectedId(lesson.lessonId);
+                                }}>
+                                    Add Content to {lesson.lessonName}
                                 </Button> : <></>}
                             </AccordionDetails>
                         </Accordion>
 
                     </div>
-                )
+                );
             })}
             <AddContentForm selectedId={selectedId} />
 
             <div id="addLessonParent">
-            <Button
-            id='addLesson'
-            onClick={() => {
-                dispatch({
-                    type: "SET_SHOW_ADD_LESSON",
-                    payload: true,
-                });
-                }}
-            >
-                Add Lesson
-            </Button>
+                <Button
+                    id='addLesson'
+                    onClick={() => {
+                        dispatch({
+                            type: "SET_SHOW_ADD_LESSON",
+                            payload: true,
+                        });
+                    }}
+                >
+                    Add Lesson
+                </Button>
             </div>
         </Box>
-        
-    )
+
+    );
 }
 
 export default UnitPage;

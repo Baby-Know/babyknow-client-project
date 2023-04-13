@@ -1,15 +1,16 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Card } from "@mui/material";
+import { Card, Typography, Breadcrumbs } from "@mui/material";
 
-function ContentPage () {
+function ContentPage({ lessonBreadCrumb }) {
     const { id } = useParams();
     const dispatch = useDispatch();
-    const contentArray = useSelector(store => store.contentReducer)
-    const content = contentArray[0]
+    const location = useLocation();
+    const contentArray = useSelector(store => store.contentReducer);
+    const content = contentArray[0];
 
-    console.log(content)
+    console.log(content);
 
     useEffect(() => {
         dispatch({
@@ -18,17 +19,36 @@ function ContentPage () {
         });
     }, []);
 
-    return(
-        <Card id='contentHeader'>
-                {content ? 
+    lessonBreadCrumb = location.state.detail;
+    console.log('Content lessonBreadCrumb', lessonBreadCrumb);
+
+    return (
+        <>
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="/">
+                    MUI
+                </Link>
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    href="/material-ui/getting-started/installation/"
+                >
+                    {lessonBreadCrumb.lessonName}
+                </Link>
+                <Typography color="text.primary">{content?.title}</Typography>
+            </Breadcrumbs>
+            <Card id='contentHeader'>
+                {content ?
                     <>
                         <h1>{content.title}</h1>
-                        <h2>{content.description}</h2> 
+                        <h2>{content.description}</h2>
                     </> :
                     <></>
                 }
-        </Card>
-    )
+            </Card>
+        </>
+    );
+
 }
 
-export default ContentPage
+export default ContentPage;
