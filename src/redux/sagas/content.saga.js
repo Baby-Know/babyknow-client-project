@@ -2,6 +2,7 @@ import axios from "axios";
 import { takeLatest, put } from "redux-saga/effects";
 
 
+// survey upload generator function
 function* addContent(action) {
     try {
         yield axios.post('/api/content', action.payload);
@@ -12,6 +13,33 @@ function* addContent(action) {
     }
 }
 
+// video upload generator function
+function* addContentWithUpload(action) {
+    try {
+    console.log('action.payload', action.payload)
+
+      const newFile = action.payload.contentToSend.content;
+      const data = new FormData(); // IMPORTANT STEP! declare FormData
+      data.append('file', newFile) 
+      data.append('title', action.payload.contentToSend.title)
+      data.append('description', action.payload.contentToSend.description)
+      data.append('isSurvey', action.payload.contentToSend.isSurvey)
+      data.append('isRequired', action.payload.contentToSend.isRequired)
+      data.append('contentOrder', action.payload.contentToSend.contentOrder)
+      data.append('lessons_id', action.payload.selectedId)
+
+      //posting to AWS
+      yield console.log('here is the data!', data);
+      const response = yield axios.post('/api/content/file', data, {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+      });   
+      yield put({type: 'SET_VIDEO_UPLOAD', payload: response.data})
+    } catch (error) {
+        console.log('error uploading video', error)
+    }
+}
 // get content with id
 function* getContent(action) {
     try {
@@ -24,9 +52,9 @@ function* getContent(action) {
   }
   
 
-
 function* contentSaga() {
     yield takeLatest("ADD_CONTENT", addContent);
+    yield takeLatest("ADD_CONTENT_WITH_UPLOAD", addContentWithUpload);
     yield takeLatest("GET_CONTENT", getContent);
 }
 
