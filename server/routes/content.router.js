@@ -4,11 +4,10 @@ const router = express.Router();
 const {
   rejectUnauthenticated,
 } = require("../modules/authentication-middleware");
-
 const { rejectNonAdmin } = require("../modules/admin-middleware");
 
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-    console.log('req.body', req.body)
+    // connect 
     try {
         const contentSqlQuery = `
         INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired")
@@ -34,6 +33,24 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
         res.sendStatus(500);
     }
 })
+
+//GET content
+router.get('/:id', rejectUnauthenticated, async (req, res) => {
+    try {
+      const queryText = `
+        SELECT * FROM "content"
+        WHERE "content".id = $1;
+      `;
+      const params = [ req.params.id ]  
+      const unitResult = await pool.query( queryText, params )
+      content = unitResult.rows;
+      console.log('THIS IS CONTENT', content)
+      res.send(content);
+    } catch (error) {
+      res.sendStatus(500);
+      console.log('Error getting content:', error);
+    }
+  });
 
 
 module.exports = router;
