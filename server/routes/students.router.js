@@ -30,20 +30,20 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
     await Promise.all(
       allStudents.map(async (student) => {
         let studentObject = {
-          studentId: student.id,
+          id: student.id,
           firstName: student.firstName,
           lastName: student.lastName,
           email: student.email,
           cohort: {
-            cohortId: null,
+            id: null,
             name: "",
           },
           teacher: {
-            teacherId: null,
+            id: null,
             firstName: "",
             lastName: "",
           },
-          availableUnits: [],
+          userUnits: [],
         };
 
         const usersCohortsStudentQuery = `
@@ -61,7 +61,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
         studentObject = {
           ...studentObject,
           cohort: {
-            cohortId: usersCohortsStudentResponse.rows[0].cohorts_id,
+            id: usersCohortsStudentResponse.rows[0].cohorts_id,
             name: usersCohortsStudentResponse.rows[0].name,
           },
         };
@@ -81,7 +81,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
         studentObject = {
           ...studentObject,
           teacher: {
-            teacherId: usersCohortsTeacherResponse.rows[0].user_id,
+            id: usersCohortsTeacherResponse.rows[0].user_id,
             firstName: usersCohortsTeacherResponse.rows[0].firstName,
             lastName: usersCohortsTeacherResponse.rows[0].lastName,
           },
@@ -97,7 +97,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
           student.id,
         ]);
 
-        studentObject.availableUnits = usersUnitsResponse.rows;
+        studentObject.userUnits = usersUnitsResponse.rows;
 
         studentData.students.push(studentObject);
       })

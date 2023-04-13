@@ -1,35 +1,36 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/system";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../theme";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckIcon from "@mui/icons-material/Check";
-import { Select, MenuItem, Tooltip } from "@mui/material";
+import { Select, MenuItem, Tooltip, Input } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+import ListItemText from "@mui/material/ListItemText";
+import Checkbox from "@mui/material/Checkbox";
 
 const NewRegistrants = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const students = useSelector((store) => store.studentsReducer);
+  const studentsData = useSelector((store) => store.studentsReducer);
 
   //Variable stating whether a row is being edited or not
   const [isEditing, setIsEditing] = useState(null);
 
-  const accessOptions = [
-    { value: 0, label: "New" },
-    { value: 1, label: "Student" },
-    { value: 2, label: "Teacher" },
-    { value: 3, label: "Admin" },
-  ];
+  // New state variable to hold the modified students list
+  const [modifiedStudentData, setModifiedStudentData] = useState({
+    students: [],
+    teachers: [],
+    cohorts: [],
+    units: [],
+  });
 
-  // New state variable to hold the modified newRegistrants list
-  const [modifiedStudents, setModifiedStudents] = useState({});
+  const [selectDataPerStudent, setSelectDataPerStudent] = useState([]);
 
   //Fetch new registrants on page load
   useEffect(() => {
@@ -40,10 +41,20 @@ const NewRegistrants = () => {
 
   // Set the new copy of the registrants as the state
   useEffect(() => {
-    setModifiedStudents(students);
+    setModifiedStudentData(studentsData);
 
-    console.log(students);
-  }, [students]);
+    const selectNewData = studentsData?.students?.map((student) => {
+      return {
+        id: student.id,
+        units: studentsData?.units?.reduce((data, unit) => {
+          //   const isPartOf = student.userUnits.some((u) => u.name === unit.name);
+          data[unit.id] = unit.name;
+          return data;
+        }, {}),
+      };
+    });
+    setSelectDataPerStudent(selectNewData);
+  }, [studentsData]);
 
   //Function for handling deleting a row
   function handleDelete(event, cellValues) {
@@ -55,26 +66,27 @@ const NewRegistrants = () => {
     });
   }
 
-  //Handle changing the value of the access select in the modifiedRegistrants array
-  const handleSelectAccessChange = useCallback(
+  //Handle changing the value of the select option in the students array
+  //of the modifiedStudentData object
+  const handleSelectChange = useCallback(
     (cellValues) => {
       const value = cellValues.value;
-      setModifiedStudents((prevStudents) =>
-        prevStudents.map((student) =>
+      setModifiedStudentData((prevStudents) =>
+        prevStudents.students.map((student) =>
           student.id === cellValues.cellValues.id
             ? { ...student, access: value }
             : student
         )
       );
     },
-    [modifiedStudents]
+    [modifiedStudentData]
   );
 
-  function handleEditSelectAccess(cellValues) {
+  function handleEditSelect(cellValues) {
     const { id, field, value } = cellValues;
     const studentToUpdate = cellValues.row;
 
-    setModifiedStudents((prevStudents) =>
+    setModifiedStudentData((prevStudents) =>
       prevStudents.map((student) =>
         student.id === cellValues.id ? { ...student, [field]: value } : student
       )
@@ -89,26 +101,31 @@ const NewRegistrants = () => {
   //Change the value of the item in the modifiedRegistrants array
   const handleEditCellChange = useCallback((params) => {
     const { id, field, value } = params;
-    setModifiedStudents((prevStudents) =>
-      prevStudents.map((student) =>
+    setModifiedStudentData((prevStudents) =>
+      prevStudents.students.map((student) =>
         student.id === id ? { ...student, [field]: value } : student
       )
     );
   }, []);
 
-  //Handle sending the newRegistrants to update to the database
+  //Handle sending the modified student to update to the database
   const handleEditCell = useCallback(
     (params) => {
       const { id, field, value } = params;
-      const studentToUpdate = modifiedStudents.find((item) => item.id === id);
+      const studentToUpdate = modifiedStudentData.find(
+        (item) => item.id === id
+      );
       studentToUpdate[field] = value;
       dispatch({
         type: "UPDATE_STUDENT",
         payload: studentToUpdate,
       });
     },
-    [modifiedStudents]
+    [modifiedStudentData]
   );
+
+  function handleEditUnitChange() {}
+
   //For every row this grabs the value from the key to put into the "headerName" column
   const columns = [
     {
@@ -131,34 +148,103 @@ const NewRegistrants = () => {
       editable: true,
     },
     {
-      field: "organization",
-      headerName: "Organization",
-      flex: 1,
-      editable: true,
-    },
-    {
-      field: "access",
-      headerName: "Roles",
+      field: "cohort.id",
+      headerName: "Cohort",
       editable: false,
       renderCell: (cellValues) => (
         <Select
           variant="standard"
-          value={cellValues.row.access}
+          value={cellValues.row.cohort.id}
           onChange={(event) => {
             setIsEditing(cellValues.id);
-            handleSelectAccessChange({
+            handleEditSelect({
               cellValues: cellValues,
               value: event.target.value,
             });
           }}
         >
-          {accessOptions.map((option, i) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
+          {modifiedStudentData.cohorts.map((option, i) => (
+            <MenuItem key={i} value={option.id}>
+              {option.name}
             </MenuItem>
           ))}
         </Select>
       ),
+    },
+    {
+      field: "teacher.id",
+      headerName: "Teacher",
+      editable: false,
+      renderCell: (cellValues) => (
+        <Select
+          variant="standard"
+          value={cellValues.row.teacher.id}
+          onChange={(event) => {
+            setIsEditing(cellValues.id);
+            handleSelectChange({
+              cellValues: cellValues,
+              value: event.target.value,
+            });
+          }}
+        >
+          {modifiedStudentData.teachers.map((teacher, i) => (
+            <MenuItem key={i} value={teacher.id}>
+              {teacher.firstName} {teacher.lastName}
+            </MenuItem>
+          ))}
+        </Select>
+      ),
+    },
+    {
+      field: "units",
+      headerName: "Units",
+      editable: false,
+      renderCell: (cellValues) => {
+        const [selectedOptions, setSelectedOptions] = useState([]);
+        let studentObject = selectDataPerStudent?.find(
+          (student) => student.id === cellValues.id
+        );
+        const handleChange = (event) => {
+          setSelectedOptions(event.target.value);
+        };
+
+        const studentUnitsIdArr = Object.keys(studentObject.units);
+
+        // studentUnitsIdArr?.map((unitId) => {
+        //   setSelectedOptions([...selectedOptions, studentObject.units[unitId]]);
+        // });
+
+        return (
+          <>
+            <Select
+              variant="standard"
+              multiple
+              value={selectedOptions}
+              input={<Input />}
+              renderValue={(selected) => selected.join(", ")}
+              onChange={(event) => {
+                setIsEditing(cellValues.id);
+                handleEditUnitChange(cellValues);
+                handleChange(event);
+              }}
+              onClick={() => {
+                console.log("STUDENT OBJECT", studentObject.units);
+              }}
+            >
+              {modifiedStudentData?.units?.map((unit, i) => {
+                return (
+                  <MenuItem key={unit.id} value={unit.name}>
+                    <Checkbox
+                      checked={selectedOptions.indexOf(unit.name) > -1}
+                    />
+                    <ListItemText primary={unit.name} />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </>
+        );
+      },
     },
     {
       field: "actions",
@@ -176,7 +262,7 @@ const NewRegistrants = () => {
                 <Tooltip title="Confirm Edit">
                   <IconButton
                     onClick={() => {
-                      handleEditSelectAccess(cellValues);
+                      handleEditSelect(cellValues);
                       setIsEditing(null);
                     }}
                   >
@@ -188,7 +274,7 @@ const NewRegistrants = () => {
                     onClick={() => {
                       setIsEditing(null);
                       dispatch({
-                        type: "FETCH_NEW_REGISTRANTS",
+                        type: "FETCH_STUDENTS",
                       });
                     }}
                   >
@@ -199,7 +285,7 @@ const NewRegistrants = () => {
             ) : (
               <></>
             )}
-            <Tooltip title="Delete Registrant">
+            <Tooltip title="Delete Student">
               <IconButton
                 onClick={(event) => {
                   handleDelete(event, cellValues);
@@ -242,21 +328,25 @@ const NewRegistrants = () => {
             borderTop: "none",
             backgroundColor: colors.darkTealAccent[800],
           },
-          "& .MuiButton-sizeMedium": {
-            backgroundColor: colors.greenAccent[500],
-          },
-          "& .MuiButton-sizeMedium:hover": {
-            backgroundColor: colors.greenAccent[700],
-          },
         }}
       >
         <DataGrid
-          rows={modifiedStudents}
+          rows={modifiedStudentData.students || []}
           columns={columns}
           onCellEditCommit={handleEditCell}
           onEditCellChange={handleEditCellChange}
+          components={{
+            Toolbar: GridToolbar,
+          }}
         />
       </Box>
+      <button
+        onClick={() => {
+          console.log(modifiedStudentData);
+        }}
+      >
+        clll
+      </button>
     </Box>
   );
 };

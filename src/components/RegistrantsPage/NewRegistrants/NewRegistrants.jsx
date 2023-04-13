@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, useTheme } from "@mui/system";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../theme";
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -243,12 +243,6 @@ const NewRegistrants = () => {
             borderTop: "none",
             backgroundColor: colors.darkTealAccent[800],
           },
-          "& .MuiButton-sizeMedium": {
-            backgroundColor: colors.greenAccent[500],
-          },
-          "& .MuiButton-sizeMedium:hover": {
-            backgroundColor: colors.greenAccent[700],
-          },
         }}
       >
         <DataGrid
@@ -256,6 +250,9 @@ const NewRegistrants = () => {
           columns={columns}
           onCellEditCommit={handleEditCell}
           onEditCellChange={handleEditCellChange}
+          components={{
+            Toolbar: GridToolbar,
+          }}
         />
       </Box>
     </Box>

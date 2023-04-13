@@ -3,7 +3,7 @@ import { put, takeLatest } from "redux-saga/effects";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-function* getStudents() {
+function* fetchStudents() {
   try {
     let response = yield axios.get("/api/students");
     yield put({ type: "SET_STUDENTS", payload: response.data });
@@ -13,7 +13,7 @@ function* getStudents() {
 }
 
 function* studentsSaga() {
-  yield takeLatest("FETCH_STUDENTS", getStudents);
+  yield takeLatest("FETCH_STUDENTS", fetchStudents);
 }
 
 export default studentsSaga;
