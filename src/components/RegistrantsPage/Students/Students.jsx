@@ -82,6 +82,7 @@ const Students = () => {
       };
     });
 
+    console.log("studentToUpdate:", studentToUpdate);
     dispatch({
       type: "UPDATE_STUDENT",
       payload: studentToUpdate,
@@ -230,6 +231,7 @@ const Students = () => {
       field: "units",
       headerName: "Units",
       editable: false,
+      flex: 1,
       renderCell: (cellValues) => {
         //Finding specific student
         let studentObject = modifiedStudentData.students.find((student) => {
@@ -256,7 +258,7 @@ const Students = () => {
               variant="standard"
               multiple
               value={selectedOptions}
-              //   input={<Input />}
+              input={<Input />}
               renderValue={(selected) => selected.join(", ")}
               onChange={(event) => {
                 setIsEditing(cellValues.id);
@@ -374,13 +376,6 @@ const Students = () => {
           }}
         />
       </Box>
-      <button
-        onClick={() => {
-          console.log(modifiedStudentData.students);
-        }}
-      >
-        clll
-      </button>
     </Box>
   );
 };

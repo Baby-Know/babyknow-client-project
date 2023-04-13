@@ -47,7 +47,7 @@ function* getUnit(action) {
     let response = yield axios.get(`/api/unit/${action.payload}`);
     yield put({ type: "SET_UNIT", payload: response.data });
   } catch (error) {
-    console.error("Error getting unit", error);
+    console.error("Error updating unit", error);
   }
 }
 
