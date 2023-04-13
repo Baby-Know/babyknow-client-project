@@ -83,6 +83,8 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), a
         VALUES ($1, $2, $3, $4, $5)
         RETURNING "id";
         `
+        const params = [req.body.contentToSend.content, req.body.contentToSend.title, req.body.contentToSend.description, req.body.contentToSend.isSurvey, req.body.contentToSend.isRequired]
+        
         //RETURNING 'id' will give us back the id of the created content
         const result = await connect.query(contentSqlQuery, [results.Location, req.body.title, req.body.description, req.body.isSurvey, req.body.isRequired])
         createdContentId = result.rows[0].id 
@@ -93,7 +95,7 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), a
         INSERT INTO "lessons_content" ("content_id", "lessons_id", "contentOrder")
         VALUES ($1, $2, $3)
         `
-        connect.query(lessonsContentSqlQuery, [createdContentId, req.body.contentOrder.lessons_id, req.body.contentOrder.contentOrder])
+        connect.query(lessonsContentSqlQuery, [createdContentId, req.body.selectedId, req.body.contentToSend.contentOrder])
         Promise.all()
         await connect.query('COMMIT')
         res.sendStatus(200)
@@ -105,6 +107,24 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), a
         connect.release();
     }
 })
+
+//GET content
+router.get('/:id', rejectUnauthenticated, async (req, res) => {
+    try {
+      const queryText = `
+        SELECT * FROM "content"
+        WHERE "content".id = $1;
+      `;
+      const params = [ req.params.id ]  
+      const unitResult = await pool.query( queryText, params )
+      content = unitResult.rows;
+      console.log('THIS IS CONTENT', content)
+      res.send(content);
+    } catch (error) {
+      res.sendStatus(500);
+      console.log('Error getting content:', error);
+    }
+  });
 
 
 module.exports = router;

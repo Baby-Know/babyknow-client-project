@@ -30,20 +30,12 @@ function AddContentForm({ selectedId }) {
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
+        contentOrder: "",
         title: "",
         description: "",
         isSurvey: false,
         isRequired: false,
     });
-
-    const [contentOrder, setContentOrder] = useState({
-        contentOrder: "",
-        lessons_id: selectedId
-    })
-
-    // useEffect(() => {
-    //     console.log('File has been set.', file)
-    // }, [file]);
 
     function handleAddContent() {
         console.log('in handleAddContent', contentToSend)
@@ -52,20 +44,18 @@ function AddContentForm({ selectedId }) {
             contentToSend.isSurvey ? 
             dispatch({
                 type: "ADD_CONTENT",
-                payload: { contentToSend, contentOrder },
+                payload: { contentToSend, selectedId },
                 callback: setContentToSend
             })
     :
             // dispatching video content
             dispatch({
                 type: "ADD_CONTENT_WITH_UPLOAD",
-                payload: { contentToSend, contentOrder },
+                payload: { contentToSend, selectedId },
                 callback: setContentToSend
             })
         };
     }
-
-
 
 
     return (
@@ -144,10 +134,10 @@ function AddContentForm({ selectedId }) {
                                         fullWidth
                                         type="number"
                                         label="Video Order"
-                                        value={contentOrder.contentOrder}
+                                        value={contentToSend.contentOrder}
                                         onChange={(event) => {
-                                            setContentOrder({
-                                                ...contentOrder,
+                                            setContentToSend({
+                                                ...contentToSend,
                                                 contentOrder: event.target.value,
                                             });
                                         }}
@@ -211,14 +201,13 @@ function AddContentForm({ selectedId }) {
                                         fullWidth
                                         type="number"
                                         label="Survey Order"
-                                        value={contentOrder.contentOrder}
+                                        value={contentToSend.contentOrder}
                                         onChange={(event) => {
-                                            setContentOrder({
-                                                ...contentOrder,
+                                            setContentToSend({
+                                                ...contentToSend,
                                                 contentOrder: event.target.value,
 
                                             });
-                                            console.log("content order", contentOrder)
                                         }}
                                     />
 
