@@ -16,8 +16,7 @@ function* addContent(action) {
 // video upload generator function
 function* addContentWithUpload(action) {
     try {
-    console.log('action.payload.contentToSend.content', action.payload.contentToSend.content)
-    console.log('action.payload', action.payload.contentToSend)
+    console.log('action.payload', action.payload)
 
       const newFile = action.payload.contentToSend.content;
       const data = new FormData(); // IMPORTANT STEP! declare FormData
@@ -26,11 +25,12 @@ function* addContentWithUpload(action) {
       data.append('description', action.payload.contentToSend.description)
       data.append('isSurvey', action.payload.contentToSend.isSurvey)
       data.append('isRequired', action.payload.contentToSend.isRequired)
-      data.append('contentOrder', action.payload.contentOrder.contentOrder)
+      data.append('contentOrder', action.payload.contentToSend.contentOrder)
+      data.append('lessons_id', action.payload.selectedId)
 
       //posting to AWS
       yield console.log('here is the data!', data);
-      const response = yield axios.post('/api/content', data, {
+      const response = yield axios.post('/api/content/file', data, {
         headers: {
             'content-type': 'multipart/form-data'
         }

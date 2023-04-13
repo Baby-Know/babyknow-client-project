@@ -65,26 +65,59 @@ router.get('/:id', async (req, res) => {
 //     }
 // });
 
+async function awsQuery(req, res){
+   
+}
 
 // posting content from content form
-router.post('/', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
+router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+    // console.log('req.body', req.body)
+    // console.log('req.file', req.file)
+
+    const connect = await pool.connect()
+    try {
+        await connect.query('BEGIN')
+        const contentSqlQuery =  `
+        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired")
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING "id";
+        `
+        //RETURNING 'id' will give us back the id of the created content
+        const result = await connect.query(contentSqlQuery, [req.body.contentToSend.content, req.body.contentToSend.title, req.body.contentToSend.description, req.body.contentToSend.isSurvey, req.body.contentToSend.isRequired])
+        createdContentId = result.rows[0].id 
+
+        console.log("createdcontentID", createdContentId)
+
+        const lessonsContentSqlQuery = `
+        INSERT INTO "lessons_content" ("content_id", "lessons_id", "contentOrder")
+        VALUES ($1, $2, $3)
+        `
+        connect.query(lessonsContentSqlQuery, [createdContentId, req.body.selectedId, req.body.contentToSend.contentOrder])
+        await connect.query('COMMIT')
+        res.sendStatus(200)
+    } catch (error) {
+        await connect.query('ROLLBACK')
+        console.error('error posting content', error)
+        res.sendStatus(500);
+    }
+})
+
+router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
     console.log('req.body', req.body)
     console.log('req.file', req.file)
 
-    const connect = await pool.connect()  
-    try {
-        await connect.query('BEGIN');
+    const connect = await pool.connect()
+    try { 
+        await connect.query('BEGIN')
         const results = await s3Upload(req.file);
         console.log('AWS S3 upload success');
-        console.log('results', results)
+        console.log('results', results) 
 
         const contentSqlQuery =  `
         INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired")
         VALUES ($1, $2, $3, $4, $5)
         RETURNING "id";
         `
-        const params = [req.body.contentToSend.content, req.body.contentToSend.title, req.body.contentToSend.description, req.body.contentToSend.isSurvey, req.body.contentToSend.isRequired]
-        
         //RETURNING 'id' will give us back the id of the created content
         const result = await connect.query(contentSqlQuery, [results.Location, req.body.title, req.body.description, req.body.isSurvey, req.body.isRequired])
         createdContentId = result.rows[0].id 
@@ -95,17 +128,14 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), a
         INSERT INTO "lessons_content" ("content_id", "lessons_id", "contentOrder")
         VALUES ($1, $2, $3)
         `
-        connect.query(lessonsContentSqlQuery, [createdContentId, req.body.selectedId, req.body.contentToSend.contentOrder])
-        Promise.all()
+        connect.query(lessonsContentSqlQuery, [createdContentId, req.body.lessons_id, req.body.contentOrder])
         await connect.query('COMMIT')
         res.sendStatus(200)
     } catch (error) {
         await connect.query('ROLLBACK')
         console.error('error posting content', error)
         res.sendStatus(500);
-    } finally {
-        connect.release();
-    }
+    }  
 })
 
 //GET content
