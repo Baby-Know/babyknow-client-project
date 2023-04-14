@@ -113,7 +113,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
     studentData.teachers = usersTeacherResponse.rows;
 
     const cohortsQuery = `
-    SELECT * FROM "cohorts"
+    SELECT * FROM "cohorts";
     `;
 
     const cohortsResponse = await pool.query(cohortsQuery);
@@ -121,7 +121,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
     studentData.cohorts = cohortsResponse.rows;
 
     const unitsQuery = `
-    SELECT * FROM "units"
+    SELECT * FROM "units";
     `;
     const unitsResponse = await pool.query(unitsQuery);
 
@@ -142,12 +142,13 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
   const email = req.body.email;
   const cohort = req.body.cohort;
   const studentUnits = req.body.studentUnits;
+
   try {
     await connection.query("BEGIN");
     const usersQueryText = `
     UPDATE "users"
     SET "firstName" = $1, "lastName" = $2, "email" = $3
-    WHERE "id" = $4
+    WHERE "id" = $4;
     `;
     await connection.query(usersQueryText, [
       firstName,
@@ -159,14 +160,36 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
     const usersCohortsQueryText = `
     UPDATE "users_cohorts"
     SET "cohorts_id" = $1
-    WHERE "user_id" = $2
+    WHERE "user_id" = $2;
     `;
     await connection.query(usersCohortsQueryText, [cohort.id, studentId]);
 
+    //Query to delete all of the student's previous units
+    const deleteUsersUnitsQueryText = `
+    DELETE FROM "users_units" 
+    WHERE "users_id" = $1;
+    `;
+    await connection.query(deleteUsersUnitsQueryText, [studentId]);
+
+    //Map over the array of the students new unit objects and insert new values
+    await Promise.all(
+      studentUnits.map(async (unit) => {
+        const updateUsersUnitsQueryText = `
+        INSERT INTO "users_units" ("users_id", "units_id")
+        VALUES ($1, $2);
+        `;
+        return await connection.query(updateUsersUnitsQueryText, [
+          studentId,
+          unit.id,
+        ]);
+      })
+    );
+
     await connection.query("COMMIT");
+    res.sendStatus(204);
   } catch (error) {
     await connection.query("ROLLBACK");
-    console.log(`Transaction Error - Rolling back updated student`, error);
+    console.log(`Transaction Error - Rolling back student update`, error);
     res.sendStatus(500);
   } finally {
     connection.release();
