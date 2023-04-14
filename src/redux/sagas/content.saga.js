@@ -39,7 +39,6 @@ function* addContentWithUpload(action) {
 function* getContent(action) {
   try {
     let response = yield axios.get(`/api/content/${action.payload}/view`);
-    console.log('SAGA RESPONSE', response);
     yield put({ type: 'SET_CONTENT', payload: response.data });
   } catch (error) {
     console.error('Error getting content', error);

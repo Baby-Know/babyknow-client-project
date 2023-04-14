@@ -34,15 +34,18 @@ function UnitPage() {
         });
     }, []);
 
-    const selectContent = (id, lessonBreadcrumb) => {
-        console.log('lessonBreadcrumb', lessonBreadcrumb);
+    // const selectedLesson = (unitId, lessonId) => {
+    //     console.log('unitId, lessonId', unitId, lessonId);
+    //     history.push(`/unit/${id}/lesson/${id}`);
+    // };
+
+    const selectContent = (unitId, lessonId, contentId) => {
         history.push({
-            pathname: `/content/${id}`,
-            state: { detail: lessonBreadcrumb }
+            pathname: `/unit/${unitId}/lesson/${lessonId}/content/${contentId}`
         });
     };
 
-    console.log('unitunitunit', unit);
+    // console.log('unitunitunit', unit);
 
     const deleteLesson = (ids) => {
         dispatch({
@@ -88,7 +91,10 @@ function UnitPage() {
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
                             >
-                                <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>{lesson.lessonName}</Typography>
+                                <Typography
+                                    sx={{ fontWeight: 'bold', fontSize: 16 }}
+
+                                >{lesson.lessonName}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
 
@@ -102,7 +108,7 @@ function UnitPage() {
                                         <div key={index}>
                                             {unit[i].contentId[index] === null ? <></> :
                                                 <div id='content'>
-                                                    <div onClick={() => selectContent(id)}>
+                                                    <div onClick={() => selectContent(lesson.unitId, lesson.lessonId, id)}>
                                                         <Typography id='contentTitle'>
                                                             {unit[i].contentTitle[index]}
                                                         </Typography>

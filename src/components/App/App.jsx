@@ -67,7 +67,7 @@ function App() {
                 <ProtectedRoute
                   // logged in shows CoursePage else shows LoginPage
                   exact
-                  path="/content/:id"
+                  path="/unit/:unitId/lesson/:lessonId/content/:contentId"
                 >
                   <ContentPage />
                 </ProtectedRoute>
