@@ -37,10 +37,10 @@ function* addContentWithUpload(action) {
 }
 // get content with id
 function* getContent(action) {
-  console.log(action.payload);
   try {
-    let response = yield axios.get(`/api/content/${action.payload}/view`);
-    console.log('response', response);
+    let response = yield axios.get(
+      `/api/content/${action.payload.unitId}/${action.payload.lessonId}/${action.payload.contentId}`
+    );
     yield put({ type: 'SET_CONTENT', payload: response.data });
   } catch (error) {
     console.error('Error getting content', error);

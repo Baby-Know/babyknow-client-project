@@ -167,12 +167,15 @@ router.post(
 
 //GET content
 router.get(
-  '/:unitId/:lessonId/:contentId/view',
+  '/:unitId/:lessonId/:contentId',
   rejectUnauthenticated,
   async (req, res) => {
     try {
       const queryText = `
-    SELECT * FROM "units", "lessons", "content"
+      SELECT "units".id AS "unitId", "units".name AS "unitName", 
+      "lessons".id AS "lessonId", "lessons".name AS "lessonName",
+      "content".id AS "contentId", "content".content AS "contentContent", "content".title AS "contentTitle", "content".description AS "contentDescription", "content"."isRequired" AS "contentIsRequired", "content"."isSurvey" AS "contentIsSurvey"
+      FROM "units", "lessons", "content"
     WHERE "units".id = $1 AND "lessons".id = $2 AND "content".id = $3;
       `;
       const params = [
@@ -182,7 +185,6 @@ router.get(
       ];
       const unitResult = await pool.query(queryText, params);
       content = unitResult.rows;
-      console.log('THIS IS CONTENT', content);
       res.send(content);
     } catch (error) {
       res.sendStatus(500);

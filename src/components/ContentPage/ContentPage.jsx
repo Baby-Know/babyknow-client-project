@@ -11,7 +11,7 @@ function ContentPage() {
     const content = contentArray[0];
 
     console.log('content', content);
-    // console.log('content.content', content.content);
+    console.log('content.content', content?.contentContent);
 
 
     useEffect(() => {
@@ -25,23 +25,23 @@ function ContentPage() {
         <>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}`}>
-                    Unit {unitId}
+                    {content?.unitName}
                 </Link>
-                <Typography color="text.primary">Lesson {lessonId}</Typography>
-                <Typography color="text.primary">{content?.title}</Typography>
+                <Typography color="text.primary">{content?.lessonName}</Typography>
+                <Typography color="text.primary">{content?.contentTitle}</Typography>
             </Breadcrumbs >
             <Card id='contentHeader'>
                 {content ?
                     <>
-                        <h1>{content.title}</h1>
-                        <h2>{content.description}</h2>
+                        <h1>{content.contentTitle}</h1>
+                        <h2>{content.contentDescription}</h2>
                     </> :
                     <></>
                 }
             </Card>
-            {/* <CardMedia component="video" url={`${content.content}`}>
+            <CardMedia component="video" src={`${content?.contentContent}`}>
 
-            </CardMedia> */}
+            </CardMedia>
         </>
     );
 
