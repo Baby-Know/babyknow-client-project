@@ -32,7 +32,6 @@ const upload = multer({ storage, fileFilter });
 
 // get video upload by content id
 router.get('/:id', async (req, res) => {
-    console.log('content router get by id', req.params);
     const contentId = req.params.contentId;
     const sqlValue = [contentId]
     const sqlText = `
@@ -71,9 +70,6 @@ async function awsQuery(req, res){
 
 // posting content from content form
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-    // console.log('req.body', req.body)
-    // console.log('req.file', req.file)
-
     const connect = await pool.connect()
     try {
         await connect.query('BEGIN')
@@ -155,6 +151,28 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
       console.log('Error getting content:', error);
     }
   });
+
+  //DELETE lesson
+router.delete(
+    '/:lessonId/:contentId',
+    rejectUnauthenticated,
+    rejectNonAdmin,
+    async (req, res) => {
+      try {
+        const query = `
+        DELETE FROM "lessons_content"
+        WHERE "lessons_content".lessons_id = $1 AND "lessons_content".content_id = $2;`;
+  
+        params = [req.params.lessonId, req.params.contentId];
+  
+        await pool.query(query, params);
+        res.sendStatus(200);
+      } catch (error) {
+        console.log('Error deleting lesson :', error);
+        res.sendStatus(500);
+      }
+    }
+  );
 
 
 module.exports = router;

@@ -6,6 +6,7 @@ import unitSaga from './unit.saga';
 import newRegistrantsSaga from './newRegistrants.saga';
 import studentsSaga from './students.saga';
 import contentSaga from './content.saga';
+import lessonSaga from './lesson.saga';
 
 // rootSaga is the primary saga.
 // It bundles up all of the other sagas so our project can use them.
@@ -23,5 +24,6 @@ export default function* rootSaga() {
     newRegistrantsSaga(),
     studentsSaga(),
     contentSaga(),
+    lessonSaga()
   ]);
 }
