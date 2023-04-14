@@ -107,13 +107,13 @@ CREATE TABLE "users_cohorts" (
 );
 
 
-ALTER TABLE "lessons_content" ADD CONSTRAINT "lessons_content_fk0" FOREIGN KEY ("lessons_id") REFERENCES "lessons"("id");
-ALTER TABLE "lessons_content" ADD CONSTRAINT "lessons_content_fk1" FOREIGN KEY ("content_id") REFERENCES "content"("id");
+ALTER TABLE "lessons_content" ADD CONSTRAINT "lessons_content_fk0" FOREIGN KEY ("lessons_id") REFERENCES "lessons"("id") ON DELETE CASCADE;
+ALTER TABLE "lessons_content" ADD CONSTRAINT "lessons_content_fk1" FOREIGN KEY ("content_id") REFERENCES "content"("id") ON DELETE CASCADE;
 
 ALTER TABLE "users_lessons_content" ADD CONSTRAINT "users_lessons_content_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
 ALTER TABLE "users_lessons_content" ADD CONSTRAINT "users_lessons_content_fk1" FOREIGN KEY ("lessons_content_id") REFERENCES "lessons_content"("id");
 
-ALTER TABLE "lessons" ADD CONSTRAINT "lessons_fk0" FOREIGN KEY ("units_id") REFERENCES "units"("id");
+ALTER TABLE "lessons" ADD CONSTRAINT "lessons_fk0" FOREIGN KEY ("units_id") REFERENCES "units"("id") ON DELETE CASCADE;
 
 ALTER TABLE "users_units" ADD CONSTRAINT "users_units_fk0" FOREIGN KEY ("users_id") REFERENCES "users"("id");
 ALTER TABLE "users_units" ADD CONSTRAINT "users_units_fk1" FOREIGN KEY ("units_id") REFERENCES "units"("id");

@@ -8,9 +8,9 @@ function ContentPage({ lessonBreadCrumb }) {
     const dispatch = useDispatch();
     const location = useLocation();
     const contentArray = useSelector(store => store.contentReducer);
-    const content = contentArray[0];
+    const content = contentArray;
 
-    console.log(content);
+    console.log('content', content);
 
     useEffect(() => {
         dispatch({
@@ -26,9 +26,9 @@ function ContentPage({ lessonBreadCrumb }) {
         <>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/">
-                    {lessonBreadCrumb.unitName}
+                    {/* {lessonBreadCrumb.unitName} */}
                 </Link>
-                <Typography color="text.primary">{lessonBreadCrumb.lessonName}</Typography>
+                {/* <Typography color="text.primary">{lessonBreadCrumb.lessonName}</Typography> */}
                 <Typography color="text.primary">{content?.title}</Typography>
             </Breadcrumbs>
             <Card id='contentHeader'>
