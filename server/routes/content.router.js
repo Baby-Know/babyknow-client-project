@@ -46,27 +46,6 @@ router.get('/:id', async (req, res) => {
     })
 })
 
-// uploading files into AWS
-// router.put('/files', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
-//     console.log('req.file', req.file)
-//     console.log('req.body', req.body)
-//     console.log('req.body.Location', req.body.Location)  
-//     try {
-//         const results = await s3Upload(req.file);
-//         console.log('AWS S3 upload success');
-//         const sqlText = `UPDATE "content" 
-//         SET "content" = $1 
-//         WHERE id = $2`
-//         pool.query(sqlText, [results.Location, req.body.id]) 
-//     } catch (err) {
-//         res.sendStatus(500);
-//         console.log('AWS S3 upload fail', err);
-//     }
-// });
-
-async function awsQuery(req, res){
-   
-}
 
 // posting content from content form
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
@@ -99,15 +78,11 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
 })
 
 router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
-    console.log('req.body', req.body)
-    console.log('req.file', req.file)
-
     const connect = await pool.connect()
     try { 
         await connect.query('BEGIN')
         const results = await s3Upload(req.file);
         console.log('AWS S3 upload success');
-        console.log('results', results) 
 
         const contentSqlQuery =  `
         INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired")
@@ -117,8 +92,6 @@ router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'
         //RETURNING 'id' will give us back the id of the created content
         const result = await connect.query(contentSqlQuery, [results.Location, req.body.title, req.body.description, req.body.isSurvey, req.body.isRequired])
         createdContentId = result.rows[0].id 
-
-        console.log("createdcontentID", createdContentId)
 
         const lessonsContentSqlQuery = `
         INSERT INTO "lessons_content" ("content_id", "lessons_id", "contentOrder")
