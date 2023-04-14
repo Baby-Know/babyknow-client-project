@@ -196,4 +196,24 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
   }
 });
 
+router.delete(
+  "/:id",
+  rejectUnauthenticated,
+  rejectStudent,
+  async (req, res) => {
+    try {
+      const queryText = `
+    DELETE FROM "users"
+    WHERE "id" = $1
+    `;
+
+      await pool.query(queryText, [req.params.id]);
+      res.sendStatus(204);
+    } catch (error) {
+      console.log(`Error deleting student :`, error);
+      res.sendStatus(500);
+    }
+  }
+);
+
 module.exports = router;

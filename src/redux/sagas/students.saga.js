@@ -34,7 +34,7 @@ function* deleteStudent(action) {
     });
     if (sweet.isConfirmed) {
       yield axios.delete(`/api/students/${action.payload}`);
-      yield put({ type: "GET_UNITS" });
+      yield put({ type: "FETCH_STUDENTS" });
     }
   } catch (error) {
     console.error("Error deleting unit", error);
