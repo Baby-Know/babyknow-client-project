@@ -14,7 +14,7 @@ function* fetchStudents() {
 
 function* updateStudent(action) {
   try {
-    yield axios.put(`/api/student/${action.payload.id}`, action.payload);
+    yield axios.put(`/api/students/${action.payload.id}`, action.payload);
     yield put({ type: "FETCH_STUDENTS" });
   } catch (error) {
     console.error("Error updating student", error);
@@ -33,8 +33,8 @@ function* deleteStudent(action) {
       showCancelButton: true,
     });
     if (sweet.isConfirmed) {
-      yield axios.delete(`/api/unit/${action.payload}`);
-      yield put({ type: "GET_UNITS" });
+      yield axios.delete(`/api/students/${action.payload}`);
+      yield put({ type: "FETCH_STUDENTS" });
     }
   } catch (error) {
     console.error("Error deleting unit", error);

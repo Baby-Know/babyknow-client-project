@@ -55,34 +55,61 @@ const Students = () => {
   //Handle changing the value of the select option in the students array
   //of the modifiedStudentData object
   const handleSelectChange = useCallback(
-    (cellValues) => {
-      const { field, value, id } = cellValues;
-      setModifiedStudentData((prevStudentData) => {
-        return {
-          ...prevStudentData,
-          students: prevStudentData.students.map((student) =>
-            student.id === id ? { ...student, [field]: value } : student
-          ),
-        };
-      });
+    ({ cellValues, value }) => {
+      const field = cellValues.field === "cohort.id" ? "cohort" : "teacher";
+      const id = cellValues.id;
+
+      //Finding the new value that the student will be given
+      const newValue =
+        field === "cohort"
+          ? modifiedStudentData.cohorts.find((cohort) => cohort.id === value)
+          : modifiedStudentData.teachers.find(
+              (teacher) => teacher.id === value
+            );
+
+      //New value alternates between teacher and cohort object so this is updating
+      //the student differently depending on whether the new value is a teacher or cohort
+      field === "cohort"
+        ? setModifiedStudentData((prevStudentData) => {
+            return {
+              ...prevStudentData,
+              students: prevStudentData.students.map((student) =>
+                student.id === id
+                  ? {
+                      ...student,
+                      cohort: {
+                        id: newValue.id,
+                        name: newValue.name,
+                      },
+                    }
+                  : student
+              ),
+            };
+          })
+        : setModifiedStudentData((prevStudentData) => {
+            return {
+              ...prevStudentData,
+              students: prevStudentData.students.map((student) =>
+                student.id === id
+                  ? {
+                      ...student,
+                      teacher: {
+                        id: newValue.id,
+                        firstName: newValue.firstName,
+                        lastName: newValue.lastName,
+                      },
+                    }
+                  : student
+              ),
+            };
+          });
     },
     [modifiedStudentData]
   );
 
   function handleEditSelect(cellValues) {
-    const { field, value, id } = cellValues;
     const studentToUpdate = cellValues.row;
 
-    setModifiedStudentData((prevStudentData) => {
-      return {
-        ...prevStudentData,
-        students: prevStudentData.students.map((student) =>
-          student.id === id ? { ...student, [field]: value } : student
-        ),
-      };
-    });
-
-    console.log("studentToUpdate:", studentToUpdate);
     dispatch({
       type: "UPDATE_STUDENT",
       payload: studentToUpdate,
@@ -140,7 +167,7 @@ const Students = () => {
       //Add the units to the student
       studentToModify = {
         ...studentToModify,
-        userUnits: studentUnits,
+        studentUnits: studentUnits,
       };
 
       //Resetting the students array with the updated student
@@ -149,7 +176,7 @@ const Students = () => {
           ...prevStudentData,
           students: prevStudentData.students.map((student) =>
             student.id === id
-              ? { ...student, userUnits: studentUnits }
+              ? { ...student, studentUnits: studentUnits }
               : student
           ),
         };
@@ -189,7 +216,7 @@ const Students = () => {
           value={cellValues.row.cohort.id}
           onChange={(event) => {
             setIsEditing(cellValues.id);
-            handleEditSelect({
+            handleSelectChange({
               cellValues: cellValues,
               value: event.target.value,
             });
@@ -239,11 +266,11 @@ const Students = () => {
         });
 
         //Convert students current units keys to an array
-        const studentUnitsIdArr = Object.keys(studentObject.userUnits);
+        const studentUnitsIdArr = Object.keys(studentObject.studentUnits);
 
         //Mapping over student's current unit's keys (mapping over units object)
         let initialSelected = studentUnitsIdArr?.map((unitId) => {
-          return studentObject?.userUnits[unitId].name;
+          return studentObject?.studentUnits[unitId].name;
         });
 
         const [selectedOptions, setSelectedOptions] = useState(initialSelected);
