@@ -43,7 +43,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
             firstName: "",
             lastName: "",
           },
-          userUnits: [],
+          studentUnits: [],
         };
 
         const usersCohortsStudentQuery = `
@@ -97,7 +97,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
           student.id,
         ]);
 
-        studentObject.userUnits = usersUnitsResponse.rows;
+        studentObject.studentUnits = usersUnitsResponse.rows;
 
         studentData.students.push(studentObject);
       })
@@ -131,6 +131,45 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
   } catch (error) {
     console.log(`Error fetching students : `, error);
     res.sendStatus(500);
+  }
+});
+
+router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
+  const connection = await pool.connect();
+  const studentId = req.body.id;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const email = req.body.email;
+  const cohort = req.body.cohort;
+  const studentUnits = req.body.studentUnits;
+  try {
+    await connection.query("BEGIN");
+    const usersQueryText = `
+    UPDATE "users"
+    SET "firstName" = $1, "lastName" = $2, "email" = $3
+    WHERE "id" = $4
+    `;
+    await connection.query(usersQueryText, [
+      firstName,
+      lastName,
+      email,
+      studentId,
+    ]);
+
+    const usersCohortsQueryText = `
+    UPDATE "users_cohorts"
+    SET "cohorts_id" = $1
+    WHERE "user_id" = $2
+    `;
+    await connection.query(usersCohortsQueryText, [cohort.id, studentId]);
+
+    await connection.query("COMMIT");
+  } catch (error) {
+    await connection.query("ROLLBACK");
+    console.log(`Transaction Error - Rolling back updated student`, error);
+    res.sendStatus(500);
+  } finally {
+    connection.release();
   }
 });
 
