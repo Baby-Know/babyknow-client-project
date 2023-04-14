@@ -37,8 +37,10 @@ function* addContentWithUpload(action) {
 }
 // get content with id
 function* getContent(action) {
+  console.log(action.payload);
   try {
     let response = yield axios.get(`/api/content/${action.payload}/view`);
+    console.log('response', response);
     yield put({ type: 'SET_CONTENT', payload: response.data });
   } catch (error) {
     console.error('Error getting content', error);
@@ -71,7 +73,7 @@ function* deleteContent(action) {
 function* contentSaga() {
   yield takeLatest('ADD_CONTENT', addContent);
   yield takeLatest('ADD_CONTENT_WITH_UPLOAD', addContentWithUpload);
-  yield takeLatest('GET_CONTENT', getContent);
+  yield takeLatest('GET_UNIT_LESSON_CONTENT', getContent);
   yield takeLatest('DELETE_CONTENT', deleteContent);
 }
 

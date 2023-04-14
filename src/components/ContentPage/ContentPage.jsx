@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Typography, Breadcrumbs } from "@mui/material";
+import { Card, CardMedia, Typography, Breadcrumbs } from "@mui/material";
 
 function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
@@ -11,11 +11,13 @@ function ContentPage() {
     const content = contentArray[0];
 
     console.log('content', content);
+    // console.log('content.content', content.content);
+
 
     useEffect(() => {
         dispatch({
-            type: "GET_CONTENT",
-            payload: contentId
+            type: "GET_UNIT_LESSON_CONTENT",
+            payload: { unitId, lessonId, contentId }
         });
     }, []);
 
@@ -37,6 +39,9 @@ function ContentPage() {
                     <></>
                 }
             </Card>
+            {/* <CardMedia component="video" url={`${content.content}`}>
+
+            </CardMedia> */}
         </>
     );
 

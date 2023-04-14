@@ -166,22 +166,30 @@ router.post(
 );
 
 //GET content
-router.get('/:id/view', rejectUnauthenticated, async (req, res) => {
-  try {
-    const queryText = `
-        SELECT * FROM "content"
-        WHERE "content".id = $1;
+router.get(
+  '/:unitId/:lessonId/:contentId/view',
+  rejectUnauthenticated,
+  async (req, res) => {
+    try {
+      const queryText = `
+    SELECT * FROM "units", "lessons", "content"
+    WHERE "units".id = $1 AND "lessons".id = $2 AND "content".id = $3;
       `;
-    const params = [req.params.id];
-    const unitResult = await pool.query(queryText, params);
-    content = unitResult.rows;
-    console.log('THIS IS CONTENT', content);
-    res.send(content);
-  } catch (error) {
-    res.sendStatus(500);
-    console.log('Error getting content:', error);
+      const params = [
+        req.params.unitId,
+        req.params.lessonId,
+        req.params.contentId,
+      ];
+      const unitResult = await pool.query(queryText, params);
+      content = unitResult.rows;
+      console.log('THIS IS CONTENT', content);
+      res.send(content);
+    } catch (error) {
+      res.sendStatus(500);
+      console.log('Error getting content:', error);
+    }
   }
-});
+);
 
 //DELETE lesson
 router.delete(
