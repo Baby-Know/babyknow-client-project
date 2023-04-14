@@ -49,4 +49,23 @@ router.delete(
   }
 );
 
+router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
+    UPDATE "lessons"
+    SET "name" = $1, "description" = $2
+    WHERE "lessons".id = $3;
+    `;
+
+    const params = [req.body.lessonName, req.body.lessonDescription, req.body.id]
+
+    await pool.query(queryText, params);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log('Error editing unit :', error);
+  }
+});
+
+
 module.exports = router;
