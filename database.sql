@@ -144,7 +144,7 @@ INSERT INTO "cohorts" ("name")
 VALUES ('Snoops'), ('WW Chemistry');
 
 INSERT INTO "users_cohorts"("cohorts_id", "user_id")
-VALUES(1, 3), (1, 4), (2, 5), (2, 6), (1, 2), (2, 3);
+VALUES (1, 4), (2, 5), (2, 6), (1, 2), (2, 3);
 
 INSERT INTO "users_units" ("users_id", "units_id")
-VALUES(4, 1), (5, 1), (4, 2);
+VALUES (4, 1), (5, 1), (4, 2);

@@ -15,6 +15,7 @@ SELECT
     teachers.id AS "teacherId", 
     teachers."firstName" AS "teacherFirstName", 
     teachers."lastName" AS "teacherLastName",
+    cohorts.name AS "className",
     json_agg(json_build_object(
         'id', students.id, 
         'firstName', students."firstName", 
@@ -29,7 +30,7 @@ JOIN "users_cohorts" AS teacher_link
     ON teacher_link.cohorts_id = "cohorts".id
 JOIN "users" AS teachers 
     ON teachers.id = teacher_link.user_id AND teachers.access = 2
-GROUP BY teachers.id, teachers."firstName", teachers."lastName";
+GROUP BY teachers.id, teachers."firstName", teachers."lastName", cohorts.name;
     `;
 
     const result = await pool.query(queryText);
