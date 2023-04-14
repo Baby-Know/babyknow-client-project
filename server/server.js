@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
@@ -14,6 +15,7 @@ const unitRouter = require('./routes/unit.router');
 const lessonRouter = require('./routes/lesson.router');
 const newRegistrantsRouter = require('./routes/newRegistrants.router');
 const studentsRouter = require('./routes/students.router');
+const contentRouter = require('./routes/content.router');
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -33,6 +35,7 @@ app.use('/api/unit', unitRouter);
 app.use('/api/lesson', lessonRouter);
 app.use('/api/newRegistrants', newRegistrantsRouter);
 app.use('/api/students', studentsRouter);
+app.use('/api/content', contentRouter);
 
 // Serve static files
 app.use(express.static('build'));

@@ -19,6 +19,7 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import AboutPage from "../AboutPage/AboutPage";
 import CoursePage from "../CoursePage/CoursePage";
 import UnitPage from "../UnitPage/UnitPage";
+import ContentPage from "../ContentPage/ContentPage";
 import LoginPage from "../LoginPage/LoginPage";
 import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
@@ -61,6 +62,14 @@ function App() {
                   path="/unit/:id"
                 >
                   <UnitPage />
+                </ProtectedRoute>
+
+                <ProtectedRoute
+                  // logged in shows CoursePage else shows LoginPage
+                  exact
+                  path="/content/:id"
+                >
+                  <ContentPage />
                 </ProtectedRoute>
 
                 <ProtectedRoute

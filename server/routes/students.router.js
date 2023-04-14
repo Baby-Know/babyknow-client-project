@@ -1,25 +1,219 @@
-const express = require('express');
-const pool = require('../modules/pool');
+const express = require("express");
+const pool = require("../modules/pool");
 const router = express.Router();
 const {
   rejectUnauthenticated,
-} = require('../modules/authentication-middleware');
+} = require("../modules/authentication-middleware");
 
-const { rejectStudent } = require('../modules/teacher-middleware');
+const { rejectStudent } = require("../modules/teacher-middleware");
 
 //GET all students
-router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
+router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
+  //Array to send back to client
+  const studentData = {
+    students: [],
+    teachers: [],
+    cohorts: [],
+    units: [],
+  };
+
   try {
-    const queryText = `
-        SELECT * FROM "users" 
-        WHERE "access" = 1
+    const studentsQuery = `
+    SELECT * FROM "users" 
+    WHERE "access" = 1;
+    `;
+
+    const studentsResponse = await pool.query(studentsQuery);
+    const allStudents = studentsResponse.rows;
+
+    //Mapping over all of the students
+    await Promise.all(
+      allStudents.map(async (student) => {
+        let studentObject = {
+          id: student.id,
+          firstName: student.firstName,
+          lastName: student.lastName,
+          email: student.email,
+          cohort: {
+            id: null,
+            name: "",
+          },
+          teacher: {
+            id: null,
+            firstName: "",
+            lastName: "",
+          },
+          studentUnits: [],
+        };
+
+        const usersCohortsStudentQuery = `
+        SELECT uc.cohorts_id, c.name FROM "users_cohorts" AS UC
+        JOIN "cohorts" AS c ON uc.cohorts_id = c.id
+        WHERE uc.user_id = $1;
         `;
-    const students = await pool.query(queryText);
-    res.send(students.rows);
+
+        // Selecting student's cohort details
+        const usersCohortsStudentResponse = await pool.query(
+          usersCohortsStudentQuery,
+          [student.id]
+        );
+
+        studentObject = {
+          ...studentObject,
+          cohort: {
+            id: usersCohortsStudentResponse.rows[0].cohorts_id,
+            name: usersCohortsStudentResponse.rows[0].name,
+          },
+        };
+
+        //Selecting the student's teacher
+        const usersCohortsTeacherQuery = `
+        SELECT uc.user_id, u."firstName", u."lastName" FROM "users_cohorts" AS uc
+        JOIN "users" AS u ON u.id = uc.user_id
+        WHERE u.access = 2 AND uc.cohorts_id = $1;
+        `;
+
+        const usersCohortsTeacherResponse = await pool.query(
+          usersCohortsTeacherQuery,
+          [usersCohortsStudentResponse.rows[0].cohorts_id]
+        );
+
+        studentObject = {
+          ...studentObject,
+          teacher: {
+            id: usersCohortsTeacherResponse.rows[0].user_id,
+            firstName: usersCohortsTeacherResponse.rows[0].firstName,
+            lastName: usersCohortsTeacherResponse.rows[0].lastName,
+          },
+        };
+
+        const usersUnitsQuery = `
+        SELECT uu.id, u.id, u.name FROM "users_units" AS uu
+        JOIN "units" AS u ON uu.units_id = u.id
+        WHERE uu.users_id = $1;
+        `;
+
+        const usersUnitsResponse = await pool.query(usersUnitsQuery, [
+          student.id,
+        ]);
+
+        studentObject.studentUnits = usersUnitsResponse.rows;
+
+        studentData.students.push(studentObject);
+      })
+    );
+
+    //Selecting all teachers and adding them to the teachers array
+    const usersTeacherQuery = `
+    SELECT "id", "email", "firstName", "lastName", "organization" FROM "users" WHERE "users".access = 2;
+    `;
+
+    const usersTeacherResponse = await pool.query(usersTeacherQuery);
+
+    studentData.teachers = usersTeacherResponse.rows;
+
+    const cohortsQuery = `
+    SELECT * FROM "cohorts";
+    `;
+
+    const cohortsResponse = await pool.query(cohortsQuery);
+
+    studentData.cohorts = cohortsResponse.rows;
+
+    const unitsQuery = `
+    SELECT * FROM "units";
+    `;
+    const unitsResponse = await pool.query(unitsQuery);
+
+    studentData.units = unitsResponse.rows;
+
+    res.send(studentData);
   } catch (error) {
+    console.log(`Error fetching students : `, error);
     res.sendStatus(500);
-    console.log('Error getting students:', error);
   }
 });
+
+router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
+  const connection = await pool.connect();
+  const studentId = req.body.id;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const email = req.body.email;
+  const cohort = req.body.cohort;
+  const studentUnits = req.body.studentUnits;
+
+  try {
+    await connection.query("BEGIN");
+    const usersQueryText = `
+    UPDATE "users"
+    SET "firstName" = $1, "lastName" = $2, "email" = $3
+    WHERE "id" = $4;
+    `;
+    await connection.query(usersQueryText, [
+      firstName,
+      lastName,
+      email,
+      studentId,
+    ]);
+
+    const usersCohortsQueryText = `
+    UPDATE "users_cohorts"
+    SET "cohorts_id" = $1
+    WHERE "user_id" = $2;
+    `;
+    await connection.query(usersCohortsQueryText, [cohort.id, studentId]);
+
+    //Query to delete all of the student's previous units
+    const deleteUsersUnitsQueryText = `
+    DELETE FROM "users_units" 
+    WHERE "users_id" = $1;
+    `;
+    await connection.query(deleteUsersUnitsQueryText, [studentId]);
+
+    //Map over the array of the students new unit objects and insert new values
+    await Promise.all(
+      studentUnits.map(async (unit) => {
+        const updateUsersUnitsQueryText = `
+        INSERT INTO "users_units" ("users_id", "units_id")
+        VALUES ($1, $2);
+        `;
+        return await connection.query(updateUsersUnitsQueryText, [
+          studentId,
+          unit.id,
+        ]);
+      })
+    );
+
+    await connection.query("COMMIT");
+    res.sendStatus(204);
+  } catch (error) {
+    await connection.query("ROLLBACK");
+    console.log(`Transaction Error - Rolling back student update`, error);
+    res.sendStatus(500);
+  } finally {
+    connection.release();
+  }
+});
+
+router.delete(
+  "/:id",
+  rejectUnauthenticated,
+  rejectStudent,
+  async (req, res) => {
+    try {
+      const queryText = `
+    DELETE FROM "users"
+    WHERE "id" = $1
+    `;
+
+      await pool.query(queryText, [req.params.id]);
+      res.sendStatus(204);
+    } catch (error) {
+      console.log(`Error deleting student :`, error);
+      res.sendStatus(500);
+    }
+  }
+);
 
 module.exports = router;

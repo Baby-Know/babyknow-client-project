@@ -14,22 +14,22 @@ function AddLessonForm({id}) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    //Variable to show whether the add lesson form is showing
-    const showForm = useSelector((store) => store.conditionalForms?.showLessonForm);
-
     //Setting initial values so that they are controlled for MUI
     const [lessonToSend, setLessonToSend] = useState({
-        name: "",
-        description: "",
-        lessonOrder: "",
-        units_id: id
-    });
+      name: "",
+      description: "",
+      lessonOrder: "",
+  });
+
+    //Variable to show whether the add lesson form is showing
+    const showForm = useSelector((store) => store.conditionalForms?.showLessonForm);
 
     //Function to handle sending new lesson to the database
   async function handleAddLesson() {
     try {
-     await axios.post("/api/lesson", lessonToSend);
+     await axios.post(`/api/lesson/${id}`, lessonToSend);
      dispatch({type: 'GET_UNIT', payload: id});
+
 
      dispatch({
       type: "SET_SHOW_ADD_LESSON",

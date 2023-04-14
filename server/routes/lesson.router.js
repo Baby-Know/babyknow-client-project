@@ -9,25 +9,44 @@ const { rejectNonAdmin } = require("../modules/admin-middleware");
 
 
   //POST new lesson
-router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.post("/:units_id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+
     try {
       const queryText = `
       INSERT INTO "lessons" ("name", "description", "lessonOrder", "units_id")
       VALUES($1, $2, $3, $4)
       `;
+      const params = [req.body.name, req.body.description, req.body.lessonOrder, req.params.units_id]
 
-      await pool.query(queryText, [
-        req.body.name,
-        req.body.description,
-        req.body.lessonOrder,
-        req.body.units_id
-      ]);
+      await pool.query(queryText, params);
   
       res.sendStatus(201);
     } catch (error) {
       res.sendStatus(500);
       console.log("Error posting unit :", error);
     }
-  });
+});
+
+//DELETE lesson
+router.delete(
+  '/:id',
+  rejectUnauthenticated,
+  rejectNonAdmin,
+  async (req, res) => {
+    try {
+      const query = `
+      DELETE FROM "lessons"
+      WHERE "lessons".id = $1;`;
+
+      params = [req.params.id];
+
+      await pool.query(query, params);
+      res.sendStatus(200);
+    } catch (error) {
+      console.log('Error deleting lesson :', error);
+      res.sendStatus(500);
+    }
+  }
+);
 
 module.exports = router;
