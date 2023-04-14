@@ -8,8 +8,10 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
+    IconButton,
     Typography,
 } from "@mui/material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddLessonForm from './AddLessonForm/AddLessonForm';
 import AddContentForm from './AddContentForm/AddContentForm';
@@ -41,6 +43,20 @@ function UnitPage() {
     };
 
     console.log('unitunitunit', unit);
+
+    const deleteLesson = (ids) => {
+        dispatch({
+            type: "DELETE_LESSON",
+            payload: ids
+        });
+    };
+
+    const deleteContent = (ids) => {
+        dispatch({
+            type: "DELETE_CONTENT",
+            payload: ids
+        });
+    };
 
     return (
         <Box sx={{
@@ -80,34 +96,51 @@ function UnitPage() {
                                     {lesson.lessonDescription}
                                 </Typography>
 
+
                                 {unit[i].contentId?.map((id, index) => {
                                     return (
-                                        <div id='content' onClick={() => selectContent(id, lesson)} key={index}>
-                                            <Typography id='contentTitle'>
-                                                {unit[i].contentTitle[index]}
-                                            </Typography>
+                                        <div key={index}>
+                                            {unit[i].contentId[index] === null ? <></> :
+                                                <div id='content'>
+                                                    <div onClick={() => selectContent(id)}>
+                                                        <Typography id='contentTitle'>
+                                                            {unit[i].contentTitle[index]}
+                                                        </Typography>
 
-                                            <Typography id='contentDescription'>
-                                                {unit[i].contentDescription[index]}
-                                            </Typography>
-                                        </ div>
+                                                        <Typography id='contentDescription'>
+                                                            {unit[i].contentDescription[index]}
+                                                        </Typography>
+                                                    </div>
+                                                    <div id='deleteIcon'>
+                                                        <IconButton onClick={() => deleteContent({ contentId: id, unitId: lesson.unitId, lessonId: lesson.lessonId })}>
+                                                            <DeleteForeverIcon sx={{ color: 'white' }} />
+                                                        </IconButton>
+                                                    </div>
+                                                </ div>
+                                            }
+                                        </div>
                                     );
-
                                 })}
 
-                                {lesson.lessonName ? <Button onClick={() => {
-                                    dispatch({
-                                        type: "SET_SHOW_ADD_CONTENT",
-                                        payload: true,
-                                    });
-                                    console.log('LESSON', lesson);
-                                    setSelectedId(lesson.lessonId);
-                                }}>
-                                    Add Content to {lesson.lessonName}
-                                </Button> : <></>}
+
+                                {lesson.lessonName ?
+                                    <div id='lessonBottom'>
+                                        <Button onClick={() => {
+                                            dispatch({
+                                                type: "SET_SHOW_ADD_CONTENT",
+                                                payload: true,
+                                            });
+                                            setSelectedId(lesson.lessonId);
+                                        }}>
+                                            Add Content to {lesson.lessonName}
+                                        </Button>
+                                        <IconButton onClick={() => deleteLesson({ lessonId: lesson.lessonId, unitId: lesson.unitId })}>
+                                            <DeleteForeverIcon />
+                                        </IconButton>
+                                    </ div>
+                                    : <></>}
                             </AccordionDetails>
                         </Accordion>
-
                     </div>
                 );
             })}

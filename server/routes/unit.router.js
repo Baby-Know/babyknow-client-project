@@ -27,14 +27,14 @@ router.get('/', rejectUnauthenticated, async (req, res) => {
 router.get('/:id', rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `
-    SELECT "units".name AS "unitName", "units".subtitle AS "unitSubtitle", 
+    SELECT "units".id AS "unitId", "units".name AS "unitName", "units".subtitle AS "unitSubtitle", 
     "lessons".id AS "lessonId", "lessons".name AS "lessonName", "lessons".description AS "lessonDescription", "lessonOrder",
     ARRAY_AGG("content".title ORDER BY "contentOrder" ASC) AS "contentTitle", ARRAY_AGG("content".description ORDER BY "contentOrder" ASC) AS "contentDescription", ARRAY_AGG("contentOrder" ORDER BY "contentOrder" ASC) AS "contentOrder", ARRAY_AGG("content".id ORDER BY "contentOrder" ASC) AS "contentId" FROM "units"
     LEFT JOIN "lessons" ON "lessons".units_id = "units".id
     LEFT JOIN "lessons_content" ON "lessons_content".lessons_id = "lessons".id
     LEFT JOIN "content" ON "content".id = "lessons_content".content_id
     WHERE "units".id = $1
-    GROUP BY "units".name, "units".subtitle, "lessons".id, "lessons".name, "lessons".description, "lessonOrder"
+    GROUP BY "units".id, "units".name, "units".subtitle, "lessons".id, "lessons".name, "lessons".description, "lessonOrder"
     ORDER BY "lessonOrder" ASC;
     `;
     const params = [req.params.id];
