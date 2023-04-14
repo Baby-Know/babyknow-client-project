@@ -55,32 +55,44 @@ function* getContent(action) {
 
 // delete content from a specific lesson
 function* deleteContent(action) {
-    const swal = withReactContent(Swal);
-    try {
-        let sweet = yield swal.fire({
-            title: "Are you sure you want to delete this content?",
-            confirmButtonText: "Delete",
-            confirmButtonColor: "#D21304",
-            cancelButtonColor: "#263549",
-            showConfirmButton: true,
-            showCancelButton: true,
-        });
-        if (sweet.isConfirmed) {
-            yield axios.delete(`/api/content/${action.payload.lessonId}/${action.payload.contentId}`);
-            yield put({ type: "GET_UNIT", payload: action.payload.unitId });
-        }
-    } catch (error) {
-        console.error('error deleting content', error)
+  const swal = withReactContent(Swal);
+  try {
+    let sweet = yield swal.fire({
+      title: "Are you sure you want to delete this content?",
+      confirmButtonText: "Delete",
+      confirmButtonColor: "#D21304",
+      cancelButtonColor: "#263549",
+      showConfirmButton: true,
+      showCancelButton: true,
+    });
+    if (sweet.isConfirmed) {
+      yield axios.delete(`/api/content/${action.payload.contentId}`);
+      yield put({ type: "GET_UNIT", payload: action.payload.unitId });
+    }
+  } catch (error) {
+      console.error('error deleting content', error)
 
     }
 }
 
+function* updateContent(action) {
+  console.log(action.payload)
+  try {
+    yield axios.put(`/api/content`, action.payload.contentToEdit);
+    yield put({ type: "GET_UNIT", payload: action.payload.ids.unitId });
+  } catch (error) {
+    console.error("Error updating content", error);
+  }
+}
+
+  
 
 function* contentSaga() {
     yield takeLatest("ADD_CONTENT", addContent);
     yield takeLatest("ADD_CONTENT_WITH_UPLOAD", addContentWithUpload);
     yield takeLatest("GET_CONTENT", getContent);
     yield takeLatest("DELETE_CONTENT", deleteContent);
+    yield takeLatest("UPDATE_CONTENT", updateContent);
 }
 
 export default contentSaga;
