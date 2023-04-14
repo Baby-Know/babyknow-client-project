@@ -31,11 +31,11 @@ router.get('/:id', rejectUnauthenticated, async (req, res) => {
     "lessons".id AS "lessonId", "lessons".name AS "lessonName", "lessons".description AS "lessonDescription", "lessonOrder",
     ARRAY_AGG("content".title ORDER BY "contentOrder" ASC) AS "contentTitle", ARRAY_AGG("content".description ORDER BY "contentOrder" ASC) AS "contentDescription", ARRAY_AGG("contentOrder" ORDER BY "contentOrder" ASC) AS "contentOrder", ARRAY_AGG("content".id ORDER BY "contentOrder" ASC) AS "contentId" FROM "units"
     LEFT JOIN "lessons" ON "lessons".units_id = "units".id
-    LEFT JOIN "lessons_content" ON "lessons_content".lessons_id = "lessons".id
-    LEFT JOIN "content" ON "content".id = "lessons_content".content_id
+    LEFT JOIN "content" ON "content".lessons_id = "lessons".id
     WHERE "units".id = $1
     GROUP BY "units".id, "units".name, "units".subtitle, "lessons".id, "lessons".name, "lessons".description, "lessonOrder"
     ORDER BY "lessonOrder" ASC;
+    
     `;
     const params = [req.params.id];
     const unitResult = await pool.query(queryText, params);
