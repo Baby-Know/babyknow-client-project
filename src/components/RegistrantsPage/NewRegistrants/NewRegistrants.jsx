@@ -167,6 +167,7 @@ const NewRegistrants = () => {
       flex: 0.6,
       cellClassName: "delete-btn-column-cell",
       editable: false,
+      filterable: false,
       headerAlign: "center",
       align: "center",
       renderCell: (cellValues) => {

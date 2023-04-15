@@ -107,4 +107,15 @@ INSERT INTO "content" ("content", "title", "description", "contentOrder", "isSur
 VALUES ('Video 1', 'Video 1', 'about the first video', 1, false, false, 1), ('Video 2', 'Video 2', 'describe second video', 2, false, false, 1), ('Survey 1', 'Survey 1', 'about the first survey', 3, true, false, 1);
 
 INSERT INTO "users" ("email", "password", "firstName", "lastName", "access", "organization" )
-VALUES ('babyknow@baby.com', 'Babyknow', 'Baby', 'Know', 3, 'BabyKnow'), ('pimpin@baby.com', 'Pimpin', 'Snoop', 'Dogg', 0, 'LA'), ('heisenberg@baby.com', 'Science', 'Walter', 'White', 0, 'Chemistry'), ('bigboned@baby.com', 'HippyHater', 'Eric', 'Cartman', 0, 'Shakeys'), ('middleearth@baby.com', 'Myprecious', 'Bilbo', 'Baggins', 0, 'Burglar'), ('coach@baby.com', 'Tenessewhiskey', 'Ted', 'Lasso', 0, 'Richmond FC');
+VALUES ('babyknow@baby.com', 'Babyknow', 'Baby', 'Know', 3, 'BabyKnow'), ('pimpin@baby.com', 'Pimpin', 'Snoop', 'Dogg', 2, 'LA'), ('heisenberg@baby.com', 'Science', 'Walter', 'White', 2, 'Chemistry'), ('bigboned@baby.com', 'HippyHater', 'Eric', 'Cartman', 1, 'Shakeys'),
+ ('middleearth@baby.com', 'Myprecious', 'Bilbo', 'Baggins', 1, 'Burglar'), ('coach@baby.com', 'Tenessewhiskey', 'Ted', 'Lasso', 1, 'Richmond FC'),
+ ('superminion@minions.com', 'bananna', 'Kevin', 'Evil', 0, 'Evil Corp.');
+
+INSERT INTO "cohorts" ("name")
+VALUES ('Snoops'), ('WW Chemistry');
+
+INSERT INTO "users_cohorts"("cohorts_id", "user_id")
+VALUES(1, 3), (1, 4), (2, 5), (2, 6), (1, 2), (2, 3);
+
+INSERT INTO "users_units" ("users_id", "units_id")
+VALUES(4, 1), (5, 1), (4, 2);
