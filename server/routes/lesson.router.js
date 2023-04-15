@@ -10,8 +10,6 @@ const { rejectNonAdmin } = require("../modules/admin-middleware");
 
   //POST new lesson
 router.post("/:units_id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-    console.log('lesson to learn', req.body.lessonToSend)
-
 
     try {
       const queryText = `
@@ -27,6 +25,47 @@ router.post("/:units_id", rejectUnauthenticated, rejectNonAdmin, async (req, res
       res.sendStatus(500);
       console.log("Error posting unit :", error);
     }
-  });
+});
+
+//DELETE lesson
+router.delete(
+  '/:id',
+  rejectUnauthenticated,
+  rejectNonAdmin,
+  async (req, res) => {
+    try {
+      const query = `
+      DELETE FROM "lessons"
+      WHERE "lessons".id = $1;`;
+
+      params = [req.params.id];
+
+      await pool.query(query, params);
+      res.sendStatus(200);
+    } catch (error) {
+      console.log('Error deleting lesson :', error);
+      res.sendStatus(500);
+    }
+  }
+);
+
+router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
+    UPDATE "lessons"
+    SET "name" = $1, "description" = $2
+    WHERE "lessons".id = $3;
+    `;
+
+    const params = [req.body.lessonName, req.body.lessonDescription, req.body.id]
+
+    await pool.query(queryText, params);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log('Error editing unit :', error);
+  }
+});
+
 
 module.exports = router;
