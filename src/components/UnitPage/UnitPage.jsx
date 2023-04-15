@@ -9,7 +9,7 @@ import {
     AccordionSummary,
     AccordionDetails,
     IconButton,
-    Typography,
+    Typography
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
@@ -17,7 +17,8 @@ import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddLessonForm from './AddLessonForm/AddLessonForm';
-import AddContentForm from './AddContentForm/AddContentForm'
+import AddContentForm from './AddContentForm/AddContentForm';
+import LoadingBar from '../LoadingBar/LoadingBar';
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 
@@ -29,7 +30,13 @@ function UnitPage() {
     const user = useSelector(store => store.user)
     const theme = useTheme();
     const colors = tokens(theme.palette.mode)
+
     const [selectedId, setSelectedId] = useState(0);
+    const [expand, setExpand] = useState([]);
+    const [progress, setProgress] = useState(10);
+
+    const isLoading = useSelector((store) => store.loadingReducer);
+    const lessonIdFromUnitPage = useSelector((store) => store.lessonsReducer);
     const [lessonToEdit, setLessonToEdit] = useState({id: 0, lessonName: '', lessonDescription: ''})
     const [contentToEdit, setContentToEdit] = useState({id: 0, contentName: '', contentDescription: ''})
 
@@ -38,6 +45,12 @@ function UnitPage() {
             type: "GET_UNIT",
             payload: id
         });
+        const timer = setInterval(() => {
+            setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+          }, 1000);
+          return () => {
+            clearInterval(timer);
+          }
     }, []);
 
     const editLesson = (ids) => {
@@ -77,26 +90,38 @@ function UnitPage() {
         });
     }
 
+    // const expandAccordion = (lessonId) => {
+    //     if (expand.some(id => id === lessonId)) {
+    //         let copy = [...expand]
+    //         copy.splice(expand.findIndex(e => e === lessonId))
+    //         setExpand([...copy])
+    //     } else {
+    //         setExpand([...expand, lessonId])
+    //     }
+    // }
+
     const selectContent = (id) => {
         history.push(`/content/${id}`)
     }
 
 
     return (
-        <Box sx={{ 
+        <Box sx={{
             "& .MuiButton-sizeMedium": {
-            backgroundColor: colors.darkTealAccent[400],
-            color: 'white'
+                backgroundColor: colors.darkTealAccent[400],
+                color: 'white'
             },
             "& .MuiButton-sizeMedium:hover": {
-            backgroundColor: colors.darkTealAccent[600],
-            color: 'white'
-            }}}>
+                backgroundColor: colors.darkTealAccent[600],
+                color: 'white'
+            }
+        }}>
 
             <AddLessonForm id={id} />
 
             {unit.map((lesson, i) => {
                 return (
+                    //conditionally rendering open or closed
                     <div key={i}>
                         {i === 0 ?
                             <Card id='unitHeader'>
@@ -104,7 +129,10 @@ function UnitPage() {
                                 <h2>{lesson.unitSubtitle}</h2>
                             </Card>
                             : <></>}
-                        <Accordion id="accordian" >
+
+                            {/* onClick={() => expandAccordion(lesson.lessonId)} expanded={expand.some(id => id === lesson.lessonId) ? true : false} */}
+
+                        <Accordion id="accordion"  >
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
@@ -128,7 +156,7 @@ function UnitPage() {
                                 <input onChange={(event) => setLessonToEdit({...lessonToEdit, lessonDescription: event.target.value})} className='lessonInputs' placeholder='lesson description' value={lessonToEdit.lessonDescription} />
                                 }
 
-            
+
                                 {unit[i].contentId?.map((id, index) => {
                                     return (
                                     <div key={index}>
@@ -191,6 +219,8 @@ function UnitPage() {
                                             payload: true,
                                         });
                                         setSelectedId(lesson.lessonId)
+                                        // expandAccordion(lesson.lessonId);
+                                        //     { expand.some(id => id === lesson.lessonId) ? true : false }
                                     }}>
                                         Add Content to {lesson.lessonName}
                                 </Button> 
@@ -222,7 +252,11 @@ function UnitPage() {
                     </div>
                 )
             })}
-            <AddContentForm selectedId={selectedId} />
+            {isLoading ?
+                <LoadingBar />
+                :
+                <AddContentForm selectedId={selectedId} />
+            }
 
             <div id="addLessonParent">
             {user.access === 3 ?
@@ -239,7 +273,7 @@ function UnitPage() {
             </Button> : <></> }
             </div>
         </Box>
-        
+
     )
 }
 
