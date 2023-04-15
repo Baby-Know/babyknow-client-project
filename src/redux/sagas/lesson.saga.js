@@ -24,8 +24,18 @@ function* deleteLesson (action) {
   }
 }
 
+function* updateLesson(action) {
+  try {
+    yield axios.put(`/api/lesson`, action.payload.lessonToEdit);
+    yield put({ type: "GET_UNIT", payload: action.payload.ids.unitId });
+  } catch (error) {
+    console.error("Error updating lesson", error);
+  }
+}
+
 function* lessonSaga() {
     yield takeLatest("DELETE_LESSON", deleteLesson);
+    yield takeLatest("UPDATE_LESSON", updateLesson);
 }
 
 export default lessonSaga

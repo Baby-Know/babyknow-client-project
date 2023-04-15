@@ -5,6 +5,7 @@ import AddUnitForm from "./AddUnitForm/AddUnitForm";
 import AddCohortForm from "./AddCohortForm/AddCohortForm";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
+import ClearIcon from "@mui/icons-material/Clear";
 import {
   Box,
   Button,
@@ -54,6 +55,15 @@ function CoursePage() {
     });
 
     //Unselecting the unit
+    setUpdatedUnitToSend({
+      id: "",
+      name: "",
+      unitOrder: "",
+      subtitle: "",
+    });
+  }
+
+  const cancelEdit = () => {
     setUpdatedUnitToSend({
       id: "",
       name: "",
@@ -141,13 +151,15 @@ function CoursePage() {
                             }
                           />
                         </CardContent>
+                        <>
                         <IconButton
-                          onClick={() => {
-                            postEditedUnit();
-                          }}
-                        >
+                          onClick={postEditedUnit}>
                           <DoneIcon />
                         </IconButton>
+                        <IconButton onClick={cancelEdit}>
+                          <ClearIcon/>
+                        </IconButton> 
+                        </>
                       </Card>
                   </form>
                 ) : (
@@ -156,29 +168,33 @@ function CoursePage() {
                         <p style={{ fontWeight: 'bold', fontSize: 18 }} >{unit.name}</p>
                         <p>{unit.subtitle}</p>
                       </CardContent >
-                      <IconButton
-                        onClick={() => {
-                          setUpdatedUnitToSend({
-                            id: unit.id,
-                            name: unit.name,
-                            unitOrder: unit.unitOrder,
-                            subtitle: unit.subtitle,
-                          });
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => deleteUnit(unit.id)}>
-                        <DeleteForeverIcon />
-                      </IconButton>
+                      {user.access === 3 ?
+                      <>
+                        <IconButton
+                          onClick={() => {
+                            setUpdatedUnitToSend({
+                              id: unit.id,
+                              name: unit.name,
+                              unitOrder: unit.unitOrder,
+                              subtitle: unit.subtitle,
+                            });
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => deleteUnit(unit.id)}>
+                          <DeleteForeverIcon />
+                        </IconButton> 
+                      </> : <></>}
                     </Card>
                 )}
                 </div>
                 );
               })}
               </Grid>
-
       </div>
+
+      {user.access === 3 ?
       <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
         <Button
           sx={{ margin: 10 }}
@@ -191,8 +207,8 @@ function CoursePage() {
           
           >
             Add Unit
-          </Button>
-          <Button
+        </Button>
+        <Button
             sx={{ margin: 10 }}
             onClick={() => {
               dispatch({
@@ -203,8 +219,9 @@ function CoursePage() {
       
           >
             Add Cohort
-          </Button>
-        </div>
+        </Button>
+      </div> : <></> }
+
     </Box>
   );
 }

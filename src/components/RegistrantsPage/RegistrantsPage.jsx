@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import NewRegistrants from "./NewRegistrants/NewRegistrants";
 import Students from "./Students/Students";
+import Teachers from "./Teachers/Teachers";
 
 function RegistrantsPage() {
   // this component doesn't do much to start, just renders some user reducer info to the DOM
@@ -13,9 +14,10 @@ function RegistrantsPage() {
       <NewRegistrants />
       <h3>Students</h3>
       <Students />
+      <h3>Teachers</h3>
+      <Teachers />
     </div>
   );
 }
 
-// this allows us to use <App /> in index.js
 export default RegistrantsPage;

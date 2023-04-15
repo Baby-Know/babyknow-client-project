@@ -193,18 +193,19 @@ router.get(
   }
 );
 
-//DELETE lesson
+//DELETE content
 router.delete(
-  '/:lessonId/:contentId',
+  '/:contentId',
   rejectUnauthenticated,
   rejectNonAdmin,
   async (req, res) => {
     try {
       const query = `
-        DELETE FROM "lessons_content"
-        WHERE "lessons_content".lessons_id = $1 AND "lessons_content".content_id = $2;`;
+        DELETE FROM "content"
+        WHERE "content".id = $1
+        `;
 
-      params = [req.params.lessonId, req.params.contentId];
+      params = [req.params.contentId];
 
       await pool.query(query, params);
       res.sendStatus(200);
@@ -214,5 +215,28 @@ router.delete(
     }
   }
 );
+
+router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  console.log(req.body, 'reqqqq');
+  try {
+    const queryText = `
+      UPDATE "content"
+      SET "title" = $1, "description" = $2
+      WHERE "content".id = $3;
+      `;
+
+    const params = [
+      req.body.contentName,
+      req.body.contentDescription,
+      req.body.id,
+    ];
+
+    await pool.query(queryText, params);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log('Error editing unit :', error);
+  }
+});
 
 module.exports = router;

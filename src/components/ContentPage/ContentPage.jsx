@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, CardMedia, Typography, Breadcrumbs } from "@mui/material";
+import { Player } from 'video-react';
 
 function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
@@ -11,7 +12,7 @@ function ContentPage() {
     const content = contentArray[0];
 
     console.log('content', content);
-    console.log('content.content', content?.contentContent);
+    console.log('content.contentContent', content?.contentContent);
 
 
     useEffect(() => {
@@ -39,9 +40,13 @@ function ContentPage() {
                     <></>
                 }
             </Card>
-            <CardMedia component="video" src={`${content?.contentContent}`}>
-
-            </CardMedia>
+            <video width="320" height="240" controls >
+                <source src="https://baby-know-mn.s3.us-east-2.amazonaws.com/uploads/46366e41-b9fc-4039-9dc2-d4c8224c068b-Mindful+Moments+%239.mp4" type="video/mp4"></source>
+            </video>
+            {/* <Player
+                playsInline
+                src="https://baby-know-mn.s3.us-east-2.amazonaws.com/uploads/46366e41-b9fc-4039-9dc2-d4c8224c068b-Mindful+Moments+%239.mp4"
+            /> */}
         </>
     );
 
