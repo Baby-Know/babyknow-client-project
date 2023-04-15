@@ -1,3 +1,4 @@
+
 import { combineReducers } from 'redux';
 import errors from './errors.reducer';
 import user from './user.reducer';
@@ -6,6 +7,7 @@ import contentReducer from './content.reducer';
 import conditionalForms from './conditionalForms';
 import newRegistrantsReducer from './newRegistrants.reducer';
 import studentsReducer from './students.reducer';
+import teacherReducer from "./teachers.reducer";
 import loadingReducer from './loading.reducer';
 import lessonsReducer from './lessons.reducer'
 
@@ -22,7 +24,8 @@ const rootReducer = combineReducers({
   unit,
   contentReducer,
   studentsReducer, //Contains all users with access level 1, meaning all students
-  newRegistrantsReducer,
+  newRegistrantsReducer, //Contains all users with access level 0 meaning new user
+  teacherReducer, //Contains all teachers and their students
   loadingReducer,
   lessonsReducer
 });
