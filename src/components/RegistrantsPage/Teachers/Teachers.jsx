@@ -80,7 +80,6 @@ function Teachers() {
           </Box>
         );
       })}
-      <button onClick={() => console.log(teachersData)}>c</button>
     </Box>
   );
 }
