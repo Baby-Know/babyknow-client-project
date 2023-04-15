@@ -58,7 +58,17 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
         RETURNING "id";
 
         `
-        await connect.query(contentSqlQuery, [req.body.contentToSend.content, req.body.contentToSend.title, req.body.contentToSend.description, req.body.contentToSend.isSurvey, req.body.contentToSend.isRequired, req.body.contentToSend.contentOrder, req.body.selectedId])
+        const sqlParams = [
+          req.body.contentToSend.content, 
+          req.body.contentToSend.title, 
+          req.body.contentToSend.description, 
+          req.body.contentToSend.isSurvey, 
+          req.body.contentToSend.isRequired, 
+          req.body.contentToSend.contentOrder, 
+          req.body.selectedId
+        ]
+
+        await connect.query(contentSqlQuery, sqlParams)
         await connect.query('COMMIT')
         res.sendStatus(200)
     } catch (error) {

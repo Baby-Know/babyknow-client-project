@@ -17,7 +17,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddLessonForm from './AddLessonForm/AddLessonForm';
 import AddContentForm from './AddContentForm/AddContentForm';
-import LoadingCircle from '../LoadingCircle/LoadingCircle';
+import LoadingBar from '../LoadingBar/LoadingBar';
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 
@@ -229,7 +229,7 @@ function UnitPage() {
                 )
             })}
             {isLoading ?
-                <LoadingCircle value={progress}/>
+                <LoadingBar />
                 :
                 <AddContentForm selectedId={selectedId} />
             }
