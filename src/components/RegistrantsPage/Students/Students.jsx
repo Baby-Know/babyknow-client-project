@@ -210,6 +210,7 @@ const Students = () => {
       field: "cohort.id",
       headerName: "Cohort",
       editable: false,
+      filterable: false,
       renderCell: (cellValues) => (
         <Select
           variant="standard"
@@ -234,6 +235,7 @@ const Students = () => {
       field: "teacher.id",
       headerName: "Teacher",
       editable: false,
+      filterable: false,
       renderCell: (cellValues) => (
         <Select
           variant="standard"
@@ -258,6 +260,7 @@ const Students = () => {
       field: "units",
       headerName: "Units",
       editable: false,
+      filterable: false,
       flex: 1,
       renderCell: (cellValues) => {
         //Finding specific student
@@ -315,6 +318,7 @@ const Students = () => {
       flex: 0.6,
       cellClassName: "delete-btn-column-cell",
       editable: false,
+      filterable: false,
       headerAlign: "center",
       align: "center",
       renderCell: (cellValues) => {
@@ -361,7 +365,7 @@ const Students = () => {
         );
       },
     },
-    { field: "id", headerName: "ID", hide: true },
+    { field: "id", headerName: "ID", hide: true, filterable: false },
   ];
   return (
     <Box>

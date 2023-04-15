@@ -47,7 +47,8 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
         };
 
         const usersCohortsStudentQuery = `
-        SELECT uc.cohorts_id, c.name FROM "users_cohorts" AS UC
+        SELECT 
+           uc.cohorts_id, c.name FROM "users_cohorts" AS UC
         JOIN "cohorts" AS c ON uc.cohorts_id = c.id
         WHERE uc.user_id = $1;
         `;
@@ -68,7 +69,8 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
 
         //Selecting the student's teacher
         const usersCohortsTeacherQuery = `
-        SELECT uc.user_id, u."firstName", u."lastName" FROM "users_cohorts" AS uc
+        SELECT 
+            uc.user_id, u."firstName", u."lastName" FROM "users_cohorts" AS uc
         JOIN "users" AS u ON u.id = uc.user_id
         WHERE u.access = 2 AND uc.cohorts_id = $1;
         `;
@@ -88,7 +90,8 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
         };
 
         const usersUnitsQuery = `
-        SELECT uu.id, u.id, u.name FROM "users_units" AS uu
+        SELECT 
+            uu.id, u.id, u.name FROM "users_units" AS uu
         JOIN "units" AS u ON uu.units_id = u.id
         WHERE uu.users_id = $1;
         `;
@@ -105,7 +108,9 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
 
     //Selecting all teachers and adding them to the teachers array
     const usersTeacherQuery = `
-    SELECT "id", "email", "firstName", "lastName", "organization" FROM "users" WHERE "users".access = 2;
+    SELECT 
+        "id", "email", "firstName", "lastName", "organization" FROM "users" 
+    WHERE "users".access = 2;
     `;
 
     const usersTeacherResponse = await pool.query(usersTeacherQuery);

@@ -42,6 +42,8 @@ function AddContentForm({ selectedId }) {
       }, []);
 
     function handleAddContent() {
+    function handleAddContent(event) {
+        event.preventDefault()
         {
             //dispatching survey content
             contentToSend.isSurvey ? 
@@ -86,7 +88,7 @@ function AddContentForm({ selectedId }) {
                 </DialogTitle>
                 <DialogContent>
 
-                    <form onSubmit={handleAddContent} >
+                    <form onSubmit={(event) => handleAddContent(event)} >
                         <FormControl>
                             <FormLabel id="radio-buttons-group-label">Select upload type:</FormLabel>
                             <RadioGroup
@@ -251,6 +253,7 @@ function AddContentForm({ selectedId }) {
         </Box>
     );
 
+};
 };
 
 
