@@ -37,7 +37,7 @@ CREATE TABLE "content" (
 	"description" varchar(350) NOT NULL,
 	"contentOrder" integer NOT NULL,
 	"isSurvey" BOOLEAN NOT NULL,
-	"isRequired" BOOLEAN NOT NULL,
+	"isRequired" BOOLEAN,
 	CONSTRAINT "content_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

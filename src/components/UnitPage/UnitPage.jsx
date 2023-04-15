@@ -83,15 +83,15 @@ function UnitPage() {
         });
     }
 
-    const expandAccordion = (lessonId) => {
-        if (expand.some(id => id === lessonId)) {
-            let copy = [...expand]
-            copy.splice(expand.findIndex(e => e === lessonId))
-            setExpand([...copy])
-        } else {
-            setExpand([...expand, lessonId])
-        }
-    }
+    // const expandAccordion = (lessonId) => {
+    //     if (expand.some(id => id === lessonId)) {
+    //         let copy = [...expand]
+    //         copy.splice(expand.findIndex(e => e === lessonId))
+    //         setExpand([...copy])
+    //     } else {
+    //         setExpand([...expand, lessonId])
+    //     }
+    // }
 
     const selectContent = (id) => {
         history.push(`/content/${id}`)
@@ -123,7 +123,9 @@ function UnitPage() {
                             </Card>
                             : <></>}
 
-                        <Accordion id="accordion" onClick={() => expandAccordion(lesson.lessonId)} expanded={expand.some(id => id === lesson.lessonId) ? true : false} >
+                            {/* onClick={() => expandAccordion(lesson.lessonId)} expanded={expand.some(id => id === lesson.lessonId) ? true : false} */}
+
+                        <Accordion id="accordion"  >
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
@@ -200,8 +202,8 @@ function UnitPage() {
                                             payload: true,
                                         });
                                         setSelectedId(lesson.lessonId)
-                                        expandAccordion(lesson.lessonId);
-                                            { expand.some(id => id === lesson.lessonId) ? true : false }
+                                        // expandAccordion(lesson.lessonId);
+                                        //     { expand.some(id => id === lesson.lessonId) ? true : false }
                                     }}>
                                         Add Content to {lesson.lessonName}
                                 </Button> 
