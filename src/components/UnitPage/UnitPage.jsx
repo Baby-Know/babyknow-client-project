@@ -14,6 +14,7 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
+import ClearIcon from "@mui/icons-material/Clear";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddLessonForm from './AddLessonForm/AddLessonForm';
 import AddContentForm from './AddContentForm/AddContentForm'
@@ -25,6 +26,7 @@ function UnitPage() {
     const dispatch = useDispatch();
     const history = useHistory();
     const unit = useSelector(store => store.unit);
+    const user = useSelector(store => store.user)
     const theme = useTheme();
     const colors = tokens(theme.palette.mode)
     const [selectedId, setSelectedId] = useState(0);
@@ -53,6 +55,11 @@ function UnitPage() {
             payload: {ids, contentToEdit}
         });
 
+        setContentToEdit({ id: 0, contentName: '', contentDescription: '' })
+    }
+
+    const cancelEdit = () => {
+        setLessonToEdit({ id: 0, lessonName: '', lessonDescription: '' })
         setContentToEdit({ id: 0, contentName: '', contentDescription: '' })
     }
 
@@ -135,9 +142,10 @@ function UnitPage() {
                                                     {unit[i].contentTitle[index]}
                                                 </Typography>
 
-                                                <Typography id='contentDescription'>
+                                                {/* do we want? */}
+                                                {/* <Typography id='contentDescription'>
                                                     {unit[i].contentDescription[index]}
-                                                </Typography>
+                                                </Typography> */}
                                             </div> : 
                                             <>
                                                 <div><input onChange={(event) => setContentToEdit({...contentToEdit, contentName: event.target.value})} className='lessonInputs' placeholder='content name' value={contentToEdit.contentName} /></div>
@@ -146,19 +154,27 @@ function UnitPage() {
                                             }
 
                                             {/* icons for content */}
+                                            {user.access === 3 ?
                                             <div id='contentIcons'>
-                                                { contentToEdit.id === 0 ?
+                                                { id !== contentToEdit.id ?
+                                                <>
                                                 <IconButton onClick={() => setContentToEdit({ id: id, contentName: lesson.contentTitle[index], contentDescription: lesson.contentDescription[index] })}>
                                                     <EditIcon sx={{ color: 'white'}} />
-                                                </IconButton> :
+                                                </IconButton>
+                                                <IconButton onClick={() => deleteContent({contentId: id, unitId: lesson.unitId})}>
+                                                    <DeleteForeverIcon sx={{ color: 'white'}} />
+                                                </IconButton> 
+                                                </> :
+                                                <>
                                                 <IconButton onClick={() => editContent({contentId: id, unitId: lesson.unitId})}>
                                                     <DoneIcon sx={{ color: 'white'}} />
                                                 </IconButton>
-                                                }
-                                                <IconButton onClick={() => deleteContent({contentId: id, unitId: lesson.unitId})}>
-                                                    <DeleteForeverIcon sx={{ color: 'white'}} />
+                                                <IconButton onClick={cancelEdit} >
+                                                    <ClearIcon sx={{ color: 'white'}}  />
                                                 </IconButton>
-                                            </div>
+                                                </>
+                                                } 
+                                            </div> : <></> }
 
                                         </ div> 
                                         }
@@ -166,8 +182,8 @@ function UnitPage() {
                                     )
                                 })}
     
-
-                                {lesson.lessonName ? 
+                            
+                                {lesson.lessonName && user.access === 3 ? 
                                 <div id='lessonBottom'>
                                 <Button onClick={() => {
                                         dispatch({
@@ -180,17 +196,24 @@ function UnitPage() {
                                 </Button> 
                                 <div>
                                     {/* lesson icons */}
-                                    { lessonToEdit.id === 0 ?
+                                    { lesson.lessonId !== lessonToEdit.id ?
+                                    <>
                                     <IconButton onClick={() => setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription })}>
-                                        <EditIcon />
-                                    </IconButton> :
-                                    <IconButton onClick={() => editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
-                                        <DoneIcon />
+                                        <EditIcon sx={{ color: '#276184'}} />
                                     </IconButton>
-                                    }
                                     <IconButton onClick={() => deleteLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
-                                        <DeleteForeverIcon />
+                                        <DeleteForeverIcon sx={{ color: '#276184'}} />
+                                    </IconButton> 
+                                    </>:
+                                    <>
+                                    <IconButton onClick={() => editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
+                                        <DoneIcon sx={{ color: '#276184'}} />
                                     </IconButton>
+                                    <IconButton onClick={cancelEdit} >
+                                        <ClearIcon sx={{ color: '#276184'}}  />
+                                    </IconButton>
+                                    </>
+                                    }
                                 </div>
                                 </ div>
                              : <></>}
@@ -202,6 +225,7 @@ function UnitPage() {
             <AddContentForm selectedId={selectedId} />
 
             <div id="addLessonParent">
+            {user.access === 3 ?
             <Button
             id='addLesson'
             onClick={() => {
@@ -212,7 +236,7 @@ function UnitPage() {
                 }}
             >
                 Add Lesson
-            </Button>
+            </Button> : <></> }
             </div>
         </Box>
         
