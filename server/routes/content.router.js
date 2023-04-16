@@ -141,7 +141,7 @@ router.delete(
     }
   );
 
-  router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  router.put('/:id', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     console.log(req.body, 'reqqqq')
     try {
       const queryText = `
@@ -159,6 +159,25 @@ router.delete(
       console.log('Error editing unit :', error);
     }
   });
+
+  router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+    try {
+      const queryText = `
+      UPDATE "content"
+      SET "contentOrder" = $1, "lessons_id" = $2
+      WHERE "content".id = $3;
+      `;
+  
+      const params = [req.body.order, req.body.lessonId, req.body.contentId]
+  
+      await pool.query(queryText, params);
+  
+      res.sendStatus(200);
+    } catch (error) {
+      console.log('Error swapping content :', error);
+    }
+  });
+  
 
 
 module.exports = router;

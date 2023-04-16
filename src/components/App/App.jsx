@@ -70,26 +70,23 @@ function App() {
                   <ContentPage />
                 </ProtectedRoute>
 
-        
-                <ProtectedRoute
-                  exact
-                  path="/registrants"
-                >
-                  <RegistrantsPage />
+              
+                <ProtectedRoute exact path="/registrants">
+                  {user.access === 3 ?
+                  (<RegistrantsPage />) : (<Redirect to='/about'/>)
+                  }
                 </ProtectedRoute> 
-
-                <ProtectedRoute
-                  exact
-                  path="/myStudents"
-                >
-                  <MyStudentsPage />
+                
+                <ProtectedRoute exact path="/myStudents">
+                {user.access === 2 ?
+                  (<MyStudentsPage />) : (<Redirect to='/about'/>)
+                }
                 </ProtectedRoute> 
-
-                <ProtectedRoute
-                  exact
-                  path="/myTeacher"
-                >
-                  <MyTeacherPage />
+              
+                <ProtectedRoute exact path="/myTeacher">
+                  {user.access === 1 ?
+                    (<MyTeacherPage />) : (<Redirect to='/about'/>)
+                  }
                 </ProtectedRoute> 
 
                 <ProtectedRoute

@@ -6,6 +6,7 @@ import AddCohortForm from "./AddCohortForm/AddCohortForm";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
+import DragHandleIcon from '@mui/icons-material/DragHandle';
 import {
   Box,
   Button,
@@ -34,6 +35,8 @@ function CoursePage() {
     unitOrder: "",
     subtitle: "",
   });
+
+  const [unitToSwap, setUnitToSwap] = useState({id: 0, order: 0})
 
   useEffect(() => {
     dispatch({ type: "GET_UNITS" });
@@ -81,6 +84,19 @@ function CoursePage() {
 
   const selectUnit = (id) => {
     history.push(`/unit/${id}`)
+  }
+
+
+  const swapUnits = (otherUnitToSwap) => {
+    dispatch({
+      type: "SWAP_UNITS",
+      payload: {id: unitToSwap.id, order: otherUnitToSwap.order},
+    });
+
+    dispatch({
+      type: "SWAP_UNITS",
+      payload: {id: otherUnitToSwap.id, order: unitToSwap.order},
+    });
   }
 
   return (
@@ -163,9 +179,14 @@ function CoursePage() {
                       </Card>
                   </form>
                 ) : (
-                    <Card key={unit.id} sx={{ width: 200, height: 200, textAlign: 'center', justifyContent: 'center', backgroundColor: 'rgb(245, 245, 245)' }}>
-                      <CardContent sx={{ mb: 4 }} onClick={() => selectUnit(unit.id)}>
-                        <p style={{ fontWeight: 'bold', fontSize: 18 }} >{unit.name}</p>
+                    <Card draggable={user.access === 3 ? 'true' : 'false'} onDragStart={() => setUnitToSwap({id: unit.id , order: unit.unitOrder}) } onDragOver={(event) => event.preventDefault()} onDrop={() => swapUnits({id: unit.id, order: unit.unitOrder})} key={unit.id} sx={{ width: 200, height: 200, textAlign: 'center', justifyContent: 'center', backgroundColor: 'rgb(245, 245, 245)' }}>
+                      {user.access === 3 ?
+                      <IconButton>
+                        <DragHandleIcon sx={{ 'cursor': 'grab'}} />
+                      </IconButton> : <></>
+                      }
+                      <CardContent sx={{ mb: 2 }} onClick={() => selectUnit(unit.id)}>
+                        <p style={{ marginTop: '0', fontWeight: 'bold', fontSize: 18 }} >{unit.name}</p>
                         <p>{unit.subtitle}</p>
                       </CardContent >
                       {user.access === 3 ?

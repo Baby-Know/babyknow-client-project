@@ -49,7 +49,7 @@ router.delete(
   }
 );
 
-router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.put('/:id', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const queryText = `
     UPDATE "lessons"
@@ -64,6 +64,24 @@ router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     res.sendStatus(200);
   } catch (error) {
     console.log('Error editing unit :', error);
+  }
+});
+
+router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
+    UPDATE "lessons"
+    SET "lessonOrder" = $1
+    WHERE "lessons".id = $2;
+    `;
+
+    const params = [req.body.order, req.body.lessonId]
+
+    await pool.query(queryText, params);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log('Error swapping lessons :', error);
   }
 });
 

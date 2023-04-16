@@ -262,6 +262,4 @@ function AddContentForm({ selectedId, selectedUnitId }) {
 
 };
 
-
-
 export default AddContentForm;

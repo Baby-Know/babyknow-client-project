@@ -38,6 +38,9 @@ function UnitPage() {
 
     const [lessonToEdit, setLessonToEdit] = useState({id: 0, lessonName: '', lessonDescription: ''})
     const [contentToEdit, setContentToEdit] = useState({id: 0, contentName: '', contentDescription: ''})
+    const [lessonToSwap, setLessonToSwap] = useState({lessonId: 0 , order: 0})
+    const [contentToSwap, setContentToSwap] = useState({contentId: 0 , lessonId: 0, order: 0})
+    const [swappingContent, setSwappingContent] = useState(false)
 
     useEffect(() => {
         dispatch({
@@ -83,18 +86,38 @@ function UnitPage() {
         });
     }
 
-    // const expandAccordion = (lessonId) => {
-    //     if (expand.some(id => id === lessonId)) {
-    //         let copy = [...expand]
-    //         copy.splice(expand.findIndex(e => e === lessonId))
-    //         setExpand([...copy])
-    //     } else {
-    //         setExpand([...expand, lessonId])
-    //     }
-    // }
-
     const selectContent = (id) => {
         history.push(`/content/${id}`)
+    }
+
+    const swapLessons = (otherLessonToSwap) => {
+        if ( !swappingContent ) {
+        console.log('swap')
+        dispatch({
+            type: "SWAP_LESSONS",
+            payload: {lessonId: lessonToSwap.lessonId, order: otherLessonToSwap.order, unitId: otherLessonToSwap.unitId}
+          });
+      
+          dispatch({
+            type: "SWAP_LESSONS",
+            payload: {lessonId: otherLessonToSwap.lessonId, order: lessonToSwap.order, unitId: otherLessonToSwap.unitId}
+          });
+        } else console.log('nothing')
+    }
+
+    const swapContent = (otherContentToSwap) => {
+        if ( swappingContent ) {
+            console.log('swap: ', contentToSwap, otherContentToSwap)
+            dispatch({
+                type: "SWAP_CONTENT",
+                payload: {contentId: contentToSwap.contentId, order: otherContentToSwap.order, lessonId: otherContentToSwap.lessonId, unitId: otherContentToSwap.unitId}
+            });
+      
+            dispatch({
+                type: "SWAP_CONTENT",
+                payload: {contentId: otherContentToSwap.contentId, order: contentToSwap.order, lessonId: contentToSwap.lessonId, unitId: otherContentToSwap.unitId}
+            });
+        } else console.log('nothing')
     }
 
 
@@ -123,20 +146,26 @@ function UnitPage() {
                             </Card>
                             : <></>}
 
-                            {/* onClick={() => expandAccordion(lesson.lessonId)} expanded={expand.some(id => id === lesson.lessonId) ? true : false} */}
-
-                        <Accordion id="accordion">
-                            <AccordionSummary
+                        <Accordion id="accordion" >
+                            <AccordionSummary 
+                                draggable={user.access === 3 ? 'true' : 'false'} 
+                                onDragStart={() => { 
+                                    setLessonToSwap({lessonId: lesson.lessonId , order: lesson.lessonOrder}) 
+                                    setSwappingContent(false)
+                                }} 
+                                onDragOver={(event) => event.preventDefault()} 
+                                onDrop={() => swapLessons({lessonId: lesson.lessonId , order: lesson.lessonOrder, unitId: lesson.unitId})} 
                                 expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
                             >
                                 {/* lesson title */}
                                 {lesson.lessonId !== lessonToEdit.id ?
                                 <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>
                                     {lesson.lessonName}
                                 </Typography>  :
-                                <input onChange={(event) => setLessonToEdit({...lessonToEdit, lessonName: event.target.value})} className='lessonInputs' placeholder='lesson name' value={lessonToEdit.lessonName} />
+                                <input 
+                                onChange={(event) => setLessonToEdit({...lessonToEdit, lessonName: event.target.value})} 
+                                className='lessonInputs' placeholder='lesson name' value={lessonToEdit.lessonName} 
+                                />
                                 }
 
                             </AccordionSummary>
@@ -152,10 +181,17 @@ function UnitPage() {
 
                                 {unit[i].contentId?.map((id, index) => {
                                     return (
-                                    <div key={index}>
+                                    <div key={index} >
                                         {unit[i].contentId[index] === null ?  <></> :
-                                        <div id='content'>
-
+                                        <div id='content'
+                                        draggable={user.access === 3 ? 'true' : 'false'} 
+                                        onDragStart={() => { 
+                                            setContentToSwap({contentId: id, lessonId: lesson.lessonId, order: unit[i].contentOrder[index]})  
+                                            setSwappingContent(true)
+                                        }}
+                                        onDragOver={(event) => event.preventDefault()} 
+                                        onDrop={() => swapContent({contentId: id , order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId})} 
+                                        >
                                             {/* content shown on screen */}
                                             { id !== contentToEdit.id ?
                                             <div  onClick={() => selectContent(id)}>
@@ -244,6 +280,7 @@ function UnitPage() {
                     </div>
                 )
             })}
+            
             {isLoading ?
                 <LoadingBar />
                 :
