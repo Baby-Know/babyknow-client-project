@@ -32,11 +32,10 @@ function UnitPage() {
     const colors = tokens(theme.palette.mode)
 
     const [selectedId, setSelectedId] = useState(0);
-    const [expand, setExpand] = useState([]);
-    const [progress, setProgress] = useState(10);
+    const [selectedUnitId, setSelectedUnitId] = useState(0);
 
     const isLoading = useSelector((store) => store.loadingReducer);
-    const lessonIdFromUnitPage = useSelector((store) => store.lessonsReducer);
+
     const [lessonToEdit, setLessonToEdit] = useState({id: 0, lessonName: '', lessonDescription: ''})
     const [contentToEdit, setContentToEdit] = useState({id: 0, contentName: '', contentDescription: ''})
     const [lessonToSwap, setLessonToSwap] = useState({lessonId: 0 , order: 0})
@@ -249,6 +248,7 @@ function UnitPage() {
                                             payload: true,
                                         });
                                         setSelectedId(lesson.lessonId)
+                                        setSelectedUnitId(lesson.unitId)
                                     }}>
                                         Add Content to {lesson.lessonName}
                                 </Button> 
@@ -283,8 +283,8 @@ function UnitPage() {
             
             {isLoading ?
                 <LoadingBar />
-                : 
-                <AddContentForm selectedId={selectedId} />
+                :
+                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
             }
 
             <div id="addLessonParent">

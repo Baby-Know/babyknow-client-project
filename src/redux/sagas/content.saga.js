@@ -9,6 +9,7 @@ function* addContent(action) {
         yield put({ type: 'SET_LOADING_TRUE' })
         yield axios.post('/api/content', action.payload);
         yield put({ type: 'SET_LOADING_FALSE' })
+        yield put({ type: "GET_UNIT", payload: action.payload.selectedUnitId });
     } catch (error) {
         console.error('error posting content', error)
         yield put({ type: 'SET_LOADING_FALSE' })
@@ -36,6 +37,7 @@ function* addContentWithUpload(action) {
         });
         yield put({ type: 'SET_VIDEO_UPLOAD', payload: response.data })
         yield put({ type: 'SET_LOADING_FALSE' })
+        yield put({ type: "GET_UNIT", payload: action.payload.selectedUnitId });
 
     } catch (error) {
         console.log('error uploading video', error)

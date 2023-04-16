@@ -20,13 +20,12 @@ import Close from "@mui/icons-material/Close";
 import { useState } from "react";
 
 
-function AddContentForm({ selectedId }) {
+function AddContentForm({ selectedId, selectedUnitId }) {
     const dispatch = useDispatch();
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
     const showForm = useSelector((store) => store.conditionalForms?.showContentForm);
-
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
@@ -48,14 +47,14 @@ function AddContentForm({ selectedId }) {
             contentToSend.isSurvey ? 
             dispatch({
                 type: "ADD_CONTENT",
-                payload: { contentToSend, selectedId },
+                payload: { contentToSend, selectedId, selectedUnitId },
                 callback: setContentToSend
             })
     :
             // dispatching video content
             dispatch({
                 type: "ADD_CONTENT_WITH_UPLOAD",
-                payload: { contentToSend, selectedId },
+                payload: { contentToSend, selectedId, selectedUnitId },
                 callback: setContentToSend
             })
         };   
@@ -240,7 +239,16 @@ function AddContentForm({ selectedId }) {
                                     />
                                     <FormControlLabel control={<Checkbox />} label="Required"
                                         onChange={() => { setContentToSend({ ...contentToSend, isRequired: !contentToSend.isRequired }) }} />
-                                    <Button variant="outlined" type='submit' value='Submit'> Save</Button>
+                                     <Button 
+                                    variant="outlined" 
+                                    type='submit' 
+                                    value='Submit'
+                                    onClick={() => {
+                                        dispatch({
+                                          type: "SET_SHOW_ADD_CONTENT",
+                                          payload: false
+                                        });
+                                      }}> Save</Button>
                                 </>
                             }
 
@@ -253,8 +261,5 @@ function AddContentForm({ selectedId }) {
     );
 
 };
-
-
-
 
 export default AddContentForm;
