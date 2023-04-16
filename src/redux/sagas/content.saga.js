@@ -5,14 +5,14 @@ import withReactContent from 'sweetalert2-react-content';
 
 // survey upload generator function
 function* addContent(action) {
-    try {
-        yield put({ type: 'SET_LOADING_TRUE' })
-        yield axios.post('/api/content', action.payload);
-        yield put({ type: 'SET_LOADING_FALSE' })
-    } catch (error) {
-        console.error('error posting content', error)
-        yield put({ type: 'SET_LOADING_FALSE' })
-    }
+  try {
+    yield put({ type: 'SET_LOADING_TRUE' });
+    yield axios.post('/api/content', action.payload);
+    yield put({ type: 'SET_LOADING_FALSE' });
+  } catch (error) {
+    console.error('error posting content', error);
+    yield put({ type: 'SET_LOADING_FALSE' });
+  }
 }
 
 // video upload generator function
@@ -64,37 +64,29 @@ function* deleteContent(action) {
     });
     if (sweet.isConfirmed) {
       yield axios.delete(`/api/content/${action.payload.contentId}`);
-      yield put({ type: "GET_UNIT", payload: action.payload.unitId });
+      yield put({ type: 'GET_UNIT', payload: action.payload.unitId });
     }
   } catch (error) {
-<<<<<<< HEAD
     console.error('error deleting content', error);
   }
-=======
-      console.error('error deleting content', error)
-
-    }
->>>>>>> b5fbd4953ab44515c7c9d01b955c965d14875c09
 }
 
 function* updateContent(action) {
-  console.log(action.payload)
+  console.log(action.payload);
   try {
     yield axios.put(`/api/content`, action.payload.contentToEdit);
-    yield put({ type: "GET_UNIT", payload: action.payload.ids.unitId });
+    yield put({ type: 'GET_UNIT', payload: action.payload.ids.unitId });
   } catch (error) {
-    console.error("Error updating content", error);
+    console.error('Error updating content', error);
   }
 }
 
-  
-
 function* contentSaga() {
-    yield takeLatest("ADD_CONTENT", addContent);
-    yield takeLatest("ADD_CONTENT_WITH_UPLOAD", addContentWithUpload);
-    yield takeLatest("GET_CONTENT", getContent);
-    yield takeLatest("DELETE_CONTENT", deleteContent);
-    yield takeLatest("UPDATE_CONTENT", updateContent);
+  yield takeLatest('ADD_CONTENT', addContent);
+  yield takeLatest('ADD_CONTENT_WITH_UPLOAD', addContentWithUpload);
+  yield takeLatest('GET_CONTENT', getContent);
+  yield takeLatest('DELETE_CONTENT', deleteContent);
+  yield takeLatest('UPDATE_CONTENT', updateContent);
 }
 
 export default contentSaga;

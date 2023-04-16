@@ -27,9 +27,9 @@ function UnitPage() {
     const dispatch = useDispatch();
     const history = useHistory();
     const unit = useSelector(store => store.unit);
-    const user = useSelector(store => store.user)
+    const user = useSelector(store => store.user);
     const theme = useTheme();
-    const colors = tokens(theme.palette.mode)
+    const colors = tokens(theme.palette.mode);
 
     const [selectedId, setSelectedId] = useState(0);
     const [expand, setExpand] = useState([]);
@@ -37,8 +37,8 @@ function UnitPage() {
 
     const isLoading = useSelector((store) => store.loadingReducer);
     const lessonIdFromUnitPage = useSelector((store) => store.lessonsReducer);
-    const [lessonToEdit, setLessonToEdit] = useState({id: 0, lessonName: '', lessonDescription: ''})
-    const [contentToEdit, setContentToEdit] = useState({id: 0, contentName: '', contentDescription: ''})
+    const [lessonToEdit, setLessonToEdit] = useState({ id: 0, lessonName: '', lessonDescription: '' });
+    const [contentToEdit, setContentToEdit] = useState({ id: 0, contentName: '', contentDescription: '' });
 
     useEffect(() => {
         dispatch({
@@ -47,10 +47,10 @@ function UnitPage() {
         });
         const timer = setInterval(() => {
             setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-          }, 1000);
-          return () => {
+        }, 1000);
+        return () => {
             clearInterval(timer);
-          }
+        };
     }, []);
 
     // const selectedLesson = (unitId, lessonId) => {
@@ -68,25 +68,25 @@ function UnitPage() {
     const editLesson = (ids) => {
         dispatch({
             type: "UPDATE_LESSON",
-            payload: {ids, lessonToEdit}
+            payload: { ids, lessonToEdit }
         });
 
-        setLessonToEdit({ id: 0, lessonName: '', lessonDescription: '' })
-    }
+        setLessonToEdit({ id: 0, lessonName: '', lessonDescription: '' });
+    };
 
     const editContent = (ids) => {
         dispatch({
             type: "UPDATE_CONTENT",
-            payload: {ids, contentToEdit}
+            payload: { ids, contentToEdit }
         });
 
-        setContentToEdit({ id: 0, contentName: '', contentDescription: '' })
-    }
+        setContentToEdit({ id: 0, contentName: '', contentDescription: '' });
+    };
 
     const cancelEdit = () => {
-        setLessonToEdit({ id: 0, lessonName: '', lessonDescription: '' })
-        setContentToEdit({ id: 0, contentName: '', contentDescription: '' })
-    }
+        setLessonToEdit({ id: 0, lessonName: '', lessonDescription: '' });
+        setContentToEdit({ id: 0, contentName: '', contentDescription: '' });
+    };
 
     const deleteLesson = (ids) => {
         dispatch({
@@ -100,7 +100,7 @@ function UnitPage() {
             type: "DELETE_CONTENT",
             payload: ids
         });
-    }
+    };
 
     // const expandAccordion = (lessonId) => {
     //     if (expand.some(id => id === lessonId)) {
@@ -112,9 +112,9 @@ function UnitPage() {
     //     }
     // }
 
-    const selectContent = (id) => {
-        history.push(`/content/${id}`)
-    }
+    // const selectContent = (id) => {
+    //     history.push(`/content/${id}`)
+    // }
 
 
     return (
@@ -143,7 +143,7 @@ function UnitPage() {
                             </Card>
                             : <></>}
 
-                            {/* onClick={() => expandAccordion(lesson.lessonId)} expanded={expand.some(id => id === lesson.lessonId) ? true : false} */}
+                        {/* onClick={() => expandAccordion(lesson.lessonId)} expanded={expand.some(id => id === lesson.lessonId) ? true : false} */}
 
                         <Accordion id="accordion"  >
                             <AccordionSummary
@@ -153,113 +153,113 @@ function UnitPage() {
                             >
                                 {/* lesson title */}
                                 {lesson.lessonId !== lessonToEdit.id ?
-                                <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>
-                                    {lesson.lessonName}
-                                </Typography>  :
-                                <input onChange={(event) => setLessonToEdit({...lessonToEdit, lessonName: event.target.value})} className='lessonInputs' placeholder='lesson name' value={lessonToEdit.lessonName} />
+                                    <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>
+                                        {lesson.lessonName}
+                                    </Typography> :
+                                    <input onChange={(event) => setLessonToEdit({ ...lessonToEdit, lessonName: event.target.value })} className='lessonInputs' placeholder='lesson name' value={lessonToEdit.lessonName} />
                                 }
 
                             </AccordionSummary>
                             <AccordionDetails>
                                 {/* lesson description */}
                                 {lesson.lessonId !== lessonToEdit.id ?
-                                <Typography>
-                                    {lesson.lessonDescription}
-                                </Typography> :
-                                <input onChange={(event) => setLessonToEdit({...lessonToEdit, lessonDescription: event.target.value})} className='lessonInputs' placeholder='lesson description' value={lessonToEdit.lessonDescription} />
+                                    <Typography>
+                                        {lesson.lessonDescription}
+                                    </Typography> :
+                                    <input onChange={(event) => setLessonToEdit({ ...lessonToEdit, lessonDescription: event.target.value })} className='lessonInputs' placeholder='lesson description' value={lessonToEdit.lessonDescription} />
                                 }
 
 
                                 {unit[i].contentId?.map((id, index) => {
                                     return (
-                                    <div key={index}>
-                                        {unit[i].contentId[index] === null ?  <></> :
-                                        <div id='content'>
+                                        <div key={index}>
+                                            {unit[i].contentId[index] === null ? <></> :
+                                                <div id='content'>
 
-                                            {/* content shown on screen */}
-                                            { id !== contentToEdit.id ?
-                                            <div  onClick={() => selectContent(id)}>
-                                                <Typography id='contentTitle'>
-                                                    {unit[i].contentTitle[index]}
-                                                </Typography>
+                                                    {/* content shown on screen */}
+                                                    {id !== contentToEdit.id ?
+                                                        <div onClick={() => selectContent(id)}>
+                                                            <Typography id='contentTitle'>
+                                                                {unit[i].contentTitle[index]}
+                                                            </Typography>
 
-                                                {/* do we want? */}
-                                                {/* <Typography id='contentDescription'>
+                                                            {/* do we want? */}
+                                                            {/* <Typography id='contentDescription'>
                                                     {unit[i].contentDescription[index]}
                                                 </Typography> */}
-                                            </div> : 
-                                            <>
-                                                <div><input onChange={(event) => setContentToEdit({...contentToEdit, contentName: event.target.value})} className='lessonInputs' placeholder='content name' value={contentToEdit.contentName} /></div>
-                                                <div><input onChange={(event) => setContentToEdit({...contentToEdit, contentDescription: event.target.value})} className='lessonInputs' placeholder='content description' value={contentToEdit.contentDescription} /></div>
-                                            </>
-                                            }
+                                                        </div> :
+                                                        <>
+                                                            <div><input onChange={(event) => setContentToEdit({ ...contentToEdit, contentName: event.target.value })} className='lessonInputs' placeholder='content name' value={contentToEdit.contentName} /></div>
+                                                            <div><input onChange={(event) => setContentToEdit({ ...contentToEdit, contentDescription: event.target.value })} className='lessonInputs' placeholder='content description' value={contentToEdit.contentDescription} /></div>
+                                                        </>
+                                                    }
 
-                                            {/* icons for content */}
-                                            {user.access === 3 ?
-                                            <div id='contentIcons'>
-                                                { id !== contentToEdit.id ?
+                                                    {/* icons for content */}
+                                                    {user.access === 3 ?
+                                                        <div id='contentIcons'>
+                                                            {id !== contentToEdit.id ?
+                                                                <>
+                                                                    <IconButton onClick={() => setContentToEdit({ id: id, contentName: lesson.contentTitle[index], contentDescription: lesson.contentDescription[index] })}>
+                                                                        <EditIcon sx={{ color: 'white' }} />
+                                                                    </IconButton>
+                                                                    <IconButton onClick={() => deleteContent({ contentId: id, unitId: lesson.unitId })}>
+                                                                        <DeleteForeverIcon sx={{ color: 'white' }} />
+                                                                    </IconButton>
+                                                                </> :
+                                                                <>
+                                                                    <IconButton onClick={() => editContent({ contentId: id, unitId: lesson.unitId })}>
+                                                                        <DoneIcon sx={{ color: 'white' }} />
+                                                                    </IconButton>
+                                                                    <IconButton onClick={cancelEdit} >
+                                                                        <ClearIcon sx={{ color: 'white' }} />
+                                                                    </IconButton>
+                                                                </>
+                                                            }
+                                                        </div> : <></>}
+
+                                                </ div>
+                                            }
+                                        </div>
+                                    );
+                                })}
+
+
+                                {lesson.lessonName && user.access === 3 ?
+                                    <div id='lessonBottom'>
+                                        <Button onClick={() => {
+                                            dispatch({
+                                                type: "SET_SHOW_ADD_CONTENT",
+                                                payload: true,
+                                            });
+                                            setSelectedId(lesson.lessonId);
+                                            // expandAccordion(lesson.lessonId);
+                                            //     { expand.some(id => id === lesson.lessonId) ? true : false }
+                                        }}>
+                                            Add Content to {lesson.lessonName}
+                                        </Button>
+                                        <div>
+                                            {/* lesson icons */}
+                                            {lesson.lessonId !== lessonToEdit.id ?
                                                 <>
-                                                <IconButton onClick={() => setContentToEdit({ id: id, contentName: lesson.contentTitle[index], contentDescription: lesson.contentDescription[index] })}>
-                                                    <EditIcon sx={{ color: 'white'}} />
-                                                </IconButton>
-                                                <IconButton onClick={() => deleteContent({contentId: id, unitId: lesson.unitId})}>
-                                                    <DeleteForeverIcon sx={{ color: 'white'}} />
-                                                </IconButton> 
+                                                    <IconButton onClick={() => setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription })}>
+                                                        <EditIcon sx={{ color: '#276184' }} />
+                                                    </IconButton>
+                                                    <IconButton onClick={() => deleteLesson({ lessonId: lesson.lessonId, unitId: lesson.unitId })}>
+                                                        <DeleteForeverIcon sx={{ color: '#276184' }} />
+                                                    </IconButton>
                                                 </> :
                                                 <>
-                                                <IconButton onClick={() => editContent({contentId: id, unitId: lesson.unitId})}>
-                                                    <DoneIcon sx={{ color: 'white'}} />
-                                                </IconButton>
-                                                <IconButton onClick={cancelEdit} >
-                                                    <ClearIcon sx={{ color: 'white'}}  />
-                                                </IconButton>
+                                                    <IconButton onClick={() => editLesson({ lessonId: lesson.lessonId, unitId: lesson.unitId })}>
+                                                        <DoneIcon sx={{ color: '#276184' }} />
+                                                    </IconButton>
+                                                    <IconButton onClick={cancelEdit} >
+                                                        <ClearIcon sx={{ color: '#276184' }} />
+                                                    </IconButton>
                                                 </>
-                                                } 
-                                            </div> : <></> }
-
-                                        </ div> 
-                                        }
-                                    </div>
-                                    )
-                                })}
-    
-                            
-                                {lesson.lessonName && user.access === 3 ? 
-                                <div id='lessonBottom'>
-                                <Button onClick={() => {
-                                        dispatch({
-                                            type: "SET_SHOW_ADD_CONTENT",
-                                            payload: true,
-                                        });
-                                        setSelectedId(lesson.lessonId)
-                                        // expandAccordion(lesson.lessonId);
-                                        //     { expand.some(id => id === lesson.lessonId) ? true : false }
-                                    }}>
-                                        Add Content to {lesson.lessonName}
-                                </Button> 
-                                <div>
-                                    {/* lesson icons */}
-                                    { lesson.lessonId !== lessonToEdit.id ?
-                                    <>
-                                    <IconButton onClick={() => setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription })}>
-                                        <EditIcon sx={{ color: '#276184'}} />
-                                    </IconButton>
-                                    <IconButton onClick={() => deleteLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
-                                        <DeleteForeverIcon sx={{ color: '#276184'}} />
-                                    </IconButton> 
-                                    </>:
-                                    <>
-                                    <IconButton onClick={() => editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
-                                        <DoneIcon sx={{ color: '#276184'}} />
-                                    </IconButton>
-                                    <IconButton onClick={cancelEdit} >
-                                        <ClearIcon sx={{ color: '#276184'}}  />
-                                    </IconButton>
-                                    </>
-                                    }
-                                </div>
-                                </ div>
-                             : <></>}
+                                            }
+                                        </div>
+                                    </ div>
+                                    : <></>}
                             </AccordionDetails>
                         </Accordion>
                     </div>
@@ -272,18 +272,18 @@ function UnitPage() {
             }
 
             <div id="addLessonParent">
-            {user.access === 3 ?
-            <Button
-            id='addLesson'
-            onClick={() => {
-                dispatch({
-                    type: "SET_SHOW_ADD_LESSON",
-                    payload: true,
-                });
-                }}
-            >
-                Add Lesson
-            </Button> : <></> }
+                {user.access === 3 ?
+                    <Button
+                        id='addLesson'
+                        onClick={() => {
+                            dispatch({
+                                type: "SET_SHOW_ADD_LESSON",
+                                payload: true,
+                            });
+                        }}
+                    >
+                        Add Lesson
+                    </Button> : <></>}
             </div>
         </Box>
 
