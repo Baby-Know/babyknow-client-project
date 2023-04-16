@@ -29,7 +29,6 @@ function ContentPage() {
                     <></>
                 }
             </Card>
-            <video src="https://baby-know-mn.s3.us-east-2.amazonaws.com/uploads/5b0e441c-51c8-4502-9021-01d69fac8a70-Mindful+Moments+%239.mp4" width="750" height="500" controls > </video>
         </>
 
     )
