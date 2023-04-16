@@ -84,18 +84,18 @@ function Nav() {
             </Button>
 
             {user.access === 3 ?
-            <Button onClick={() => history.push("/registrants")}>
-              <Typography variant="body1">Registrants</Typography>
-            </Button> : user.access === 2 ?
-            <Button onClick={() => history.push("/myStudents")}>
-              <Typography variant="body1">My Students</Typography>
-            </Button> : user.access === 1 ?
-            <Button onClick={() => history.push("/myTeacher")}>
-              <Typography variant="body1">My Teacher</Typography>
-            </Button> :
-            <Button onClick={() => history.push("/about")}>
-              <Typography variant="body1">Contacts</Typography>
-            </Button>}
+              <Button onClick={() => history.push("/registrants")}>
+                <Typography variant="body1">Registrants</Typography>
+              </Button> : user.access === 2 ?
+                <Button onClick={() => history.push("/myStudents")}>
+                  <Typography variant="body1">My Students</Typography>
+                </Button> : user.access === 1 ?
+                  <Button onClick={() => history.push("/myTeacher")}>
+                    <Typography variant="body1">My Teacher</Typography>
+                  </Button> :
+                  <Button onClick={() => history.push("/about")}>
+                    <Typography variant="body1">Contacts</Typography>
+                  </Button>}
 
 
             <Button

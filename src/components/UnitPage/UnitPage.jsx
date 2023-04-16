@@ -112,11 +112,6 @@ function UnitPage() {
     //     }
     // }
 
-    // const selectContent = (id) => {
-    //     history.push(`/content/${id}`)
-    // }
-
-
     return (
         <Box sx={{
             "& .MuiButton-sizeMedium": {

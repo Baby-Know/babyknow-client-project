@@ -14,6 +14,7 @@ function ContentPage() {
     console.log('content', content);
     console.log('content.contentContent', content?.contentContent);
 
+    console.log('content', content);
 
     useEffect(() => {
         dispatch({
