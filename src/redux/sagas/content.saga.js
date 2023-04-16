@@ -84,7 +84,7 @@ function* updateContent(action) {
 function* contentSaga() {
   yield takeLatest('ADD_CONTENT', addContent);
   yield takeLatest('ADD_CONTENT_WITH_UPLOAD', addContentWithUpload);
-  yield takeLatest('GET_CONTENT', getContent);
+  yield takeLatest('GET_UNIT_LESSON_CONTENT', getContent);
   yield takeLatest('DELETE_CONTENT', deleteContent);
   yield takeLatest('UPDATE_CONTENT', updateContent);
 }

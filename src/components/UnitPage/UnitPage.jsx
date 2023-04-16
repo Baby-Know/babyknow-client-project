@@ -173,7 +173,7 @@ function UnitPage() {
 
                                                     {/* content shown on screen */}
                                                     {id !== contentToEdit.id ?
-                                                        <div onClick={() => selectContent(id)}>
+                                                        <div onClick={() => selectContent(lesson.unitId, lesson.lessonId, id)}>
                                                             <Typography id='contentTitle'>
                                                                 {unit[i].contentTitle[index]}
                                                             </Typography>

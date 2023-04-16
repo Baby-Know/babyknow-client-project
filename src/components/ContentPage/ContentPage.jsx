@@ -18,7 +18,7 @@ function ContentPage() {
 
     useEffect(() => {
         dispatch({
-            type: "GET_CONTENT",
+            type: 'GET_UNIT_LESSON_CONTENT',
             payload: { unitId, lessonId, contentId }
         });
     }, []);
