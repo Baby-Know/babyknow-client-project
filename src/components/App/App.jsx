@@ -70,27 +70,27 @@ function App() {
                   <ContentPage />
                 </ProtectedRoute>
 
-                {user.access === 3 ?
+        
                 <ProtectedRoute
                   exact
                   path="/registrants"
                 >
                   <RegistrantsPage />
-                </ProtectedRoute> :
-                user.access === 2 ?
+                </ProtectedRoute> 
+
                 <ProtectedRoute
                   exact
                   path="/myStudents"
                 >
                   <MyStudentsPage />
-                </ProtectedRoute> :
-                user.access === 1 ?
+                </ProtectedRoute> 
+
                 <ProtectedRoute
                   exact
                   path="/myTeacher"
                 >
                   <MyTeacherPage />
-                </ProtectedRoute> : <></> }
+                </ProtectedRoute> 
 
                 <ProtectedRoute
                   exact
