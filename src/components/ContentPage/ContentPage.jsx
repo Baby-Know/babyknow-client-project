@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, CardMedia, Typography, Breadcrumbs } from "@mui/material";
-import { Player } from 'video-react';
+import { Card, Checkbox, Typography, Breadcrumbs } from "@mui/material";
+
 
 function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
@@ -23,15 +23,30 @@ function ContentPage() {
         });
     }, []);
 
+    const toggleComplete = (boolean) => {
+        dispatch({
+            type: 'TOGGLE_COMPLETE',
+            payload: { boolean }
+        });
+        console.log(boolean);
+    };
+
     return (
         <>
-            <Breadcrumbs aria-label="breadcrumb">
+            <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
                 <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}`}>
-                    {content?.unitName}
+                    <h3>{content?.unitName}</h3>
                 </Link>
                 <Typography color="text.primary">{content?.lessonName}</Typography>
                 <Typography color="text.primary">{content?.contentTitle}</Typography>
             </Breadcrumbs >
+            {content?.contentIsRequired ?
+                <div>
+                    Check when you've finished the lesson <Checkbox onClick={() => toggleComplete(!content.contentIsRequired)} />
+                </div> :
+                <></>
+            }
+
             <Card id='contentHeader'>
                 {content ?
                     <>
@@ -41,13 +56,16 @@ function ContentPage() {
                     <></>
                 }
             </Card>
-            {/* <video width="320" height="240" controls >
-                <source src="https://baby-know-mn.s3.us-east-2.amazonaws.com/uploads/46366e41-b9fc-4039-9dc2-d4c8224c068b-Mindful+Moments+%239.mp4" type="video/mp4"></source>
-            </video> */}
-            {/* <Player
-                playsInline
-                src="https://baby-know-mn.s3.us-east-2.amazonaws.com/uploads/46366e41-b9fc-4039-9dc2-d4c8224c068b-Mindful+Moments+%239.mp4"
-            /> */}
+            {content?.contentIsSurvey ?
+                <Card id='surveyCard'>
+                    <h4><a href={`https://${content.contentContent}`}>Please follow this link to complete a survey!</a></h4>
+                </Card> :
+                <Card id='videoCard'>
+                    <video width="320" height="240" controls >
+                        <source src={`${content?.contentContent}`} type="video/mp4"></source>
+                    </video>
+                </Card>
+            }
         </>
     );
 

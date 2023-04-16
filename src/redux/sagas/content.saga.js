@@ -81,12 +81,21 @@ function* updateContent(action) {
   }
 }
 
+function* updateComplete(action) {
+  try {
+    axios.put(`api/content/complete`, action.payload);
+  } catch (error) {
+    console.error('Error updating complete toggle', error);
+  }
+}
+
 function* contentSaga() {
   yield takeLatest('ADD_CONTENT', addContent);
   yield takeLatest('ADD_CONTENT_WITH_UPLOAD', addContentWithUpload);
   yield takeLatest('GET_UNIT_LESSON_CONTENT', getContent);
   yield takeLatest('DELETE_CONTENT', deleteContent);
   yield takeLatest('UPDATE_CONTENT', updateContent);
+  yield takeLatest('TOGGLE_COMPLETE', updateComplete);
 }
 
 export default contentSaga;
