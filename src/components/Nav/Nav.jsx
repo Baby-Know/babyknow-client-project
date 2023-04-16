@@ -1,7 +1,7 @@
 import { React, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import logo from "../../images/BabyKnowLogo.png";
+import logo from "../../images/BK Logo.png";
 import { useTheme } from "@emotion/react";
 import { tokens, ColorModeContext } from "../../theme";
 import { IconButton, Button, Box, Typography } from "@mui/material";
@@ -41,7 +41,7 @@ function Nav() {
     >
       <Box>
         <Link to="/about">
-          <img src={logo} />
+          <img src={logo} width="130vw" />
         </Link>
       </Box>
       <Box
