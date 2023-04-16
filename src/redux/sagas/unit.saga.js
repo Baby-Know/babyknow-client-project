@@ -51,12 +51,21 @@ function* getUnit(action) {
   }
 }
 
+function* swapUnits(action) {
+  try {
+    yield axios.put(`/api/unit`, action.payload);
+    yield put({ type: "GET_UNITS" });
+  } catch (error) {
+    console.error("Error updating unit", error);
+  }
+}
+
 function* unitSaga() {
   yield takeLatest("GET_UNITS", getUnits);
   yield takeLatest("DELETE_UNIT", deleteUnit);
   yield takeLatest("UPDATE_UNIT", updateUnit);
-
   yield takeLatest("GET_UNIT", getUnit);
+  yield takeLatest("SWAP_UNITS", swapUnits);
 }
 
 export default unitSaga;

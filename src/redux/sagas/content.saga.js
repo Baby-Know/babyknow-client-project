@@ -76,12 +76,20 @@ function* deleteContent(action) {
 }
 
 function* updateContent(action) {
-  console.log(action.payload)
   try {
-    yield axios.put(`/api/content`, action.payload.contentToEdit);
+    yield axios.put(`/api/content/${action.payload.ids.contentId}`, action.payload.contentToEdit);
     yield put({ type: "GET_UNIT", payload: action.payload.ids.unitId });
   } catch (error) {
     console.error("Error updating content", error);
+  }
+}
+
+function* swapContent(action) {
+  try {
+    yield axios.put(`/api/content`, action.payload);
+    yield put({ type: "GET_UNIT", payload: action.payload.unitId });
+  } catch (error) {
+    console.error("Error updating unit", error);
   }
 }
 
@@ -93,6 +101,7 @@ function* contentSaga() {
     yield takeLatest("GET_CONTENT", getContent);
     yield takeLatest("DELETE_CONTENT", deleteContent);
     yield takeLatest("UPDATE_CONTENT", updateContent);
+    yield takeLatest("SWAP_CONTENT", swapContent);
 }
 
 export default contentSaga;

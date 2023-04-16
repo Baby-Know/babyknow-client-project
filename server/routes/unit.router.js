@@ -106,6 +106,26 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   }
 });
 
+// swaps units order
+router.put("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  console.log(req.body)
+  try {
+    const queryText = `
+    UPDATE "units"
+    SET "unitOrder" = $1
+    WHERE "id" = $2
+    `;
+
+    const params = [ req.body.order, req.body.id ]
+
+    await pool.query(queryText, params);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log("Error editing unit :", error);
+  }
+});
+
 //DELETE new unit
 router.delete(
   "/:id",

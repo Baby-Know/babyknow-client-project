@@ -41,7 +41,6 @@ function AddContentForm({ selectedId }) {
         dispatch({ type: "GET_CONTENT" });
       }, []);
 
-    function handleAddContent() {
     function handleAddContent(event) {
         event.preventDefault()
         {
@@ -254,7 +253,7 @@ function AddContentForm({ selectedId }) {
     );
 
 };
-};
+
 
 
 
