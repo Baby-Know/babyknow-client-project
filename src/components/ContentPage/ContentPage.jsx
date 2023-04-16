@@ -17,7 +17,7 @@ function ContentPage() {
 
     useEffect(() => {
         dispatch({
-            type: "GET_UNIT_LESSON_CONTENT",
+            type: "GET_CONTENT",
             payload: { unitId, lessonId, contentId }
         });
     }, []);
@@ -40,9 +40,9 @@ function ContentPage() {
                     <></>
                 }
             </Card>
-            <video width="320" height="240" controls >
+            {/* <video width="320" height="240" controls >
                 <source src="https://baby-know-mn.s3.us-east-2.amazonaws.com/uploads/46366e41-b9fc-4039-9dc2-d4c8224c068b-Mindful+Moments+%239.mp4" type="video/mp4"></source>
-            </video>
+            </video> */}
             {/* <Player
                 playsInline
                 src="https://baby-know-mn.s3.us-east-2.amazonaws.com/uploads/46366e41-b9fc-4039-9dc2-d4c8224c068b-Mindful+Moments+%239.mp4"
