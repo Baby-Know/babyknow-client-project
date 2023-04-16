@@ -5,11 +5,14 @@ import withReactContent from 'sweetalert2-react-content';
 
 // survey upload generator function
 function* addContent(action) {
-  try {
-    yield axios.post('/api/content', action.payload);
-  } catch (error) {
-    console.error('error posting content', error);
-  }
+    try {
+        yield put({ type: 'SET_LOADING_TRUE' })
+        yield axios.post('/api/content', action.payload);
+        yield put({ type: 'SET_LOADING_FALSE' })
+    } catch (error) {
+        console.error('error posting content', error)
+        yield put({ type: 'SET_LOADING_FALSE' })
+    }
 }
 
 // video upload generator function
@@ -64,8 +67,14 @@ function* deleteContent(action) {
       yield put({ type: "GET_UNIT", payload: action.payload.unitId });
     }
   } catch (error) {
+<<<<<<< HEAD
     console.error('error deleting content', error);
   }
+=======
+      console.error('error deleting content', error)
+
+    }
+>>>>>>> b5fbd4953ab44515c7c9d01b955c965d14875c09
 }
 
 function* updateContent(action) {

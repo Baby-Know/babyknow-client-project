@@ -49,61 +49,28 @@ router.get('/:id', async (req, res) => {
     });
 });
 
-// uploading files into AWS
-// router.put('/files', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
-//     console.log('req.file', req.file)
-//     console.log('req.body', req.body)
-//     console.log('req.body.Location', req.body.Location)
-//     try {
-//         const results = await s3Upload(req.file);
-//         console.log('AWS S3 upload success');
-//         const sqlText = `UPDATE "content"
-//         SET "content" = $1
-//         WHERE id = $2`
-//         pool.query(sqlText, [results.Location, req.body.id])
-//     } catch (err) {
-//         res.sendStatus(500);
-//         console.log('AWS S3 upload fail', err);
-//     }
-// });
-
-async function awsQuery(req, res) {}
-
-// posting content from content form
+// posting content from content form surveys
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   const connect = await pool.connect();
   try {
     await connect.query('BEGIN');
     const contentSqlQuery = `
-        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired")
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired", "contentOrder", "lessons_id")
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING "id";
+
         `;
-    //RETURNING 'id' will give us back the id of the created content
-    const result = await connect.query(contentSqlQuery, [
+    const sqlParams = [
       req.body.contentToSend.content,
       req.body.contentToSend.title,
       req.body.contentToSend.description,
       req.body.contentToSend.isSurvey,
       req.body.contentToSend.isRequired,
-    ]);
-    createdContentId = result.rows[0].id;
-
-    //RETURNING 'id' will give us back the id of the created content
-    result = await pool.query(contentSqlQuery, params);
-    createdContentId = result.rows[0].id;
-
-    console.log('createdcontentID', createdContentId);
-
-    const lessonsContentSqlQuery = `
-        INSERT INTO "lessons_content" ("content_id", "lessons_id", "contentOrder")
-        VALUES ($1, $2, $3)
-        `;
-    connect.query(lessonsContentSqlQuery, [
-      createdContentId,
-      req.body.selectedId,
       req.body.contentToSend.contentOrder,
-    ]);
+      req.body.selectedId,
+    ];
+
+    await connect.query(contentSqlQuery, sqlParams);
     await connect.query('COMMIT');
     res.sendStatus(200);
   } catch (error) {
@@ -119,41 +86,25 @@ router.post(
   rejectNonAdmin,
   upload.single('file'),
   async (req, res) => {
-    console.log('req.body', req.body);
-    console.log('req.file', req.file);
-
     const connect = await pool.connect();
     try {
       await connect.query('BEGIN');
       const results = await s3Upload(req.file);
       console.log('AWS S3 upload success');
-      console.log('results', results);
 
       const contentSqlQuery = `
-        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired")
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired", "contentOrder", "lessons_id")
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING "id";
         `;
-      //RETURNING 'id' will give us back the id of the created content
-      const result = await connect.query(contentSqlQuery, [
+      await connect.query(contentSqlQuery, [
         results.Location,
         req.body.title,
         req.body.description,
         req.body.isSurvey,
-        req.body.isRequired,
-      ]);
-      createdContentId = result.rows[0].id;
-
-      console.log('createdcontentID', createdContentId);
-
-      const lessonsContentSqlQuery = `
-        INSERT INTO "lessons_content" ("content_id", "lessons_id", "contentOrder")
-        VALUES ($1, $2, $3)
-        `;
-      connect.query(lessonsContentSqlQuery, [
-        createdContentId,
-        req.body.lessons_id,
+        req.body.isRequire,
         req.body.contentOrder,
+        req.body.lessons_id,
       ]);
       await connect.query('COMMIT');
       res.sendStatus(200);

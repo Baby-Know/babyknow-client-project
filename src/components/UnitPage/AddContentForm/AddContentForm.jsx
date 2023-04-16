@@ -26,7 +26,7 @@ function AddContentForm({ selectedId }) {
     const colors = tokens(theme.palette.mode);
 
     const showForm = useSelector((store) => store.conditionalForms?.showContentForm);
-    // const [file, setFile] = useState(null);
+
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
@@ -37,9 +37,15 @@ function AddContentForm({ selectedId }) {
         isRequired: false,
     });
 
+    useEffect(() => {
+        dispatch({ type: "GET_CONTENT" });
+      }, []);
+
+    function handleAddContent() {
     function handleAddContent(event) {
         event.preventDefault()
         {
+            //dispatching survey content
             contentToSend.isSurvey ? 
             dispatch({
                 type: "ADD_CONTENT",
@@ -53,10 +59,10 @@ function AddContentForm({ selectedId }) {
                 payload: { contentToSend, selectedId },
                 callback: setContentToSend
             })
-        };
+        };   
+        dispatch({type: 'SELECTED_LESSON_ID', payload: selectedId})
     }
-
-
+    
     return (
         <Box>
             <Dialog
@@ -159,7 +165,16 @@ function AddContentForm({ selectedId }) {
 
                                     <FormControlLabel control={<Checkbox />} label="Required"
                                         onChange={() => { setContentToSend({ ...contentToSend, isRequired: !contentToSend.isRequired }) }} />
-                                    <Button variant="outlined" type='submit' value='Submit'> Save</Button>
+                                    <Button 
+                                    variant="outlined" 
+                                    type='submit' 
+                                    value='Submit'
+                                    onClick={() => {
+                                        dispatch({
+                                          type: "SET_SHOW_ADD_CONTENT",
+                                          payload: false
+                                        });
+                                      }}> Save</Button>
 
                                 </>
                                 :
@@ -238,6 +253,7 @@ function AddContentForm({ selectedId }) {
         </Box>
     );
 
+};
 };
 
 
