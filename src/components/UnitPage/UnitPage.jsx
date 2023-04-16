@@ -32,11 +32,10 @@ function UnitPage() {
     const colors = tokens(theme.palette.mode)
 
     const [selectedId, setSelectedId] = useState(0);
-    const [expand, setExpand] = useState([]);
-    const [progress, setProgress] = useState(10);
+    const [selectedUnitId, setSelectedUnitId] = useState(0);
 
     const isLoading = useSelector((store) => store.loadingReducer);
-    const lessonIdFromUnitPage = useSelector((store) => store.lessonsReducer);
+
     const [lessonToEdit, setLessonToEdit] = useState({id: 0, lessonName: '', lessonDescription: ''})
     const [contentToEdit, setContentToEdit] = useState({id: 0, contentName: '', contentDescription: ''})
 
@@ -45,12 +44,6 @@ function UnitPage() {
             type: "GET_UNIT",
             payload: id
         });
-        const timer = setInterval(() => {
-            setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-          }, 1000);
-          return () => {
-            clearInterval(timer);
-          }
     }, []);
 
     const editLesson = (ids) => {
@@ -132,7 +125,7 @@ function UnitPage() {
 
                             {/* onClick={() => expandAccordion(lesson.lessonId)} expanded={expand.some(id => id === lesson.lessonId) ? true : false} */}
 
-                        <Accordion id="accordion"  >
+                        <Accordion id="accordion">
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
@@ -219,8 +212,7 @@ function UnitPage() {
                                             payload: true,
                                         });
                                         setSelectedId(lesson.lessonId)
-                                        // expandAccordion(lesson.lessonId);
-                                        //     { expand.some(id => id === lesson.lessonId) ? true : false }
+                                        setSelectedUnitId(lesson.unitId)
                                     }}>
                                         Add Content to {lesson.lessonName}
                                 </Button> 
@@ -255,7 +247,7 @@ function UnitPage() {
             {isLoading ?
                 <LoadingBar />
                 :
-                <AddContentForm selectedId={selectedId} />
+                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
             }
 
             <div id="addLessonParent">
