@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import NewRegistrants from "./NewRegistrants/NewRegistrants";
 import Students from "./Students/Students";
 import Teachers from "./Teachers/Teachers";
+import TeachersTable from "./Teachers/TeachersTable";
 
 function RegistrantsPage() {
   const user = useSelector((store) => store.user);
@@ -47,7 +48,7 @@ function RegistrantsPage() {
       ) : showPage === "students" ? (
         <Students />
       ) : showPage === "teachers" ? (
-        <Teachers />
+        <TeachersTable />
       ) : (
         <></>
       )}
