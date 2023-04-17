@@ -135,6 +135,11 @@ function UnitPage() {
 
 
             <AddLessonForm id={id} />
+            {isLoading ?
+                <LoadingBar />
+                :
+                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
+            }
 
             {unit.map((lesson, i) => {
                 return (
@@ -281,13 +286,6 @@ function UnitPage() {
                     </div>
                 )
             })}
-
-            {isLoading ?
-                <LoadingBar />
-                :
-                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
-            }
-
             <div id="addLessonParent">
                 {user.access === 3 ?
                     <Button
@@ -302,6 +300,8 @@ function UnitPage() {
                         Add Lesson
                     </Button> : <></>}
             </div>
+
+
         </Box>
 
     )
