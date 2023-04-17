@@ -18,7 +18,6 @@ function AddLessonForm({id}) {
     const [lessonToSend, setLessonToSend] = useState({
       name: "",
       description: "",
-      lessonOrder: "",
   });
 
     //Variable to show whether the add lesson form is showing
@@ -38,7 +37,6 @@ function AddLessonForm({id}) {
       //Clear inputs
       setLessonToSend({
         name: "",
-        lessonOrder: "",
         description: ""
       });
     } catch (error) {
@@ -81,20 +79,6 @@ function AddLessonForm({id}) {
               setLessonToSend({
                 ...lessonToSend,
                 name: event.target.value,
-              });
-            }}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            fullWidth
-            type="number"
-            label="Lesson Order"
-            value={lessonToSend.lessonOrder}
-            onChange={(event) => {
-              setLessonToSend({
-                ...lessonToSend,
-                lessonOrder: event.target.value,
               });
             }}
           />

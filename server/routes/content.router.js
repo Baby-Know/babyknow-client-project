@@ -53,8 +53,8 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     try {
         await connect.query('BEGIN')
         const contentSqlQuery =  `
-        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired", "contentOrder", "lessons_id")
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired", "lessons_id")
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING "id";
 
         `
@@ -64,7 +64,6 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
           req.body.contentToSend.description, 
           req.body.contentToSend.isSurvey, 
           req.body.contentToSend.isRequired, 
-          req.body.contentToSend.contentOrder, 
           req.body.selectedId
         ]
 
@@ -86,11 +85,11 @@ router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'
         console.log('AWS S3 upload success');
 
         const contentSqlQuery =  `
-        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired", "contentOrder", "lessons_id")
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired",  "lessons_id")
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING "id";
         `
-        await connect.query(contentSqlQuery, [results.Location, req.body.title, req.body.description, req.body.isSurvey, req.body.isRequire, req.body.contentOrder, req.body.lessons_id])
+        await connect.query(contentSqlQuery, [results.Location, req.body.title, req.body.description, req.body.isSurvey, req.body.isRequire, req.body.lessons_id])
         await connect.query('COMMIT')
         res.sendStatus(200)
     } catch (error) {

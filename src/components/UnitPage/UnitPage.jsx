@@ -141,8 +141,8 @@ function UnitPage() {
 
             {unit.map((lesson, i) => {
                 return (
-                    //conditionally rendering open or closed
                     <div key={i}>
+                        {/* unit header */}
                         {i === 0 ?
                             <Card id='unitHeader'>
                                 <h1 style={{ fontWeight: 'bold', fontSize: 24, textDecoration: 'underline' }} >{lesson.unitName}</h1>
@@ -150,7 +150,9 @@ function UnitPage() {
                             </Card>
                             : <></>}
 
+                        {/* start of lesson row */}
                         <Accordion id="accordion" >
+                            {/* lesson header */}
                             <AccordionSummary 
                                 draggable={user.access === 3 && draggable ? 'true' : 'false'} 
                                 onDragStart={() => { 
@@ -176,9 +178,9 @@ function UnitPage() {
                                 className='lessonInputs' label='Lesson Name' value={lessonToEdit.lessonName} 
                                 />
                                 }
-                                
-
                             </AccordionSummary>
+                            {/* end of lesson header */}
+
                             <AccordionDetails>
                                 {/* lesson description */}
                                 {lesson.lessonId !== lessonToEdit.id ?
@@ -192,15 +194,16 @@ function UnitPage() {
                                 {unit[i].contentId?.map((id, index) => {
                                     return (
                                     <div key={index} >
+                                        {/* content row within a lesson */}
                                         {unit[i].contentId[index] === null ?  <></> :
                                         <div id='content'
-                                        draggable={user.access === 3 && draggable ? 'true' : 'false'} 
-                                        onDragStart={() => { 
-                                            setContentToSwap({contentId: id, lessonId: lesson.lessonId, order: unit[i].contentOrder[index]})  
-                                            setSwappingContent(true)
-                                        }}
-                                        onDragOver={(event) => event.preventDefault()} 
-                                        onDrop={() => swapContent({contentId: id , order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId})} 
+                                            draggable={user.access === 3 && draggable ? 'true' : 'false'} 
+                                            onDragStart={() => { 
+                                                setContentToSwap({contentId: id, lessonId: lesson.lessonId, order: unit[i].contentOrder[index]})  
+                                                setSwappingContent(true)
+                                            }}
+                                            onDragOver={(event) => event.preventDefault()} 
+                                            onDrop={() => swapContent({contentId: id , order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId})} 
                                         >
                                             {draggable ?
                                             <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white'}}>
@@ -214,12 +217,13 @@ function UnitPage() {
                                                     {unit[i].contentTitle[index]}
                                                 </Typography>
 
-                                                {/* do we want? */}
-                                                {/* <Typography id='contentDescription'>
+                                                {/* do we want description? */}
+                                                <Typography id='contentDescription'>
                                                     {unit[i].contentDescription[index]}
-                                                </Typography> */}
+                                                </Typography>
                                             </div> : 
                                             <>
+                                                {/* content fields while editing */}
                                                 <div>
                                                     <TextField 
                                                     autoFocus 
@@ -274,52 +278,54 @@ function UnitPage() {
                                                 } 
                                             </div> : <></> }
 
-                                        </ div> 
+                                        </ div>
                                         }
+                                        {/* end of content row */}
                                     </div>
                                     )
                                 })}
     
-                            
+                                {/* button to add content row */}
                                 {lesson.lessonName && user.access === 3 ? 
                                 <div id='lessonBottom'>
-                                <Button onClick={() => {
-                                        dispatch({
-                                            type: "SET_SHOW_ADD_CONTENT",
-                                            payload: true,
-                                        });
-                                        setSelectedId(lesson.lessonId)
-                                        setSelectedUnitId(lesson.unitId)
-                                    }}>
-                                        Add Content to {lesson.lessonName}
-                                </Button> 
-                                <div>
-                                    {/* lesson icons */}
-                                    { lesson.lessonId !== lessonToEdit.id ?
-                                    <>
-                                    <IconButton onClick={() => {
-                                        setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription })
-                                        setDraggable(false)
-                                    }}>
-                                        <EditIcon sx={{ color: '#276184'}} />
-                                    </IconButton>
-                                    <IconButton onClick={() => deleteLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
-                                        <DeleteForeverIcon sx={{ color: '#276184'}} />
-                                    </IconButton> 
-                                    </>:
-                                    <>
-                                    <IconButton onClick={() => {
-                                        editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})
-                                        setDraggable(true)
-                                    }}>
-                                        <DoneIcon sx={{ color: '#276184'}} />
-                                    </IconButton>
-                                    <IconButton onClick={cancelEdit} >
-                                        <ClearIcon sx={{ color: '#276184'}}  />
-                                    </IconButton>
-                                    </>
-                                    }
-                                </div>
+                                    {/* button to add content row */}
+                                    <Button onClick={() => {
+                                            dispatch({
+                                                type: "SET_SHOW_ADD_CONTENT",
+                                                payload: true,
+                                            });
+                                            setSelectedId(lesson.lessonId)
+                                            setSelectedUnitId(lesson.unitId)
+                                        }}>
+                                            Add Content to {lesson.lessonName}
+                                    </Button> 
+                                    <div>
+                                        {/* lesson icons */}
+                                        { lesson.lessonId !== lessonToEdit.id ?
+                                        <>
+                                        <IconButton onClick={() => {
+                                            setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription })
+                                            setDraggable(false)
+                                        }}>
+                                            <EditIcon sx={{ color: '#276184'}} />
+                                        </IconButton>
+                                        <IconButton onClick={() => deleteLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
+                                            <DeleteForeverIcon sx={{ color: '#276184'}} />
+                                        </IconButton> 
+                                        </>:
+                                        <>
+                                        <IconButton onClick={() => {
+                                            editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})
+                                            setDraggable(true)
+                                        }}>
+                                            <DoneIcon sx={{ color: '#276184'}} />
+                                        </IconButton>
+                                        <IconButton onClick={cancelEdit} >
+                                            <ClearIcon sx={{ color: '#276184'}}  />
+                                        </IconButton>
+                                        </>
+                                        }
+                                    </div>
                                 </ div>
                              : <></>}
                             </AccordionDetails>
@@ -327,7 +333,9 @@ function UnitPage() {
                     </div>
                 )
             })}
+            {/* end of lesson row */}
             
+
             {isLoading ?
                 <LoadingBar />
                 :
@@ -335,6 +343,7 @@ function UnitPage() {
             }
 
             <div id="addLessonParent">
+            {/* add lesson row  */}
             {user.access === 3 ?
             <Button
             id='addLesson'

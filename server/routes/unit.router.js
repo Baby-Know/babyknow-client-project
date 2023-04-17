@@ -68,14 +68,13 @@ router.get("/:id", rejectUnauthenticated, async (req, res) => {
 router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const queryText = `
-    INSERT INTO "units" ("name", "unitOrder", "subtitle")
-    VALUES($1, $2, $3)
+    INSERT INTO "units" ("name", "subtitle")
+    VALUES($1, $2)
     `;
 
     await pool.query(queryText, [
       req.body.name,
-      req.body.unitOrder,
-      req.body.subtitle,
+      req.body.subtitle
     ]);
 
     res.sendStatus(201);
