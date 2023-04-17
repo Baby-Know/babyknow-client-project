@@ -29,7 +29,6 @@ function AddContentForm({ selectedId, selectedUnitId }) {
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
-        contentOrder: "",
         title: "",
         description: "",
         isSurvey: false,
@@ -131,20 +130,6 @@ function AddContentForm({ selectedId, selectedUnitId }) {
                                         }}
                                     />
 
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        fullWidth
-                                        type="number"
-                                        label="Video Order"
-                                        value={contentToSend.contentOrder}
-                                        onChange={(event) => {
-                                            setContentToSend({
-                                                ...contentToSend,
-                                                contentOrder: event.target.value,
-                                            });
-                                        }}
-                                    />
 
                                     <TextField
                                         autoFocus
@@ -203,22 +188,6 @@ function AddContentForm({ selectedId, selectedUnitId }) {
                                             setContentToSend({
                                                 ...contentToSend,
                                                 title: event.target.value,
-                                            });
-                                        }}
-                                    />
-
-                                    <TextField
-                                        autoFocus
-                                        margin="dense"
-                                        fullWidth
-                                        type="number"
-                                        label="Survey Order"
-                                        value={contentToSend.contentOrder}
-                                        onChange={(event) => {
-                                            setContentToSend({
-                                                ...contentToSend,
-                                                contentOrder: event.target.value,
-
                                             });
                                         }}
                                     />
