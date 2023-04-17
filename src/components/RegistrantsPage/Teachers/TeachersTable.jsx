@@ -10,12 +10,12 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Select, MenuItem, Tooltip } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 
-const TeachersAdminTable = () => {
+const TeachersTable = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const newRegistrants = useSelector((store) => store.newRegistrantsReducer);
+  const teachersData = useSelector((store) => store.teacherReducer);
 
   //Variable stating whether a row is being edited or not
   const [isEditing, setIsEditing] = useState(null);
@@ -28,26 +28,26 @@ const TeachersAdminTable = () => {
   ];
 
   // New state variable to hold the modified newRegistrants list
-  const [modifiedNewRegistrants, setModifiedNewRegistrants] = useState([]);
+  const [modifiedTeachers, setModifiedTeachers] = useState([]);
 
-  //Fetch new registrants on page load
+  //Fetch teachers on page load
   useEffect(() => {
     dispatch({
-      type: "FETCH_NEW_REGISTRANTS",
+      type: "FETCH_TEACHERS",
     });
   }, []);
 
-  // Set the new copy of the registrants as the state
+  // Set the new copy of the teachers as the state
   useEffect(() => {
-    setModifiedNewRegistrants(newRegistrants);
-  }, [newRegistrants]);
+    setModifiedTeachers(teachersData);
+  }, [teachersData]);
 
   //Function for handling deleting a row
   function handleDelete(event, cellValues) {
     let rowToDelete = cellValues.row;
 
     dispatch({
-      type: "DELETE_NEW_REGISTRANT",
+      type: "DELETE_TEACHER",
       payload: rowToDelete.id,
     });
   }
@@ -56,41 +56,39 @@ const TeachersAdminTable = () => {
   const handleSelectAccessChange = useCallback(
     (cellValues) => {
       const value = cellValues.value;
-      setModifiedNewRegistrants((prevNewRegistrants) =>
-        prevNewRegistrants.map((registrant) =>
-          registrant.id === cellValues.cellValues.id
-            ? { ...registrant, access: value }
-            : registrant
+      setModifiedTeachers((prevTeachers) =>
+        prevTeachers.map((teacher) =>
+          teacher.id === cellValues.cellValues.id
+            ? { ...teacher, access: value }
+            : teacher
         )
       );
     },
-    [modifiedNewRegistrants]
+    [modifiedTeachers]
   );
 
   function handleEditSelectAccess(cellValues) {
     const { id, field, value } = cellValues;
-    const registrantToUpdate = cellValues.row;
+    const teacherToUpdate = cellValues.row;
 
-    setModifiedNewRegistrants((prevNewRegistrants) =>
-      prevNewRegistrants.map((registrant) =>
-        registrant.id === cellValues.id
-          ? { ...registrant, [field]: value }
-          : registrant
+    setModifiedTeachers((prevTeachers) =>
+      prevTeachers.map((teacher) =>
+        teacher.id === cellValues.id ? { ...teacher, [field]: value } : teacher
       )
     );
 
     dispatch({
-      type: "UPDATE_NEW_REGISTRANT",
-      payload: registrantToUpdate,
+      type: "UPDATE_TEACHER",
+      payload: teacherToUpdate,
     });
   }
 
   //Change the value of the item in the modifiedRegistrants array
   const handleEditCellChange = useCallback((params) => {
     const { id, field, value } = params;
-    setModifiedNewRegistrants((prevNewRegistrants) =>
-      prevNewRegistrants.map((registrant) =>
-        registrant.id === id ? { ...registrant, [field]: value } : registrant
+    setModifiedTeachers((prevTeachers) =>
+      prevNewRegistrants.map((teacher) =>
+        teacher.id === id ? { ...teacher, [field]: value } : teacher
       )
     );
   }, []);
@@ -99,16 +97,14 @@ const TeachersAdminTable = () => {
   const handleEditCell = useCallback(
     (params) => {
       const { id, field, value } = params;
-      const registrantToUpdate = modifiedNewRegistrants.find(
-        (item) => item.id === id
-      );
-      registrantToUpdate[field] = value;
+      const teacher = modifiedTeachers.find((item) => item.id === id);
+      teacher[field] = value;
       dispatch({
         type: "UPDATE_NEW_REGISTRANT",
-        payload: registrantToUpdate,
+        payload: teacher,
       });
     },
-    [modifiedNewRegistrants]
+    [modifiedTeachers]
   );
   //For every row this grabs the value from the key to put into the "headerName" column
   const columns = [
@@ -162,6 +158,30 @@ const TeachersAdminTable = () => {
       ),
     },
     {
+      field: "cohort",
+      headerName: "Cohort",
+      editable: false,
+      renderCell: (cellValues) => (
+        <Select
+          variant="standard"
+          value={cellValues.row.cohort}
+          onChange={(event) => {
+            setIsEditing(cellValues.id);
+            handleSelectAccessChange({
+              cellValues: cellValues,
+              value: event.target.value,
+            });
+          }}
+        >
+          {modifiedTeachers.allCohorts.map((option, i) => (
+            <MenuItem key={i} value={option.name}>
+              {option.name}
+            </MenuItem>
+          ))}
+        </Select>
+      ),
+    },
+    {
       field: "actions",
       headerName: "Actions",
       flex: 0.6,
@@ -190,7 +210,7 @@ const TeachersAdminTable = () => {
                     onClick={() => {
                       setIsEditing(null);
                       dispatch({
-                        type: "FETCH_NEW_REGISTRANTS",
+                        type: "FETCH_TEACHERS",
                       });
                     }}
                   >
@@ -201,7 +221,7 @@ const TeachersAdminTable = () => {
             ) : (
               <></>
             )}
-            <Tooltip title="Delete Registrant">
+            <Tooltip title="Delete Teacher">
               <IconButton
                 onClick={(event) => {
                   handleDelete(event, cellValues);
@@ -247,7 +267,7 @@ const TeachersAdminTable = () => {
         }}
       >
         <DataGrid
-          rows={modifiedNewRegistrants}
+          rows={modifiedTeachers.teachers || []}
           columns={columns}
           onCellEditCommit={handleEditCell}
           onEditCellChange={handleEditCellChange}
@@ -256,8 +276,9 @@ const TeachersAdminTable = () => {
           }}
         />
       </Box>
+      <button onClick={() => console.log(teachersData)}>cc</button>
     </Box>
   );
 };
 
-export default TeachersAdminTable;
+export default TeachersTable;

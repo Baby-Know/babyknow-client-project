@@ -13,8 +13,8 @@ const sagaMiddleware = createSagaMiddleware();
 const middlewareList =
   process.env.NODE_ENV === 'development'
     ? [sagaMiddleware, logger]
-    : //[sagaMiddleware]
-      [sagaMiddleware];
+    : [sagaMiddleware];
+// [sagaMiddleware];
 
 const store = createStore(
   // tells the saga middleware to use the rootReducer
