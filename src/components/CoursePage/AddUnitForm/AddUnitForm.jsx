@@ -4,7 +4,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, useTheme } from "@mui/system";
 import { tokens } from "../../../theme";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton, TextField, Button } from "@mui/material";
 import Close from "@mui/icons-material/Close";
 import { useState } from "react";
 import axios from "axios";
@@ -95,13 +95,14 @@ function AddUnitForm() {
               });
             }}
           />
-          <button
+          <Button 
+          variant="outlined"
             onClick={() => {
               handleAddUnit();
             }}
           >
             Add Unit
-          </button>
+          </Button>
         </DialogContent>
       </Dialog>
     </Box>
