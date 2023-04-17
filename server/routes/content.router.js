@@ -134,7 +134,6 @@ router.get(
         req.params.lessonId,
         req.params.contentId,
       ];
-      console.log('params', params);
       const unitResult = await pool.query(queryText, params);
       content = unitResult.rows;
       res.send(content);

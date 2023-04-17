@@ -40,6 +40,8 @@ function UnitPage() {
     const [lessonToEdit, setLessonToEdit] = useState({ id: 0, lessonName: '', lessonDescription: '' });
     const [contentToEdit, setContentToEdit] = useState({ id: 0, contentName: '', contentDescription: '' });
 
+    // const [userContent, setUserContent] = useState({ userId: 0, contentId: 0, isComplete: false, media: '', comment: '' });
+
     useEffect(() => {
         dispatch({
             type: "GET_UNIT",
@@ -59,6 +61,12 @@ function UnitPage() {
     // };
 
     const selectContent = (unitId, lessonId, contentId) => {
+        const userContent = { userId: user.id, contentId: contentId, isComplete: false, media: '', comment: '' };
+        console.log('unitpage', userContent);
+        dispatch({
+            type: "POST_USER_CONTENT",
+            payload: { userContent }
+        });
         history.push({
             pathname: `/unit/${unitId}/lesson/${lessonId}/content/${contentId}`
         });
@@ -173,7 +181,8 @@ function UnitPage() {
 
                                                     {/* content shown on screen */}
                                                     {id !== contentToEdit.id ?
-                                                        <div onClick={() => selectContent(lesson.unitId, lesson.lessonId, id)}>
+                                                        <div onClick={() =>
+                                                            selectContent(lesson.unitId, lesson.lessonId, id)}>
                                                             <Typography id='contentTitle'>
                                                                 {unit[i].contentTitle[index]}
                                                             </Typography>
