@@ -20,7 +20,6 @@ function AddUnitForm() {
   //Setting initial values so that they are controlled for MUI
   const [unitToSend, setUnitToSend] = useState({
     name: "",
-    unitOrder: "",
     subtitle: "",
   });
 
@@ -38,7 +37,6 @@ function AddUnitForm() {
       //Clear inputs
       setUnitToSend({
         name: "",
-        unitOrder: "",
         subtitle: "",
       });
     } catch (error) {
@@ -89,20 +87,6 @@ function AddUnitForm() {
               setUnitToSend({
                 ...unitToSend,
                 name: event.target.value,
-              });
-            }}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            fullWidth
-            type="number"
-            label="Unit Order"
-            value={unitToSend.unitOrder}
-            onChange={(event) => {
-              setUnitToSend({
-                ...unitToSend,
-                unitOrder: event.target.value,
               });
             }}
           />

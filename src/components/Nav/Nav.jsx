@@ -74,6 +74,8 @@ function Nav() {
                 <LightModeOutlinedIcon />
               )}
             </IconButton>
+            
+            {/* course page */}
             <Button
               to="/course"
               onClick={() => {
@@ -83,6 +85,7 @@ function Nav() {
               <Typography variant="body1">Courses</Typography>
             </Button>
 
+            {/* conditionally renders registrants, my students, my teacher or contacts page */}
             {user.access === 3 ?
               <Button onClick={() => history.push("/registrants")}>
                 <Typography variant="body1">Registrants</Typography>
@@ -97,7 +100,7 @@ function Nav() {
                     <Typography variant="body1">Contacts</Typography>
                   </Button>}
 
-
+            {/* about page */}
             <Button
               onClick={() => {
                 history.push("/about");
@@ -106,6 +109,7 @@ function Nav() {
               <Typography variant="body1">About</Typography>
             </Button>
 
+            {/* logout */}
             <Button onClick={() => dispatch({ type: "LOGOUT" })}>
               <Typography variant="body1">Log Out</Typography>
             </Button>
