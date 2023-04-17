@@ -50,22 +50,25 @@ router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   };
 
   try {
-    const queryText = `
+    //Selecting all teachers and details about them
+    const usersQuery = `
  SELECT
+    "users".id AS "usersId",
     "users".email, 
     "users"."firstName", 
     "users"."lastName", 
     "users".access, 
     "users".organization,
     "cohorts".name AS "cohort",
-    "cohorts".id AS "cohortId"
+    "cohorts".id AS "cohortsId"
 FROM "users"
 JOIN "users_cohorts"
     ON "users".id = "users_cohorts".user_id
 JOIN "cohorts" 
     ON "cohorts".id = "users_cohorts".cohorts_id
 WHERE "users".access = 2
-GROUP BY       
+GROUP BY      
+    "users".id,
     "users".email, 
     "users"."firstName", 
     "users"."lastName", 
@@ -75,14 +78,29 @@ GROUP BY
     "cohorts".id;
   `;
 
-    const usersResult = await pool.query(queryText);
+    const usersResult = await pool.query(usersQuery);
     const teachers = usersResult.rows;
 
     objectToSend.teachers = teachers;
 
-    console.log(objectToSend.teachers);
+    //Selecting all cohorts for select on the client side
+    const cohortsQuery = `
+    SELECT * FROM "cohorts" 
+    `;
+
+    const cohortsResult = await pool.query(cohortsQuery);
+
+    objectToSend.allCohorts = cohortsResult.rows;
+
+    //Unique Id for datagrid so that we can have teachers with multiple cohorts
+    objectToSend.teachers = objectToSend.teachers.map((teacher, i) => ({
+      ...teacher,
+      id: i,
+    }));
+
+    res.send(objectToSend);
   } catch (error) {
-    console.log("Error fetching all teachers and admins :", error);
+    console.log("Error fetching all teachers:", error);
     res.sendStatus(500);
   }
 });
