@@ -40,8 +40,6 @@ function UnitPage() {
     const [lessonToEdit, setLessonToEdit] = useState({ id: 0, lessonName: '', lessonDescription: '' });
     const [contentToEdit, setContentToEdit] = useState({ id: 0, contentName: '', contentDescription: '' });
 
-    // const [userContent, setUserContent] = useState({ userId: 0, contentId: 0, isComplete: false, media: '', comment: '' });
-
     useEffect(() => {
         dispatch({
             type: "GET_UNIT",
@@ -55,24 +53,18 @@ function UnitPage() {
         };
     }, []);
 
-    // const selectedLesson = (unitId, lessonId) => {
-    //     console.log('unitId, lessonId', unitId, lessonId);
-    //     history.push(`/unit/${id}/lesson/${id}`);
-    // };
-
     const selectContent = (unitId, lessonId, contentId) => {
-        const userContent = { userId: user.id, contentId: contentId, isComplete: false, media: '', comment: '' };
-        console.log('unitpage', userContent);
-        dispatch({
-            type: "POST_USER_CONTENT",
-            payload: { userContent }
-        });
+        // const userContent = { userId: user.id, contentId: contentId, isComplete: false, media: '', comment: '' };
+        // dispatch({
+        //     type: "POST_USER_CONTENT",
+        //     payload: { userContent }
+        // });
+        // console.log('Post userContent unit page', userContent);
         history.push({
             pathname: `/unit/${unitId}/lesson/${lessonId}/content/${contentId}`
         });
     };
 
-    // console.log('unitunitunit', unit);
     const editLesson = (ids) => {
         dispatch({
             type: "UPDATE_LESSON",

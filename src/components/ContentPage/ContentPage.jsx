@@ -11,28 +11,46 @@ function ContentPage() {
     const contentArray = useSelector(store => store.contentReducer);
     const content = contentArray[0];
 
-    console.log('content', content);
-    console.log('content.contentContent', content?.contentContent);
+    const user = useSelector(store => store.user);
+    const userId = user.id;
+    const userContent = useSelector(store => store.userContentReducer);
 
     console.log('content', content);
+    console.log('content.contentContent', content?.contentContent);
 
     useEffect(() => {
         dispatch({
             type: 'GET_UNIT_LESSON_CONTENT',
             payload: { unitId, lessonId, contentId }
         });
+        // console.log('Fetch params contentpage', userId, contentId);
+        // dispatch({
+        //     type: 'FETCH_USER_CONTENT',
+        //     payload: { userId, contentId }
+        // });
     }, []);
 
+    // const loadUserContentReducer = () => {
+    //     console.log('Fetch params contentpage', userId, contentId);
+    //     dispatch({
+    //         type: 'FETCH_USER_CONTENT',
+    //         payload: { userId, contentId }
+    //     });
+    // };
+
     const toggleComplete = (boolean) => {
+        console.log(boolean);
         dispatch({
             type: 'TOGGLE_COMPLETE',
             payload: { boolean }
         });
-        console.log(boolean);
     };
+    console.log('userContent', userContent);
 
     return (
         <>
+            {/* <div onClick={() => loadUserContentReducer()}> */}
+
             <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
                 <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}`}>
                     <h3>{content?.unitName}</h3>
@@ -66,6 +84,7 @@ function ContentPage() {
                     </video>
                 </Card>
             }
+            {/* </div> */}
         </>
     );
 

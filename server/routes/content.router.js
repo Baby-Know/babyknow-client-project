@@ -168,7 +168,6 @@ router.delete(
 );
 
 router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-  console.log(req.body, 'reqqqq');
   try {
     const queryText = `
       UPDATE "content"
