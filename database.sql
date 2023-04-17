@@ -40,8 +40,8 @@ CREATE TABLE "content" (
 	"title" varchar(200) NOT NULL,
 	"description" varchar(350) NOT NULL,
 	"contentOrder" serial NOT NULL,
-	"isSurvey" BOOLEAN NOT NULL,
-	"isRequired" BOOLEAN NOT NULL,
+	"isSurvey" BOOLEAN DEFAULT FALSE,
+	"isRequired" BOOLEAN DEFAULT FALSE,
 	CONSTRAINT "content_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -53,9 +53,9 @@ CREATE TABLE "users_content" (
 	"id" serial NOT NULL,
 	"user_id" integer NOT NULL,
 	"content_id" integer NOT NULL,
-	"isComplete" BOOLEAN NOT NULL,
-	"media" varchar(300) NOT NULL,
-	"comment" TEXT NOT NULL,
+	"isComplete" BOOLEAN DEFAULT FALSE,
+	"media" varchar(300),
+	"comment" TEXT,
 	CONSTRAINT "users_content_pk" PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
