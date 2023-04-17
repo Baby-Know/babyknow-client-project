@@ -26,12 +26,13 @@ function AddUnitForm() {
   //Function to handle sending new unit to the database
   async function handleAddUnit() {
     try {
-     await axios.post("/api/unit", unitToSend);
-     dispatch({type: 'GET_UNITS'});
+      await axios.post("/api/unit", unitToSend);
+      dispatch({ type: 'GET_UNITS' });
 
-     dispatch({
-      type: "SET_SHOW_ADD_UNIT",
-      payload: false });
+      dispatch({
+        type: "SET_SHOW_ADD_UNIT",
+        payload: false
+      });
 
       //Clear inputs
       setUnitToSend({
@@ -48,6 +49,14 @@ function AddUnitForm() {
       <Dialog
         open={showForm}
         sx={{
+          "& .MuiButton-sizeMedium": {
+            backgroundColor: colors.tealAccent[500],
+          },
+          "& .MuiButton-sizeMedium:hover": {
+            backgroundColor: colors.tealAccent[700],
+          },
+          display: 'box',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           "& .MuiPaper-root": {
             backgroundColor: colors.tealAccent[800],
           },
@@ -95,8 +104,8 @@ function AddUnitForm() {
               });
             }}
           />
-          <Button 
-          variant="outlined"
+          <Button
+            variant="outlined"
             onClick={() => {
               handleAddUnit();
             }}

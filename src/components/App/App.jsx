@@ -65,29 +65,29 @@ function App() {
 
                 <ProtectedRoute
                   exact
-                  path="/content/:id"
+                  path="/unit/:unitId/lesson/:lessonId/content/:contentId"
                 >
                   <ContentPage />
                 </ProtectedRoute>
 
-              
+
                 <ProtectedRoute exact path="/registrants">
                   {user.access === 3 ?
-                  (<RegistrantsPage />) : (<Redirect to='/about'/>)
+                    (<RegistrantsPage />) : (<Redirect to='/about' />)
                   }
-                </ProtectedRoute> 
-                
+                </ProtectedRoute>
+
                 <ProtectedRoute exact path="/myStudents">
-                {user.access === 2 ?
-                  (<MyStudentsPage />) : (<Redirect to='/about'/>)
-                }
-                </ProtectedRoute> 
-              
+                  {user.access === 2 ?
+                    (<MyStudentsPage />) : (<Redirect to='/about' />)
+                  }
+                </ProtectedRoute>
+
                 <ProtectedRoute exact path="/myTeacher">
                   {user.access === 1 ?
-                    (<MyTeacherPage />) : (<Redirect to='/about'/>)
+                    (<MyTeacherPage />) : (<Redirect to='/about' />)
                   }
-                </ProtectedRoute> 
+                </ProtectedRoute>
 
                 <ProtectedRoute
                   exact

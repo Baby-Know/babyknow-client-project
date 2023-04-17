@@ -1,12 +1,12 @@
-const express = require("express");
-const pool = require("../modules/pool");
+const express = require('express');
+const pool = require('../modules/pool');
 const router = express.Router();
 const {
   rejectUnauthenticated,
-} = require("../modules/authentication-middleware");
-const { rejectNonAdmin } = require("../modules/admin-middleware");
-const { s3Upload } = require("../s3Service");
-const aws = require("aws-sdk");
+} = require('../modules/authentication-middleware');
+const { rejectNonAdmin } = require('../modules/admin-middleware');
+const { s3Upload } = require('../s3Service');
+const aws = require('aws-sdk');
 
 const secretAccessKey = process.env.AWS_ACCESS_SECRET;
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
@@ -20,20 +20,20 @@ const s3 = new aws.S3({
 });
 
 /** ---------- Multer | S3 ---------- **/
-const multer = require("multer");
-require("dotenv").config();
+const multer = require('multer');
+require('dotenv').config();
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.split("/")[0] === "video") {
+  if (file.mimetype.split('/')[0] === 'video') {
     cb(null, true);
   } else {
-    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE"), false);
+    cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE'), false);
   }
 };
 const upload = multer({ storage, fileFilter });
 
 // get video upload by content id
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   const contentId = req.params.contentId;
   const sqlValue = [contentId];
   const sqlText = `
@@ -45,7 +45,7 @@ router.get("/:id", async (req, res) => {
       res.send(result.rows);
     })
     .catch((err) => {
-      console.log("error getting video upload from content", err);
+      console.log('error getting video upload from content', err);
     });
 });
 
@@ -80,16 +80,16 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
 })
 
 router.post(
-  "/file",
+  '/file',
   rejectUnauthenticated,
   rejectNonAdmin,
-  upload.single("file"),
+  upload.single('file'),
   async (req, res) => {
     const connect = await pool.connect();
     try {
-      await connect.query("BEGIN");
+      await connect.query('BEGIN');
       const results = await s3Upload(req.file);
-      console.log("AWS S3 upload success");
+      console.log('AWS S3 upload success');
 
         const contentSqlQuery =  `
         INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired",  "lessons_id")
@@ -100,34 +100,44 @@ router.post(
         await connect.query('COMMIT')
         res.sendStatus(200)
     } catch (error) {
-      await connect.query("ROLLBACK");
-      console.error("error posting content", error);
+      await connect.query('ROLLBACK');
+      console.error('error posting content', error);
       res.sendStatus(500);
     }
   }
 );
 
 //GET content
-router.get("/:id", rejectUnauthenticated, async (req, res) => {
-  try {
-    const queryText = `
-        SELECT * FROM "content"
-        WHERE "content".id = $1;
+router.get(
+  '/:unitId/:lessonId/:contentId',
+  rejectUnauthenticated,
+  async (req, res) => {
+    try {
+      const queryText = `
+      SELECT "units".id AS "unitId", "units".name AS "unitName", 
+      "lessons".id AS "lessonId", "lessons".name AS "lessonName",
+      "content".id AS "contentId", "content".content AS "contentContent", "content".title AS "contentTitle", "content".description AS "contentDescription", "content"."isRequired" AS "contentIsRequired", "content"."isSurvey" AS "contentIsSurvey"
+      FROM "units", "lessons", "content"
+    WHERE "units".id = $1 AND "lessons".id = $2 AND "content".id = $3;
       `;
-    const params = [req.params.id];
-    const unitResult = await pool.query(queryText, params);
-    content = unitResult.rows;
-    console.log("THIS IS CONTENT", content);
-    res.send(content);
-  } catch (error) {
-    res.sendStatus(500);
-    console.log("Error getting content:", error);
+      const params = [
+        req.params.unitId,
+        req.params.lessonId,
+        req.params.contentId,
+      ];
+      const unitResult = await pool.query(queryText, params);
+      content = unitResult.rows;
+      res.send(content);
+    } catch (error) {
+      res.sendStatus(500);
+      console.log('Error getting content:', error);
+    }
   }
-});
+);
 
 //DELETE content
 router.delete(
-  "/:contentId",
+  '/:contentId',
   rejectUnauthenticated,
   rejectNonAdmin,
   async (req, res) => {
@@ -142,15 +152,15 @@ router.delete(
       await pool.query(query, params);
       res.sendStatus(200);
     } catch (error) {
-      console.log("Error deleting lesson :", error);
+      console.log('Error deleting lesson :', error);
       res.sendStatus(500);
     }
   }
 );
 
-  router.put('/:id', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-    try {
-      const queryText = `
+router.put('/:id', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
       UPDATE "content"
       SET "title" = $1, "description" = $2
       WHERE "content".id = $3;
@@ -166,11 +176,10 @@ router.delete(
 
     res.sendStatus(200);
   } catch (error) {
-    console.log("Error editing unit :", error);
+    console.log('Error editing unit :', error);
   }
 });
-
-router.put("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.put('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const queryText = `
       UPDATE "content"
@@ -184,7 +193,7 @@ router.put("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
 
     res.sendStatus(200);
   } catch (error) {
-    console.log("Error swapping content :", error);
+    console.log('Error swapping content :', error);
   }
 });
 
