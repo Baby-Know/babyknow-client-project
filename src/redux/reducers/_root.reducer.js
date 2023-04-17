@@ -7,6 +7,8 @@ import conditionalForms from "./conditionalForms";
 import newRegistrantsReducer from "./newRegistrants.reducer";
 import studentsReducer from "./students.reducer";
 import teacherReducer from "./teachers.reducer";
+import loadingReducer from './loading.reducer';
+import lessonsReducer from './lessons.reducer'
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -23,6 +25,8 @@ const rootReducer = combineReducers({
   studentsReducer, //Contains all users with access level 1, meaning all students
   newRegistrantsReducer, //Contains all users with access level 0 meaning new user
   teacherReducer, //Contains all teachers and their students
+  loadingReducer,
+  lessonsReducer
 });
 
 export default rootReducer;

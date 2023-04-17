@@ -9,14 +9,16 @@ import {
     AccordionSummary,
     AccordionDetails,
     IconButton,
-    Typography,
+    Typography
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
+import ClearIcon from "@mui/icons-material/Clear";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddLessonForm from './AddLessonForm/AddLessonForm';
-import AddContentForm from './AddContentForm/AddContentForm'
+import AddContentForm from './AddContentForm/AddContentForm';
+import LoadingBar from '../LoadingBar/LoadingBar';
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 
@@ -25,11 +27,20 @@ function UnitPage() {
     const dispatch = useDispatch();
     const history = useHistory();
     const unit = useSelector(store => store.unit);
+    const user = useSelector(store => store.user)
     const theme = useTheme();
     const colors = tokens(theme.palette.mode)
+
     const [selectedId, setSelectedId] = useState(0);
+    const [selectedUnitId, setSelectedUnitId] = useState(0);
+
+    const isLoading = useSelector((store) => store.loadingReducer);
+
     const [lessonToEdit, setLessonToEdit] = useState({id: 0, lessonName: '', lessonDescription: ''})
     const [contentToEdit, setContentToEdit] = useState({id: 0, contentName: '', contentDescription: ''})
+    const [lessonToSwap, setLessonToSwap] = useState({lessonId: 0 , order: 0})
+    const [contentToSwap, setContentToSwap] = useState({contentId: 0 , lessonId: 0, order: 0})
+    const [swappingContent, setSwappingContent] = useState(false)
 
     useEffect(() => {
         dispatch({
@@ -56,6 +67,11 @@ function UnitPage() {
         setContentToEdit({ id: 0, contentName: '', contentDescription: '' })
     }
 
+    const cancelEdit = () => {
+        setLessonToEdit({ id: 0, lessonName: '', lessonDescription: '' })
+        setContentToEdit({ id: 0, contentName: '', contentDescription: '' })
+    }
+
     const deleteLesson = (ids) => {
         dispatch({
             type: "DELETE_LESSON",
@@ -74,22 +90,54 @@ function UnitPage() {
         history.push(`/content/${id}`)
     }
 
+    const swapLessons = (otherLessonToSwap) => {
+        if ( !swappingContent ) {
+        console.log('swap')
+        dispatch({
+            type: "SWAP_LESSONS",
+            payload: {lessonId: lessonToSwap.lessonId, order: otherLessonToSwap.order, unitId: otherLessonToSwap.unitId}
+          });
+      
+          dispatch({
+            type: "SWAP_LESSONS",
+            payload: {lessonId: otherLessonToSwap.lessonId, order: lessonToSwap.order, unitId: otherLessonToSwap.unitId}
+          });
+        } else console.log('nothing')
+    }
+
+    const swapContent = (otherContentToSwap) => {
+        if ( swappingContent ) {
+            console.log('swap: ', contentToSwap, otherContentToSwap)
+            dispatch({
+                type: "SWAP_CONTENT",
+                payload: {contentId: contentToSwap.contentId, order: otherContentToSwap.order, lessonId: otherContentToSwap.lessonId, unitId: otherContentToSwap.unitId}
+            });
+      
+            dispatch({
+                type: "SWAP_CONTENT",
+                payload: {contentId: otherContentToSwap.contentId, order: contentToSwap.order, lessonId: contentToSwap.lessonId, unitId: otherContentToSwap.unitId}
+            });
+        } else console.log('nothing')
+    }
+
 
     return (
-        <Box sx={{ 
+        <Box sx={{
             "& .MuiButton-sizeMedium": {
-            backgroundColor: colors.darkTealAccent[400],
-            color: 'white'
+                backgroundColor: colors.darkTealAccent[400],
+                color: 'white'
             },
             "& .MuiButton-sizeMedium:hover": {
-            backgroundColor: colors.darkTealAccent[600],
-            color: 'white'
-            }}}>
+                backgroundColor: colors.darkTealAccent[600],
+                color: 'white'
+            }
+        }}>
 
             <AddLessonForm id={id} />
 
             {unit.map((lesson, i) => {
                 return (
+                    //conditionally rendering open or closed
                     <div key={i}>
                         {i === 0 ?
                             <Card id='unitHeader'>
@@ -97,18 +145,27 @@ function UnitPage() {
                                 <h2>{lesson.unitSubtitle}</h2>
                             </Card>
                             : <></>}
-                        <Accordion id="accordian" >
-                            <AccordionSummary
+
+                        <Accordion id="accordion" >
+                            <AccordionSummary 
+                                draggable={user.access === 3 ? 'true' : 'false'} 
+                                onDragStart={() => { 
+                                    setLessonToSwap({lessonId: lesson.lessonId , order: lesson.lessonOrder}) 
+                                    setSwappingContent(false)
+                                }} 
+                                onDragOver={(event) => event.preventDefault()} 
+                                onDrop={() => swapLessons({lessonId: lesson.lessonId , order: lesson.lessonOrder, unitId: lesson.unitId})} 
                                 expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
                             >
                                 {/* lesson title */}
                                 {lesson.lessonId !== lessonToEdit.id ?
                                 <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>
                                     {lesson.lessonName}
                                 </Typography>  :
-                                <input onChange={(event) => setLessonToEdit({...lessonToEdit, lessonName: event.target.value})} className='lessonInputs' placeholder='lesson name' value={lessonToEdit.lessonName} />
+                                <input 
+                                onChange={(event) => setLessonToEdit({...lessonToEdit, lessonName: event.target.value})} 
+                                className='lessonInputs' placeholder='lesson name' value={lessonToEdit.lessonName} 
+                                />
                                 }
 
                             </AccordionSummary>
@@ -121,13 +178,20 @@ function UnitPage() {
                                 <input onChange={(event) => setLessonToEdit({...lessonToEdit, lessonDescription: event.target.value})} className='lessonInputs' placeholder='lesson description' value={lessonToEdit.lessonDescription} />
                                 }
 
-            
+
                                 {unit[i].contentId?.map((id, index) => {
                                     return (
-                                    <div key={index}>
+                                    <div key={index} >
                                         {unit[i].contentId[index] === null ?  <></> :
-                                        <div id='content'>
-
+                                        <div id='content'
+                                        draggable={user.access === 3 ? 'true' : 'false'} 
+                                        onDragStart={() => { 
+                                            setContentToSwap({contentId: id, lessonId: lesson.lessonId, order: unit[i].contentOrder[index]})  
+                                            setSwappingContent(true)
+                                        }}
+                                        onDragOver={(event) => event.preventDefault()} 
+                                        onDrop={() => swapContent({contentId: id , order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId})} 
+                                        >
                                             {/* content shown on screen */}
                                             { id !== contentToEdit.id ?
                                             <div  onClick={() => selectContent(id)}>
@@ -135,9 +199,10 @@ function UnitPage() {
                                                     {unit[i].contentTitle[index]}
                                                 </Typography>
 
-                                                <Typography id='contentDescription'>
+                                                {/* do we want? */}
+                                                {/* <Typography id='contentDescription'>
                                                     {unit[i].contentDescription[index]}
-                                                </Typography>
+                                                </Typography> */}
                                             </div> : 
                                             <>
                                                 <div><input onChange={(event) => setContentToEdit({...contentToEdit, contentName: event.target.value})} className='lessonInputs' placeholder='content name' value={contentToEdit.contentName} /></div>
@@ -146,19 +211,27 @@ function UnitPage() {
                                             }
 
                                             {/* icons for content */}
+                                            {user.access === 3 ?
                                             <div id='contentIcons'>
-                                                { contentToEdit.id === 0 ?
+                                                { id !== contentToEdit.id ?
+                                                <>
                                                 <IconButton onClick={() => setContentToEdit({ id: id, contentName: lesson.contentTitle[index], contentDescription: lesson.contentDescription[index] })}>
                                                     <EditIcon sx={{ color: 'white'}} />
-                                                </IconButton> :
+                                                </IconButton>
+                                                <IconButton onClick={() => deleteContent({contentId: id, unitId: lesson.unitId})}>
+                                                    <DeleteForeverIcon sx={{ color: 'white'}} />
+                                                </IconButton> 
+                                                </> :
+                                                <>
                                                 <IconButton onClick={() => editContent({contentId: id, unitId: lesson.unitId})}>
                                                     <DoneIcon sx={{ color: 'white'}} />
                                                 </IconButton>
-                                                }
-                                                <IconButton onClick={() => deleteContent({contentId: id, unitId: lesson.unitId})}>
-                                                    <DeleteForeverIcon sx={{ color: 'white'}} />
+                                                <IconButton onClick={cancelEdit} >
+                                                    <ClearIcon sx={{ color: 'white'}}  />
                                                 </IconButton>
-                                            </div>
+                                                </>
+                                                } 
+                                            </div> : <></> }
 
                                         </ div> 
                                         }
@@ -166,8 +239,8 @@ function UnitPage() {
                                     )
                                 })}
     
-
-                                {lesson.lessonName ? 
+                            
+                                {lesson.lessonName && user.access === 3 ? 
                                 <div id='lessonBottom'>
                                 <Button onClick={() => {
                                         dispatch({
@@ -175,22 +248,30 @@ function UnitPage() {
                                             payload: true,
                                         });
                                         setSelectedId(lesson.lessonId)
+                                        setSelectedUnitId(lesson.unitId)
                                     }}>
                                         Add Content to {lesson.lessonName}
                                 </Button> 
                                 <div>
                                     {/* lesson icons */}
-                                    { lessonToEdit.id === 0 ?
+                                    { lesson.lessonId !== lessonToEdit.id ?
+                                    <>
                                     <IconButton onClick={() => setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription })}>
-                                        <EditIcon />
-                                    </IconButton> :
-                                    <IconButton onClick={() => editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
-                                        <DoneIcon />
+                                        <EditIcon sx={{ color: '#276184'}} />
                                     </IconButton>
-                                    }
                                     <IconButton onClick={() => deleteLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
-                                        <DeleteForeverIcon />
+                                        <DeleteForeverIcon sx={{ color: '#276184'}} />
+                                    </IconButton> 
+                                    </>:
+                                    <>
+                                    <IconButton onClick={() => editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
+                                        <DoneIcon sx={{ color: '#276184'}} />
                                     </IconButton>
+                                    <IconButton onClick={cancelEdit} >
+                                        <ClearIcon sx={{ color: '#276184'}}  />
+                                    </IconButton>
+                                    </>
+                                    }
                                 </div>
                                 </ div>
                              : <></>}
@@ -199,9 +280,15 @@ function UnitPage() {
                     </div>
                 )
             })}
-            <AddContentForm selectedId={selectedId} />
+            
+            {isLoading ?
+                <LoadingBar />
+                :
+                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
+            }
 
             <div id="addLessonParent">
+            {user.access === 3 ?
             <Button
             id='addLesson'
             onClick={() => {
@@ -212,10 +299,10 @@ function UnitPage() {
                 }}
             >
                 Add Lesson
-            </Button>
+            </Button> : <></> }
             </div>
         </Box>
-        
+
     )
 }
 

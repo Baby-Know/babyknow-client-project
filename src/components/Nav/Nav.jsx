@@ -1,7 +1,7 @@
 import { React, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import logo from "../../images/BabyKnowLogo.png";
+import logo from "../../images/BK Logo.png";
 import { useTheme } from "@emotion/react";
 import { tokens, ColorModeContext } from "../../theme";
 import { IconButton, Button, Box, Typography } from "@mui/material";
@@ -41,7 +41,7 @@ function Nav() {
     >
       <Box>
         <Link to="/about">
-          <img src={logo} />
+          <img src={logo} width="130vw" />
         </Link>
       </Box>
       <Box
@@ -82,13 +82,22 @@ function Nav() {
             >
               <Typography variant="body1">Courses</Typography>
             </Button>
-            <Button
-              onClick={() => {
-                history.push("/registrants");
-              }}
-            >
+
+            {user.access === 3 ?
+            <Button onClick={() => history.push("/registrants")}>
               <Typography variant="body1">Registrants</Typography>
-            </Button>
+            </Button> : user.access === 2 ?
+            <Button onClick={() => history.push("/myStudents")}>
+              <Typography variant="body1">My Students</Typography>
+            </Button> : user.access === 1 ?
+            <Button onClick={() => history.push("/myTeacher")}>
+              <Typography variant="body1">My Teacher</Typography>
+            </Button> :
+            <Button onClick={() => history.push("/about")}>
+              <Typography variant="body1">Contacts</Typography>
+            </Button>}
+
+
             <Button
               onClick={() => {
                 history.push("/about");

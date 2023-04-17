@@ -26,16 +26,26 @@ function* deleteLesson (action) {
 
 function* updateLesson(action) {
   try {
-    yield axios.put(`/api/lesson`, action.payload.lessonToEdit);
+    yield axios.put(`/api/lesson/${action.payload.ids.lessonId}`, action.payload.lessonToEdit);
     yield put({ type: "GET_UNIT", payload: action.payload.ids.unitId });
   } catch (error) {
     console.error("Error updating lesson", error);
   }
 }
 
+function* swapLessons(action) {
+  try {
+    yield axios.put(`/api/lesson`, action.payload);
+    yield put({ type: "GET_UNIT", payload: action.payload.unitId });
+  } catch (error) {
+    console.error("Error updating unit", error);
+  }
+}
+
 function* lessonSaga() {
     yield takeLatest("DELETE_LESSON", deleteLesson);
     yield takeLatest("UPDATE_LESSON", updateLesson);
+    yield takeLatest("SWAP_LESSONS", swapLessons);
 }
 
 export default lessonSaga

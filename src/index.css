@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Puritan&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Puritan&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond&display=swap");
 
 html,
@@ -50,9 +50,9 @@ body,
   justify-content: center;
 }
 
-#accordian {
+#accordion {
   border: 2px solid #276184;
-  border-radius: 16px;
+  border-radius: 4px;
   margin: 4px auto;
   width: 60%;
   color: #3179a5;
@@ -62,7 +62,7 @@ body,
 #content {
   background-color: #276184;
   color: white; 
-  border-radius: 8px;
+  border-radius: 4px;
   margin: auto;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -75,6 +75,7 @@ body,
 
 #contentTitle {
   font-size: large;
+  padding: 16px
 }
 
 #contentDescription {
@@ -95,5 +96,17 @@ body,
 .lessonInputs {
   border: 2px solid #276184;
   border-radius: 8px;
-  padding: 4px
+  padding: 8px;
+  color: #276184
+}
+
+.drag {
+  text-align: center;
+  width: 200px; height: 200px;
+  text-align: center;
+  justify-content: center;
+  background-color: rgb(245, 245, 245);
+  border-radius: 4px;
+  border: 2px solid lightcoral;
+  cursor: grab;
 }

@@ -6,46 +6,54 @@ import withReactContent from "sweetalert2-react-content";
 // survey upload generator function
 function* addContent(action) {
     try {
+        yield put({ type: 'SET_LOADING_TRUE' })
         yield axios.post('/api/content', action.payload);
-
+        yield put({ type: 'SET_LOADING_FALSE' })
+        yield put({ type: "GET_UNIT", payload: action.payload.selectedUnitId });
     } catch (error) {
         console.error('error posting content', error)
-
+        yield put({ type: 'SET_LOADING_FALSE' })
     }
 }
 
 // video upload generator function
 function* addContentWithUpload(action) {
     try {
-      const newFile = action.payload.contentToSend.content;
-      const data = new FormData(); // IMPORTANT STEP! declare FormData
-      data.append('file', newFile) 
-      data.append('title', action.payload.contentToSend.title)
-      data.append('description', action.payload.contentToSend.description)
-      data.append('isSurvey', action.payload.contentToSend.isSurvey)
-      data.append('isRequired', action.payload.contentToSend.isRequired)
-      data.append('contentOrder', action.payload.contentToSend.contentOrder)
-      data.append('lessons_id', action.payload.selectedId)
+        yield put({ type: 'SET_LOADING_TRUE' })
+        const newFile = action.payload.contentToSend.content;
+        const data = new FormData(); // IMPORTANT STEP! declare FormData
+        data.append('file', newFile)
+        data.append('title', action.payload.contentToSend.title)
+        data.append('description', action.payload.contentToSend.description)
+        data.append('isSurvey', action.payload.contentToSend.isSurvey)
+        data.append('isRequired', action.payload.contentToSend.isRequired)
+        data.append('contentOrder', action.payload.contentToSend.contentOrder)
+        data.append('lessons_id', action.payload.selectedId)
 
-      const response = yield axios.post('/api/content/file', data, {
-        headers: {
-            'content-type': 'multipart/form-data'
-        }
-      });   
-      yield put({type: 'SET_VIDEO_UPLOAD', payload: response.data})
+        const response = yield axios.post('/api/content/file', data, {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        });
+        yield put({ type: 'SET_VIDEO_UPLOAD', payload: response.data })
+        yield put({ type: 'SET_LOADING_FALSE' })
+        yield put({ type: "GET_UNIT", payload: action.payload.selectedUnitId });
+
     } catch (error) {
         console.log('error uploading video', error)
+        yield put({ type: 'SET_LOADING_FALSE' })
+
     }
 }
 // get content with id
 function* getContent(action) {
     try {
-      let response = yield axios.get(`/api/content/${action.payload}`);
-      yield put({ type: "SET_CONTENT", payload: response.data });
+        let response = yield axios.get(`/api/content/${action.payload}`);
+        yield put({ type: "SET_CONTENT", payload: response.data });
     } catch (error) {
-      console.error("Error getting content", error);
+        console.error("Error getting content", error);
     }
-  }
+}
 
 // delete content from a specific lesson
 function* deleteContent(action) {
@@ -66,16 +74,24 @@ function* deleteContent(action) {
   } catch (error) {
       console.error('error deleting content', error)
 
-  }
+    }
 }
 
 function* updateContent(action) {
-  console.log(action.payload)
   try {
-    yield axios.put(`/api/content`, action.payload.contentToEdit);
+    yield axios.put(`/api/content/${action.payload.ids.contentId}`, action.payload.contentToEdit);
     yield put({ type: "GET_UNIT", payload: action.payload.ids.unitId });
   } catch (error) {
     console.error("Error updating content", error);
+  }
+}
+
+function* swapContent(action) {
+  try {
+    yield axios.put(`/api/content`, action.payload);
+    yield put({ type: "GET_UNIT", payload: action.payload.unitId });
+  } catch (error) {
+    console.error("Error updating unit", error);
   }
 }
 
@@ -87,6 +103,7 @@ function* contentSaga() {
     yield takeLatest("GET_CONTENT", getContent);
     yield takeLatest("DELETE_CONTENT", deleteContent);
     yield takeLatest("UPDATE_CONTENT", updateContent);
+    yield takeLatest("SWAP_CONTENT", swapContent);
 }
 
 export default contentSaga;

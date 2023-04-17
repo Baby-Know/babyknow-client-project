@@ -23,7 +23,8 @@ import ContentPage from "../ContentPage/ContentPage";
 import LoginPage from "../LoginPage/LoginPage";
 import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
-
+import MyTeacherPage from "../MyPages/MyTeacherPage";
+import MyStudentsPage from "../MyPages/MyStudentsPage";
 function App() {
   //giving app access to theme and color mode
   const [theme, colorMode] = useMode();
@@ -49,7 +50,6 @@ function App() {
                 <Redirect exact from="/" to="/registration" />
 
                 <ProtectedRoute
-                  // logged in shows CoursePage else shows LoginPage
                   exact
                   path="/course"
                 >
@@ -57,7 +57,6 @@ function App() {
                 </ProtectedRoute>
 
                 <ProtectedRoute
-                  // logged in shows CoursePage else shows LoginPage
                   exact
                   path="/unit/:id"
                 >
@@ -65,23 +64,32 @@ function App() {
                 </ProtectedRoute>
 
                 <ProtectedRoute
-                  // logged in shows CoursePage else shows LoginPage
                   exact
                   path="/content/:id"
                 >
                   <ContentPage />
                 </ProtectedRoute>
 
-                <ProtectedRoute
-                  // logged in shows RegistrantsPage else shows LoginPage
-                  exact
-                  path="/registrants"
-                >
-                  <RegistrantsPage />
-                </ProtectedRoute>
+              
+                <ProtectedRoute exact path="/registrants">
+                  {user.access === 3 ?
+                  (<RegistrantsPage />) : (<Redirect to='/about'/>)
+                  }
+                </ProtectedRoute> 
+                
+                <ProtectedRoute exact path="/myStudents">
+                {user.access === 2 ?
+                  (<MyStudentsPage />) : (<Redirect to='/about'/>)
+                }
+                </ProtectedRoute> 
+              
+                <ProtectedRoute exact path="/myTeacher">
+                  {user.access === 1 ?
+                    (<MyTeacherPage />) : (<Redirect to='/about'/>)
+                  }
+                </ProtectedRoute> 
 
                 <ProtectedRoute
-                  // logged in shows AboutPage else shows LoginPage
                   exact
                   path="/about"
                 >
@@ -91,7 +99,6 @@ function App() {
                 <Route exact path="/login">
                   {user.id ? (
                     // If the user is already logged in,
-                    // redirect to the /course page
                     <Redirect to="/course" />
                   ) : (
                     // Otherwise, show the login page
@@ -102,7 +109,6 @@ function App() {
                 <Route exact path="/registration">
                   {user.id ? (
                     // If the user is already logged in,
-                    // redirect them to the /user page
                     <Redirect to="/course" />
                   ) : (
                     // Otherwise, show the registration page

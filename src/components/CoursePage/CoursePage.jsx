@@ -5,6 +5,8 @@ import AddUnitForm from "./AddUnitForm/AddUnitForm";
 import AddCohortForm from "./AddCohortForm/AddCohortForm";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
+import ClearIcon from "@mui/icons-material/Clear";
+import DragHandleIcon from '@mui/icons-material/DragHandle';
 import {
   Box,
   Button,
@@ -34,6 +36,8 @@ function CoursePage() {
     subtitle: "",
   });
 
+  const [unitToSwap, setUnitToSwap] = useState({id: 0, order: 0})
+
   useEffect(() => {
     dispatch({ type: "GET_UNITS" });
   }, []);
@@ -62,6 +66,15 @@ function CoursePage() {
     });
   }
 
+  const cancelEdit = () => {
+    setUpdatedUnitToSend({
+      id: "",
+      name: "",
+      unitOrder: "",
+      subtitle: "",
+    });
+  }
+
   const deleteUnit = (id) => {
     dispatch({
       type: "DELETE_UNIT",
@@ -71,6 +84,19 @@ function CoursePage() {
 
   const selectUnit = (id) => {
     history.push(`/unit/${id}`)
+  }
+
+
+  const swapUnits = (otherUnitToSwap) => {
+    dispatch({
+      type: "SWAP_UNITS",
+      payload: {id: unitToSwap.id, order: otherUnitToSwap.order},
+    });
+
+    dispatch({
+      type: "SWAP_UNITS",
+      payload: {id: otherUnitToSwap.id, order: unitToSwap.order},
+    });
   }
 
   return (
@@ -141,44 +167,55 @@ function CoursePage() {
                             }
                           />
                         </CardContent>
+                        <>
                         <IconButton
-                          onClick={() => {
-                            postEditedUnit();
-                          }}
-                        >
+                          onClick={postEditedUnit}>
                           <DoneIcon />
                         </IconButton>
+                        <IconButton onClick={cancelEdit}>
+                          <ClearIcon/>
+                        </IconButton> 
+                        </>
                       </Card>
                   </form>
                 ) : (
-                    <Card key={unit.id} sx={{ width: 200, height: 200, textAlign: 'center', justifyContent: 'center', backgroundColor: 'rgb(245, 245, 245)' }}>
-                      <CardContent sx={{ mb: 4 }} onClick={() => selectUnit(unit.id)}>
-                        <p style={{ fontWeight: 'bold', fontSize: 18 }} >{unit.name}</p>
+                    <Card draggable={user.access === 3 ? 'true' : 'false'} onDragStart={() => setUnitToSwap({id: unit.id , order: unit.unitOrder}) } onDragOver={(event) => event.preventDefault()} onDrop={() => swapUnits({id: unit.id, order: unit.unitOrder})} key={unit.id} sx={{ width: 200, height: 200, textAlign: 'center', justifyContent: 'center', backgroundColor: 'rgb(245, 245, 245)' }}>
+                      {user.access === 3 ?
+                      <IconButton>
+                        <DragHandleIcon sx={{ 'cursor': 'grab'}} />
+                      </IconButton> : <></>
+                      }
+                      <CardContent sx={{ mb: 2 }} onClick={() => selectUnit(unit.id)}>
+                        <p style={{ marginTop: '0', fontWeight: 'bold', fontSize: 18 }} >{unit.name}</p>
                         <p>{unit.subtitle}</p>
                       </CardContent >
-                      <IconButton
-                        onClick={() => {
-                          setUpdatedUnitToSend({
-                            id: unit.id,
-                            name: unit.name,
-                            unitOrder: unit.unitOrder,
-                            subtitle: unit.subtitle,
-                          });
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => deleteUnit(unit.id)}>
-                        <DeleteForeverIcon />
-                      </IconButton>
+                      {user.access === 3 ?
+                      <>
+                        <IconButton
+                          onClick={() => {
+                            setUpdatedUnitToSend({
+                              id: unit.id,
+                              name: unit.name,
+                              unitOrder: unit.unitOrder,
+                              subtitle: unit.subtitle,
+                            });
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => deleteUnit(unit.id)}>
+                          <DeleteForeverIcon />
+                        </IconButton> 
+                      </> : <></>}
                     </Card>
                 )}
                 </div>
                 );
               })}
               </Grid>
-
       </div>
+
+      {user.access === 3 ?
       <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
         <Button
           sx={{ margin: 10 }}
@@ -191,8 +228,8 @@ function CoursePage() {
           
           >
             Add Unit
-          </Button>
-          <Button
+        </Button>
+        <Button
             sx={{ margin: 10 }}
             onClick={() => {
               dispatch({
@@ -203,8 +240,9 @@ function CoursePage() {
       
           >
             Add Cohort
-          </Button>
-        </div>
+        </Button>
+      </div> : <></> }
+
     </Box>
   );
 }
