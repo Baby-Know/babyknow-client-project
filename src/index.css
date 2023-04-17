@@ -94,10 +94,10 @@ body,
 }
 
 .lessonInputs {
-  border: 2px solid #276184;
-  border-radius: 8px;
-  padding: 8px;
-  color: #276184
+  width: 50%;
+  background-color: white;
+  border-radius: 4px;
+  color: red
 }
 
 .drag {
@@ -109,4 +109,10 @@ body,
   border-radius: 4px;
   border: 2px solid lightcoral;
   cursor: grab;
+}
+
+#dragIcon {
+    position: absolute;
+    left: 8px;
+    bottom: 21.5px;
 }

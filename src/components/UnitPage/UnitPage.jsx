@@ -9,6 +9,7 @@ import {
     AccordionSummary,
     AccordionDetails,
     IconButton,
+    TextField,
     Typography
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -16,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DragHandleIcon from '@mui/icons-material/DragHandle';
 import AddLessonForm from './AddLessonForm/AddLessonForm';
 import AddContentForm from './AddContentForm/AddContentForm';
 import LoadingBar from '../LoadingBar/LoadingBar';
@@ -41,6 +43,7 @@ function UnitPage() {
     const [lessonToSwap, setLessonToSwap] = useState({lessonId: 0 , order: 0})
     const [contentToSwap, setContentToSwap] = useState({contentId: 0 , lessonId: 0, order: 0})
     const [swappingContent, setSwappingContent] = useState(false)
+    const [draggable, setDraggable] = useState(true)
 
     useEffect(() => {
         dispatch({
@@ -70,6 +73,7 @@ function UnitPage() {
     const cancelEdit = () => {
         setLessonToEdit({ id: 0, lessonName: '', lessonDescription: '' })
         setContentToEdit({ id: 0, contentName: '', contentDescription: '' })
+        setDraggable(true)
     }
 
     const deleteLesson = (ids) => {
@@ -107,7 +111,7 @@ function UnitPage() {
 
     const swapContent = (otherContentToSwap) => {
         if ( swappingContent ) {
-            console.log('swap: ', contentToSwap, otherContentToSwap)
+            console.log('swap')
             dispatch({
                 type: "SWAP_CONTENT",
                 payload: {contentId: contentToSwap.contentId, order: otherContentToSwap.order, lessonId: otherContentToSwap.lessonId, unitId: otherContentToSwap.unitId}
@@ -148,25 +152,31 @@ function UnitPage() {
 
                         <Accordion id="accordion" >
                             <AccordionSummary 
-                                draggable={user.access === 3 ? 'true' : 'false'} 
+                                draggable={user.access === 3 && draggable ? 'true' : 'false'} 
                                 onDragStart={() => { 
                                     setLessonToSwap({lessonId: lesson.lessonId , order: lesson.lessonOrder}) 
                                     setSwappingContent(false)
                                 }} 
                                 onDragOver={(event) => event.preventDefault()} 
                                 onDrop={() => swapLessons({lessonId: lesson.lessonId , order: lesson.lessonOrder, unitId: lesson.unitId})} 
-                                expandIcon={<ExpandMoreIcon />}
+                                expandIcon={<ExpandMoreIcon sx={{ color: '#276184'}} />}
                             >
+                                { draggable ?
+                                <IconButton sx={{ padding: '0', marginRight: '16px', color: '#276184'}}>
+                                    <DragHandleIcon sx={{ 'cursor': 'grab'}} />
+                                </IconButton> : <></>}
+                                
                                 {/* lesson title */}
                                 {lesson.lessonId !== lessonToEdit.id ?
                                 <Typography sx={{ fontWeight: 'bold', fontSize: 16 }}>
                                     {lesson.lessonName}
                                 </Typography>  :
-                                <input 
+                                <TextField
                                 onChange={(event) => setLessonToEdit({...lessonToEdit, lessonName: event.target.value})} 
-                                className='lessonInputs' placeholder='lesson name' value={lessonToEdit.lessonName} 
+                                className='lessonInputs' label='Lesson Name' value={lessonToEdit.lessonName} 
                                 />
                                 }
+                                
 
                             </AccordionSummary>
                             <AccordionDetails>
@@ -175,7 +185,7 @@ function UnitPage() {
                                 <Typography>
                                     {lesson.lessonDescription}
                                 </Typography> :
-                                <input onChange={(event) => setLessonToEdit({...lessonToEdit, lessonDescription: event.target.value})} className='lessonInputs' placeholder='lesson description' value={lessonToEdit.lessonDescription} />
+                                <TextField onChange={(event) => setLessonToEdit({...lessonToEdit, lessonDescription: event.target.value})} className='lessonInputs' label='Lesson Description' value={lessonToEdit.lessonDescription} />
                                 }
 
 
@@ -184,7 +194,7 @@ function UnitPage() {
                                     <div key={index} >
                                         {unit[i].contentId[index] === null ?  <></> :
                                         <div id='content'
-                                        draggable={user.access === 3 ? 'true' : 'false'} 
+                                        draggable={user.access === 3 && draggable ? 'true' : 'false'} 
                                         onDragStart={() => { 
                                             setContentToSwap({contentId: id, lessonId: lesson.lessonId, order: unit[i].contentOrder[index]})  
                                             setSwappingContent(true)
@@ -192,6 +202,11 @@ function UnitPage() {
                                         onDragOver={(event) => event.preventDefault()} 
                                         onDrop={() => swapContent({contentId: id , order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId})} 
                                         >
+                                            {draggable ?
+                                            <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white'}}>
+                                                <DragHandleIcon sx={{ 'cursor': 'grab'}} />
+                                            </IconButton> : <></> }
+
                                             {/* content shown on screen */}
                                             { id !== contentToEdit.id ?
                                             <div  onClick={() => selectContent(id)}>
@@ -205,8 +220,28 @@ function UnitPage() {
                                                 </Typography> */}
                                             </div> : 
                                             <>
-                                                <div><input onChange={(event) => setContentToEdit({...contentToEdit, contentName: event.target.value})} className='lessonInputs' placeholder='content name' value={contentToEdit.contentName} /></div>
-                                                <div><input onChange={(event) => setContentToEdit({...contentToEdit, contentDescription: event.target.value})} className='lessonInputs' placeholder='content description' value={contentToEdit.contentDescription} /></div>
+                                                <div>
+                                                    <TextField 
+                                                    autoFocus 
+                                                    variant="filled"
+                                                    margin="normal" 
+                                                    type="text" 
+                                                    label="Content Name" 
+                                                    onChange={(event) => setContentToEdit({...contentToEdit, contentName: event.target.value})} 
+                                                    className='lessonInputs' 
+                                                    value={contentToEdit.contentName}/>
+                                                </div>
+                                                <div>
+                                                    <TextField 
+                                                    autoFocus 
+                                                    variant="filled"
+                                                    margin="normal" 
+                                                    type="text" 
+                                                    label="Content Description" 
+                                                    onChange={(event) => setContentToEdit({...contentToEdit, contentDescription: event.target.value})} 
+                                                    className='lessonInputs' 
+                                                    value={contentToEdit.contentDescription}/>
+                                                </div>
                                             </>
                                             }
 
@@ -215,7 +250,10 @@ function UnitPage() {
                                             <div id='contentIcons'>
                                                 { id !== contentToEdit.id ?
                                                 <>
-                                                <IconButton onClick={() => setContentToEdit({ id: id, contentName: lesson.contentTitle[index], contentDescription: lesson.contentDescription[index] })}>
+                                                <IconButton onClick={() => {
+                                                    setContentToEdit({ id: id, contentName: lesson.contentTitle[index], contentDescription: lesson.contentDescription[index] })
+                                                    setDraggable(false)
+                                                }}>
                                                     <EditIcon sx={{ color: 'white'}} />
                                                 </IconButton>
                                                 <IconButton onClick={() => deleteContent({contentId: id, unitId: lesson.unitId})}>
@@ -223,7 +261,10 @@ function UnitPage() {
                                                 </IconButton> 
                                                 </> :
                                                 <>
-                                                <IconButton onClick={() => editContent({contentId: id, unitId: lesson.unitId})}>
+                                                <IconButton onClick={() => {
+                                                    editContent({contentId: id, unitId: lesson.unitId})
+                                                    setDraggable(true)
+                                                }}>
                                                     <DoneIcon sx={{ color: 'white'}} />
                                                 </IconButton>
                                                 <IconButton onClick={cancelEdit} >
@@ -256,7 +297,10 @@ function UnitPage() {
                                     {/* lesson icons */}
                                     { lesson.lessonId !== lessonToEdit.id ?
                                     <>
-                                    <IconButton onClick={() => setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription })}>
+                                    <IconButton onClick={() => {
+                                        setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription })
+                                        setDraggable(false)
+                                    }}>
                                         <EditIcon sx={{ color: '#276184'}} />
                                     </IconButton>
                                     <IconButton onClick={() => deleteLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
@@ -264,7 +308,10 @@ function UnitPage() {
                                     </IconButton> 
                                     </>:
                                     <>
-                                    <IconButton onClick={() => editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})}>
+                                    <IconButton onClick={() => {
+                                        editLesson({lessonId: lesson.lessonId, unitId: lesson.unitId})
+                                        setDraggable(true)
+                                    }}>
                                         <DoneIcon sx={{ color: '#276184'}} />
                                     </IconButton>
                                     <IconButton onClick={cancelEdit} >

@@ -108,7 +108,6 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
 
 // swaps units order
 router.put("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-  console.log(req.body)
   try {
     const queryText = `
     UPDATE "units"

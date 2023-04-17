@@ -142,7 +142,6 @@ router.delete(
   );
 
   router.put('/:id', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-    console.log(req.body, 'reqqqq')
     try {
       const queryText = `
       UPDATE "content"
