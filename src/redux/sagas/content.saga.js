@@ -9,6 +9,7 @@ function* addContent(action) {
     yield put({ type: 'SET_LOADING_TRUE' });
     yield axios.post('/api/content', action.payload);
     yield put({ type: 'SET_LOADING_FALSE' });
+    yield put({ type: 'GET_UNIT', payload: action.payload.selectedUnitId });
   } catch (error) {
     console.error('error posting content', error);
     yield put({ type: 'SET_LOADING_FALSE' });
@@ -18,6 +19,7 @@ function* addContent(action) {
 // video upload generator function
 function* addContentWithUpload(action) {
   try {
+    yield put({ type: 'SET_LOADING_TRUE' });
     const newFile = action.payload.contentToSend.content;
     const data = new FormData(); // IMPORTANT STEP! declare FormData
     data.append('file', newFile);
@@ -34,10 +36,14 @@ function* addContentWithUpload(action) {
       },
     });
     yield put({ type: 'SET_VIDEO_UPLOAD', payload: response.data });
+    yield put({ type: 'SET_LOADING_FALSE' });
+    yield put({ type: 'GET_UNIT', payload: action.payload.selectedUnitId });
   } catch (error) {
     console.log('error uploading video', error);
+    yield put({ type: 'SET_LOADING_FALSE' });
   }
 }
+
 // get content with id
 function* getContent(action) {
   try {
@@ -72,21 +78,33 @@ function* deleteContent(action) {
 }
 
 function* updateContent(action) {
-  console.log(action.payload);
   try {
-    yield axios.put(`/api/content`, action.payload.contentToEdit);
+    yield axios.put(
+      `/api/content/${action.payload.ids.contentId}`,
+      action.payload.contentToEdit
+    );
     yield put({ type: 'GET_UNIT', payload: action.payload.ids.unitId });
   } catch (error) {
     console.error('Error updating content', error);
   }
 }
 
+function* swapContent(action) {
+  try {
+    yield axios.put(`/api/content`, action.payload);
+    yield put({ type: 'GET_UNIT', payload: action.payload.unitId });
+  } catch (error) {
+    console.error('Error updating unit', error);
+  }
+}
+
 function* contentSaga() {
   yield takeLatest('ADD_CONTENT', addContent);
   yield takeLatest('ADD_CONTENT_WITH_UPLOAD', addContentWithUpload);
-  yield takeLatest('GET_UNIT_LESSON_CONTENT', getContent);
+  yield takeLatest('GET_CONTENT', getContent);
   yield takeLatest('DELETE_CONTENT', deleteContent);
   yield takeLatest('UPDATE_CONTENT', updateContent);
+  yield takeLatest('SWAP_CONTENT', swapContent);
 }
 
 export default contentSaga;

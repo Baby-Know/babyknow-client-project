@@ -4,6 +4,8 @@ const contentReducer = (state = '', action) => {
       return action.payload;
     case 'SET_CONTENT':
       return action.payload;
+    case 'SET_SURVEY_UPLOAD':
+      return action.payload;
     default:
       return state;
   }

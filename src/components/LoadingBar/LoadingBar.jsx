@@ -1,19 +1,33 @@
-import LinearProgress from '@mui/material/LinearProgress';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import 
+{LinearProgress,
+Box,
+Card,
+CardMedia,
+CardContent,
+Typography} from '@mui/material/';
 
-function LoadingBar(){
+import logo from './BK Logo.png';
 
-return (
-  <div style={{position: 'fixed', top: '50%', left: '50%'}}>
-  <Box sx={{ backgroundColor: '#3179a5', borderRadius: '5px', width: '150px', height: '150px', justifyContent: 'center'}}>
-  <LinearProgress />
-  <Typography>
-    Your content is loading...
-  </Typography>
-</Box>
-</div>
-)
+function LoadingBar() {
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', position: 'fixed', zIndex: '100', top: '30%', left: '30%' }}>
+      <Box display='flex' width={500} height={450} justifyContent='center' alignItems='center'>
+      <Card sx={{ minWidth: '30em'}}>
+      <CardMedia
+        sx={{ minHeight: '25em' }}
+        image={logo}
+      />
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div">
+          Loading content...
+        </Typography>
+        <LinearProgress color='secondary'/>
+      </CardContent>
+    </Card>
+    </Box>
+    </div>
+  )
 }
 
 export default LoadingBar;

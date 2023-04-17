@@ -121,6 +121,7 @@ function AddUnitForm() {
             }}
           />
           <Button
+            variant="outlined"
             onClick={() => {
               handleAddUnit();
             }}
