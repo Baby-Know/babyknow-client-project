@@ -38,13 +38,13 @@ function ContentPage() {
     //     });
     // };
 
-    const toggleComplete = (boolean) => {
-        console.log(boolean);
-        dispatch({
-            type: 'TOGGLE_COMPLETE',
-            payload: { boolean }
-        });
-    };
+    // const toggleComplete = (boolean) => {
+    //     console.log(boolean);
+    //     dispatch({
+    //         type: 'TOGGLE_COMPLETE',
+    //         payload: { boolean }
+    //     });
+    // };
     console.log('userContent', userContent);
 
     return (
@@ -60,7 +60,9 @@ function ContentPage() {
             </Breadcrumbs >
             {content?.contentIsRequired ?
                 <div>
-                    Check when you've finished the lesson <Checkbox onClick={() => toggleComplete(!content.contentIsRequired)} />
+                    Check when you've finished the lesson <Checkbox
+                    // onClick={() => toggleComplete(!content.contentIsRequired)} 
+                    />
                 </div> :
                 <></>
             }

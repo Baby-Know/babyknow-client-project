@@ -47,12 +47,6 @@ function UnitPage() {
             type: "GET_UNIT",
             payload: id
         });
-        const timer = setInterval(() => {
-            setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-        }, 1000);
-        return () => {
-            clearInterval(timer);
-        };
     }, []);
 
     const selectContent = (unitId, lessonId, contentId) => {
