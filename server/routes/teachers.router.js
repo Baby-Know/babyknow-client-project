@@ -19,29 +19,29 @@ router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     //Selecting all teachers and details about them
     const usersQuery = `
  SELECT
-    "users".id AS "usersId",
-    "users".email, 
-    "users"."firstName", 
-    "users"."lastName", 
-    "users".access, 
-    "users".organization,
-    "cohorts".name AS "cohort",
-    "cohorts".id AS "cohortsId"
-FROM "users"
-JOIN "users_cohorts"
-    ON "users".id = "users_cohorts".user_id
-JOIN "cohorts" 
-    ON "cohorts".id = "users_cohorts".cohorts_id
-WHERE "users".access = 2
+    u.id AS "usersId",
+    u.email, 
+    u."firstName", 
+    u."lastName", 
+    u.access, 
+    u.organization,
+    "c".name AS "cohort",
+    "c".id AS "cohortsId"
+FROM "users" AS u
+JOIN "users_cohorts" AS uc
+    ON u.id = uc.user_id
+JOIN "cohorts" AS c
+    ON c.id = uc.cohorts_id
+WHERE u.access >= 2
 GROUP BY      
-    "users".id,
-    "users".email, 
-    "users"."firstName", 
-    "users"."lastName", 
-    "users".access, 
-    "users".organization,
-    "cohorts".name,
-    "cohorts".id;
+    u.id,
+    u.email, 
+    u."firstName", 
+    u."lastName", 
+    u.access, 
+    u.organization,
+    c.name,
+    c.id;
   `;
 
     const usersResult = await pool.query(usersQuery);

@@ -27,12 +27,12 @@ router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
 //UPDATE NEW USER
 router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
-    const queryText = `
+    const usersQueryText = `
     UPDATE "users" 
     SET "email" = $1, "firstName" = $2, "lastName" = $3, "access" = $4, "organization" = $5
     WHERE id = $6;
     `;
-    await pool.query(queryText, [
+    await pool.query(usersQueryText, [
       req.body.email,
       req.body.firstName,
       req.body.lastName,

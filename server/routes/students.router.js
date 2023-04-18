@@ -72,7 +72,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
         SELECT 
             uc.user_id, u."firstName", u."lastName" FROM "users_cohorts" AS uc
         JOIN "users" AS u ON u.id = uc.user_id
-        WHERE u.access = 2 AND uc.cohorts_id = $1;
+        WHERE u.access >= 2 AND uc.cohorts_id = $1;
         `;
 
         const usersCohortsTeacherResponse = await pool.query(
@@ -110,7 +110,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
     const usersTeacherQuery = `
     SELECT 
         "id", "email", "firstName", "lastName", "organization" FROM "users" 
-    WHERE "users".access = 2;
+    WHERE "users".access >= 2;
     `;
 
     const usersTeacherResponse = await pool.query(usersTeacherQuery);
