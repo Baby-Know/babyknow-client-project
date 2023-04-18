@@ -22,18 +22,19 @@ function* fetchUserContent(action) {
 //   }
 // }
 
-// function* updateComplete(action) {
-//   try {
-//     axios.put(`api/content/complete`, action.payload);
-//   } catch (error) {
-//     console.error('Error updating complete toggle', error);
-//   }
-// }
+function* updateComplete(action) {
+  try {
+    yield axios.put(`api/user-content`, action.payload);
+    yield put({ type: 'FETCH_USER_CONTENT', payload: action.payload });
+  } catch (error) {
+    console.error('Error updating complete toggle', error);
+  }
+}
 
 function* usersContentSaga() {
   yield takeLatest('FETCH_USER_CONTENT', fetchUserContent);
   // yield takeLatest('POST_USER_CONTENT', postUserContent);
-  // yield takeLatest('TOGGLE_COMPLETE', updateComplete);
+  yield takeLatest('TOGGLE_COMPLETE', updateComplete);
 }
 
 export default usersContentSaga;

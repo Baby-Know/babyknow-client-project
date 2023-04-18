@@ -11,7 +11,6 @@ const aws = require('aws-sdk');
 //GET user-content table info
 router.get('/:userId/:contentId', rejectUnauthenticated, async (req, res) => {
   try {
-    console.log('req.body', req.params);
     const queryText = `
     SELECT * FROM "users_content" WHERE "user_id" = $1 AND "content_id" = $2;
     `;
@@ -26,7 +25,7 @@ router.get('/:userId/:contentId', rejectUnauthenticated, async (req, res) => {
 });
 
 //POST user content ids
-router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.post('/', rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `
       INSERT INTO "users_content" ("user_id", "content_id", "isComplete", "media", "comment")
@@ -46,6 +45,23 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   } catch (error) {
     res.sendStatus(500);
     console.log('Error posting user-content relation', error);
+  }
+});
+
+//PUT to toggle isComplete check
+router.put('/', rejectUnauthenticated, async (req, res) => {
+  try {
+    const queryText = `
+        UPDATE "users_content"
+        SET "isComplete" = $2
+        WHERE "id" = $1;
+        `;
+    const queryParams = [req.body.userContentId, req.body.bool];
+    await pool.query(queryText, queryParams);
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log('Error updating content isComplete', error);
   }
 });
 

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Checkbox, Typography, Breadcrumbs } from "@mui/material";
@@ -13,10 +13,15 @@ function ContentPage() {
 
     const user = useSelector(store => store.user);
     const userId = user.id;
-    const userContent = useSelector(store => store.userContentReducer);
+
+    const userContentreducer = useSelector(store => store.userContentReducer);
+    const userContent = userContentreducer[0];
+    const userContentId = userContent?.id;
+    const isComplete = userContent?.isComplete;
 
     console.log('content', content);
 
+    //on page load get the content title, info, video/survey and the user-specific tracker for complete, comments, media
     useEffect(() => {
         dispatch({
             type: 'GET_UNIT_LESSON_CONTENT',
@@ -29,26 +34,25 @@ function ContentPage() {
         });
     }, []);
 
-    // const loadUserContentReducer = () => {
-    //     console.log('Fetch params contentpage', userId, contentId);
-    //     dispatch({
-    //         type: 'FETCH_USER_CONTENT',
-    //         payload: { userId, contentId }
-    //     });
-    // };
-
-    // const toggleComplete = (boolean) => {
-    //     console.log(boolean);
-    //     dispatch({
-    //         type: 'TOGGLE_COMPLETE',
-    //         payload: { boolean }
-    //     });
-    // };
+    //toggle the isComplete column in users_content table with the checkmark
+    const toggleComplete = (bool) => {
+        console.log(bool);
+        dispatch({
+            type: 'TOGGLE_COMPLETE',
+            payload: { userContentId, bool, userId, contentId }
+        });
+    };
     console.log('userContent', userContent);
+
+    //handling the 
+    const [isCompleteControl, setIsCompleteControl] = useState(isComplete);
+
+    const handleCompleteToggle = (event) => {
+        setIsCompleteControl(event.target.isCompleteControl);
+    };
 
     return (
         <>
-            {/* <div onClick={() => loadUserContentReducer()}> */}
 
             <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
                 <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}`}>
@@ -59,8 +63,8 @@ function ContentPage() {
             </Breadcrumbs >
             {content?.contentIsRequired ?
                 <div>
-                    Check when you've finished the lesson <Checkbox
-                    // onClick={() => toggleComplete(!content.contentIsRequired)} 
+                    Check the box when you've finished the lesson! <Checkbox checked={isComplete ? true : false}
+                        onClick={() => toggleComplete(!isComplete)} onChange={handleCompleteToggle}
                     />
                 </div> :
                 <></>
