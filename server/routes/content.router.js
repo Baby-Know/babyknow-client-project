@@ -47,7 +47,7 @@ router.get('/:id', async (req, res) => {
 })
 
 
-// posting content from content form surveys
+// posting content from content form - surveys
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     const connect = await pool.connect()
     try {
@@ -75,9 +75,12 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
         await connect.query('ROLLBACK')
         console.error('error posting content', error)
         res.sendStatus(500);
+    } finally {
+      connect.release();
     }
 })
 
+// posting content from content form - video
 router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
     const connect = await pool.connect()
     try { 
@@ -97,7 +100,9 @@ router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'
         await connect.query('ROLLBACK')
         console.error('error posting content', error)
         res.sendStatus(500);
-    }  
+    }  finally {
+      connect.release();
+    }
 })
 
 //GET content

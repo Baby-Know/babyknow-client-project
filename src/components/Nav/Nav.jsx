@@ -106,6 +106,14 @@ function Nav() {
               <Typography variant="body1">About</Typography>
             </Button>
 
+            <Button
+            onClick={() => {
+              history.push("/messages");
+            }}
+            > 
+            <Typography variant="body1">Messages</Typography>
+            </Button>
+
             <Button onClick={() => dispatch({ type: "LOGOUT" })}>
               <Typography variant="body1">Log Out</Typography>
             </Button>
