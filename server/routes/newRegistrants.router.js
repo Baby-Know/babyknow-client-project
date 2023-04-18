@@ -32,6 +32,7 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     SET "email" = $1, "firstName" = $2, "lastName" = $3, "access" = $4, "organization" = $5
     WHERE id = $6;
     `;
+
     await pool.query(queryText, [
       req.body.email,
       req.body.firstName,

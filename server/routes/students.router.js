@@ -147,7 +147,6 @@ router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
   const email = req.body.email;
   const cohort = req.body.cohort;
   const studentUnits = req.body.studentUnits;
-  console.log(studentUnits);
 
   try {
     await connection.query('BEGIN');

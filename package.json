@@ -7,6 +7,7 @@
     "node": "18.x"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.9",
@@ -25,6 +26,7 @@
     "pg": "^8.5.1",
     "prop-types": "^15.7.2",
     "react": "^18.2.0",
+    "react-chat-engine": "^1.11.28",
     "react-dom": "^18.2.0",
     "react-redux": "^7.2.6",
     "react-router-dom": "^5.3.4",
