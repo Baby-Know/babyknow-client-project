@@ -7,42 +7,38 @@ import { useDispatch, useSelector } from "react-redux";
 function Messages() {
     const PORT = process.env.PORT || 5000;
     const socket = io.connect(`http://localhost:${PORT}`)
-    const uuid = require('uuid').v4
     const dispatch = useDispatch();
 
     const [message, setMessage] = useState('');
     const [room, setRoom] = useState([]);
-    const newRoomName = uuid();
+
 
     useEffect(() => {
         socket.on("connect", () => {
             console.log(`You connected with socket id: ${socket.id}`)
         })
 
-            const receiveMessage = () => {
-                dispatch({ type: 'GET_MESSAGE' });
-            }
-            // event listener to receive message back from database
-            socket.on("send_message", receiveMessage);
+        const receiveMessage = () => {
+            dispatch({ type: 'GET_MESSAGE' });
+        }
+        // event listener to receive message back from database
+        socket.on("send_message", receiveMessage);
 
-            const newRoom = (room) =>  {
-                room.push(newRoomName)
-            }
+        // turn off socket to prevent duplicates
+        return () => {
+            socket.off("send_message", receiveMessage)
+        }
+    }, [])
 
-            socket.emit('join_room', setRoom(newRoom(room)));
-            console.log('room id', room)
-
-            // turn off socket to prevent duplicates
-            return () => {
-                socket.off("send_message", receiveMessage)
-            }
-
-        }, [])
-    
     const submitMessage = (e) => {
         e.preventDefault();
         dispatch({ type: 'POST_MESSAGE', payload: message })
         setMessage('');
+    }
+
+    const submitRoom = (e) => {
+        setRoom(e.target.value)
+        dispatch({type: 'POST_ROOM', payload: room})
     }
 
     return (
@@ -65,6 +61,10 @@ function Messages() {
                     }} />
                 <button type='submit'>Submit</button>
             </form>
+
+            <button
+                type='submit'
+                onSubmit={submitRoom}> Room </button>
         </>
     )
 

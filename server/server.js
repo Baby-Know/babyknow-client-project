@@ -14,24 +14,26 @@ const io = new Server(httpServer, {
     }
 });
 
+const rooms = [];
+
 io.on("connection", (socket) => {
   console.log('Socket.io is active.')
 
-  socket.on("send_message", (anotherSocketId, message) => {
-    socket.to(anotherSocketId).emit("private_message", socket.id, message);
-  })
+  // create a room
+  socket.on('create', (room) => {
+    rooms.push(room)
+    socket.emit('updateRooms', rooms, socket.room)
+    console.log('rooms', rooms)
+  });
 
-  socket.on("join_room", (room) => {
-    socket.join(room);
+  socket.on("send_message", (room) => {
+    socket.to(room).emit("send_message", socket.id, message);
   })
   
 });
 
-
 const sessionMiddleware = require('./modules/session-middleware');
 const passport = require('./strategies/user.strategy');
-
-
 
 // Route includes
 const userRouter = require("./routes/user.router");

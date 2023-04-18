@@ -47,7 +47,7 @@ function* messageSaga() {
     yield takeLatest('POST_MESSAGE', postMessage);
     yield takeLatest('GET_MESSAGE', getMessage);
 
-    yield takeLatest('POST_ROOM', getRoom);
+    yield takeLatest('POST_ROOM', postRoom);
     yield takeLatest('GET_ROOM', getRoom);
 
 
