@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Checkbox, Typography, Breadcrumbs } from "@mui/material";
+import CommentBox from "./CommentBox/CommmentBox";
 
 
 function ContentPage() {
@@ -44,31 +45,44 @@ function ContentPage() {
     };
     console.log('userContent', userContent);
 
-    //handling the 
+    //handling the checkbox toggling
     const [isCompleteControl, setIsCompleteControl] = useState(isComplete);
 
     const handleCompleteToggle = (event) => {
         setIsCompleteControl(event.target.isCompleteControl);
     };
 
+    //Submit student comment
+    const submitComment = (newComment) => {
+        console.log(newComment);
+        dispatch({
+            type: 'POST_COMMENT',
+            payload: { userContentId, newComment, userId, contentId }
+        });
+    };
+
     return (
         <>
+            <span>
+                <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
+                    <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}`}>
+                        <h3>{content?.unitName}</h3>
+                    </Link>
+                    <Typography color="text.primary">{content?.lessonName}</Typography>
+                    <Typography color="text.primary">{content?.contentTitle}</Typography>
+                </Breadcrumbs >
+            </span>
+            <span>
+                {content?.contentIsRequired ?
 
-            <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
-                <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}`}>
-                    <h3>{content?.unitName}</h3>
-                </Link>
-                <Typography color="text.primary">{content?.lessonName}</Typography>
-                <Typography color="text.primary">{content?.contentTitle}</Typography>
-            </Breadcrumbs >
-            {content?.contentIsRequired ?
-                <div>
-                    Check the box when you've finished the lesson! <Checkbox checked={isComplete ? true : false}
-                        onClick={() => toggleComplete(!isComplete)} onChange={handleCompleteToggle}
-                    />
-                </div> :
-                <></>
-            }
+                    <Typography>
+                        Check the box when you've finished the lesson! <Checkbox checked={isComplete ? true : false}
+                            onClick={() => toggleComplete(!isComplete)} onChange={handleCompleteToggle}
+                        />
+                    </Typography> :
+                    <></>
+                }
+            </span>
 
             <Card id='contentHeader'>
                 {content ?
@@ -89,7 +103,16 @@ function ContentPage() {
                     </video>
                 </Card>
             }
-            {/* </div> */}
+            <h2>Leave any questions or comments below!</h2>
+            {userContent?.comment ?
+                <Card>
+                    <p>{userContent.comment}</p>
+                </Card> :
+                <></>
+            }
+            <CommentBox userId={userId} contentId={contentId} />
+
+
         </>
     );
 

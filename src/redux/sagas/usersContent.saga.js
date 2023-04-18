@@ -14,13 +14,14 @@ function* fetchUserContent(action) {
   }
 }
 
-// function* postUserContent(action) {
-//   try {
-//     axios.post('/api/user-content', action.payload);
-//   } catch (error) {
-//     console.error('Error in posting user-content saga', error);
-//   }
-// }
+function* postUserComment(action) {
+  try {
+    yield axios.put('/api/user-content', action.payload);
+    yield put({ type: 'FETCH_USER_CONTENT', payload: action.payload });
+  } catch (error) {
+    console.error('Error in submitting user comment saga', error);
+  }
+}
 
 function* updateComplete(action) {
   try {
@@ -33,7 +34,7 @@ function* updateComplete(action) {
 
 function* usersContentSaga() {
   yield takeLatest('FETCH_USER_CONTENT', fetchUserContent);
-  // yield takeLatest('POST_USER_CONTENT', postUserContent);
+  yield takeLatest('POST_COMMENT', postUserComment);
   yield takeLatest('TOGGLE_COMPLETE', updateComplete);
 }
 
