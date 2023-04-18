@@ -143,7 +143,13 @@ function UnitPage() {
             }
         }}>
 
+
             <AddLessonForm id={id} />
+            {isLoading ?
+                <LoadingBar />
+                :
+                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
+            }
 
             {unit.map((lesson, i) => {
                 return (
@@ -201,6 +207,7 @@ function UnitPage() {
                                 {lesson.contentId?.map((id, index) => {
                                     return (
                                         <div key={index} >
+
                                             {/* content row within a lesson */}
                                             {lesson.contentId[index] === null ? <></> :
                                                 <div id='content'
@@ -212,7 +219,6 @@ function UnitPage() {
                                                     onDragOver={(event) => event.preventDefault()}
                                                     onDrop={() => swapContent({ contentId: id, order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId })}
                                                 >
-                                                    {console.log(lesson)}
 
                                                     {/* is required? */}
                                                     {lesson.contentIsRequired[index] ?
@@ -269,6 +275,7 @@ function UnitPage() {
                                                             </div>
                                                         </>
                                                     }
+
                                                     {/* icons for content */}
                                                     {user.access === 3 ?
                                                         <div id='contentIcons'>
@@ -307,6 +314,7 @@ function UnitPage() {
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
                                             });
+
                                             setSelectedId(lesson.lessonId);
                                             setSelectedUnitId(lesson.unitId);
                                         }}>
@@ -316,6 +324,7 @@ function UnitPage() {
                                             {/* lesson icons */}
                                             {lesson.lessonId !== lessonToEdit.id ?
                                                 <>
+
                                                     <IconButton onClick={() => {
                                                         setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription });
                                                         setDraggable(false);
@@ -327,10 +336,12 @@ function UnitPage() {
                                                     </IconButton>
                                                 </> :
                                                 <>
+
                                                     <IconButton onClick={() => {
                                                         editLesson({ lessonId: lesson.lessonId, unitId: lesson.unitId });
                                                         setDraggable(true);
                                                     }}>
+
                                                         <DoneIcon sx={{ color: '#276184' }} />
                                                     </IconButton>
                                                     <IconButton onClick={cancelEdit} >
@@ -346,18 +357,10 @@ function UnitPage() {
                     </div>
                 );
             })}
-            {/* end of lesson row */}
-
-
-            {isLoading ?
-                <LoadingBar />
-                :
-                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
-            }
 
             <div id="addLessonParent">
-                {/* add lesson row  */}
-                {user.access === 3 ?
+
+                    {user.access === 3 ?
                     <Button
                         id='addLesson'
                         onClick={() => {
@@ -370,6 +373,8 @@ function UnitPage() {
                         Add Lesson
                     </Button> : <></>}
             </div>
+
+
         </Box>
 
     );
