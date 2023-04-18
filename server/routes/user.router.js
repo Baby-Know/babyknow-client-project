@@ -17,30 +17,35 @@ router.get("/", rejectUnauthenticated, (req, res) => {
 // Handles POST request with new user data
 // The only thing different from this and every other post we've seen
 // is that the password gets encrypted before being inserted
-router.post("/register", (req, res, next) => {
-  const email = req.body.email;
-  const password = encryptLib.encryptPassword(req.body.password);
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const access = 0;
-  const organization = req.body.organization;
+router.post("/register", async (req, res, next) => {
+  try {
+    const email = req.body.email;
+    const password = encryptLib.encryptPassword(req.body.password);
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const access = 0;
+    const organization = req.body.organization;
 
-  const queryText = `INSERT INTO "users" ("email", "password", "firstName", "lastName", "access", "organization" )
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`;
-  pool
-    .query(queryText, [
-      email,
-      password,
-      firstName,
-      lastName,
-      access,
-      organization,
-    ])
-    .then(() => res.sendStatus(201))
-    .catch((err) => {
+    const queryText = `INSERT INTO "users" ("email", "password", "firstName", "lastName", "access", "organization" )
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`;
+    
+    const results = await pool.query(queryText, [
+        email,
+        password,
+        firstName,
+        lastName,
+        access,
+        organization,
+      ])
+    const cohortQuery = `INSERT INTO "users_cohorts" ("user_id")
+      VALUES ($1)`
+      pool.query(cohortQuery, [results.rows[0].id])
+      res.sendStatus(201)
+    }
+    catch (err) {
       console.log("User registration failed: ", err);
       res.sendStatus(500);
-    });
+    };
 });
 
 // Handles login form authenticate/login POST

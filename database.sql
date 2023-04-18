@@ -89,7 +89,7 @@ CREATE TABLE "users_units" (
 
 CREATE TABLE "users_cohorts" (
 	"id" serial NOT NULL,
-	"cohorts_id" integer NOT NULL,
+	"cohorts_id" integer DEFAULT 1,
 	"user_id" integer NOT NULL,
 	CONSTRAINT "users_cohorts_pk" PRIMARY KEY ("id")
 ) WITH (

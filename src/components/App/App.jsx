@@ -25,6 +25,8 @@ import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
 import MyTeacherPage from "../MyPages/MyTeacherPage";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
+import Messages from '../Messages/Messages';
+
 function App() {
   //giving app access to theme and color mode
   const [theme, colorMode] = useMode();
@@ -61,6 +63,12 @@ function App() {
                   path="/unit/:id"
                 >
                   <UnitPage />
+                </ProtectedRoute>
+
+                <ProtectedRoute
+                exact
+                path='/messages'
+                > <Messages />
                 </ProtectedRoute>
 
                 <ProtectedRoute

@@ -104,7 +104,6 @@ function UnitPage() {
 
     const swapLessons = (otherLessonToSwap) => {
         if (!swappingContent) {
-            console.log('swap');
             dispatch({
                 type: "SWAP_LESSONS",
                 payload: { lessonId: lessonToSwap.lessonId, order: otherLessonToSwap.order, unitId: otherLessonToSwap.unitId }
@@ -114,12 +113,11 @@ function UnitPage() {
                 type: "SWAP_LESSONS",
                 payload: { lessonId: otherLessonToSwap.lessonId, order: lessonToSwap.order, unitId: otherLessonToSwap.unitId }
             });
-        } else console.log('nothing');
+        } 
     };
 
     const swapContent = (otherContentToSwap) => {
         if (swappingContent) {
-            console.log('swap');
             dispatch({
                 type: "SWAP_CONTENT",
                 payload: { contentId: contentToSwap.contentId, order: otherContentToSwap.order, lessonId: otherContentToSwap.lessonId, unitId: otherContentToSwap.unitId }
@@ -129,7 +127,7 @@ function UnitPage() {
                 type: "SWAP_CONTENT",
                 payload: { contentId: otherContentToSwap.contentId, order: contentToSwap.order, lessonId: contentToSwap.lessonId, unitId: otherContentToSwap.unitId }
             });
-        } else console.log('nothing');
+        }
     };
 
 
@@ -145,7 +143,13 @@ function UnitPage() {
             }
         }}>
 
+
             <AddLessonForm id={id} />
+            {isLoading ?
+                <LoadingBar />
+                :
+                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
+            }
 
             {unit.map((lesson, i) => {
                 return (
@@ -200,11 +204,12 @@ function UnitPage() {
                                 }
 
 
-                                {unit[i].contentId?.map((id, index) => {
+                                {lesson.contentId?.map((id, index) => {
                                     return (
                                         <div key={index} >
+
                                             {/* content row within a lesson */}
-                                            {unit[i].contentId[index] === null ? <></> :
+                                            {lesson.contentId[index] === null ? <></> :
                                                 <div id='content'
                                                     draggable={user.access === 3 && draggable ? 'true' : 'false'}
                                                     onDragStart={() => {
@@ -214,9 +219,22 @@ function UnitPage() {
                                                     onDragOver={(event) => event.preventDefault()}
                                                     onDrop={() => swapContent({ contentId: id, order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId })}
                                                 >
-                                                    {draggable ?
+
+                                                    {/* is required? */}
+                                                    {lesson.contentIsRequired[index] ?
+                                                    <>
+                                                        {/* is complete? */}
+                                                        {lesson.contentIsComplete[index] ? 
+                                                        <div id="completed">✓</div> :
+                                                        <div id="incomplete"></div>
+                                                        } 
+                                                    </> : 
+                                                    <></>
+                                                    }
+            
+                                                    {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
-                                                            <DragHandleIcon sx={{ 'cursor': 'grab' }} />
+                                                            <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom:'auto', }} />
                                                         </IconButton> : <></>}
 
                                                     {/* content shown on screen */}
@@ -257,6 +275,7 @@ function UnitPage() {
                                                             </div>
                                                         </>
                                                     }
+
                                                     {/* icons for content */}
                                                     {user.access === 3 ?
                                                         <div id='contentIcons'>
@@ -284,7 +303,7 @@ function UnitPage() {
                                             }
                                         </div>
                                     );
-                                })};
+                                })}
 
                                 {/* button to add content row */}
                                 {lesson.lessonName && user.access === 3 ?
@@ -294,9 +313,10 @@ function UnitPage() {
                                             dispatch({
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
-                                            });
+                                            })
+
                                             setSelectedId(lesson.lessonId);
-                                            setSelectedUnitId(lesson.unitId);
+                                            setSelectedUnitId(lesson.unitId)
                                         }}>
                                             Add Content to {lesson.lessonName}
                                         </Button>
@@ -304,6 +324,7 @@ function UnitPage() {
                                             {/* lesson icons */}
                                             {lesson.lessonId !== lessonToEdit.id ?
                                                 <>
+
                                                     <IconButton onClick={() => {
                                                         setLessonToEdit({ id: lesson.lessonId, lessonName: lesson.lessonName, lessonDescription: lesson.lessonDescription });
                                                         setDraggable(false);
@@ -315,10 +336,12 @@ function UnitPage() {
                                                     </IconButton>
                                                 </> :
                                                 <>
+
                                                     <IconButton onClick={() => {
                                                         editLesson({ lessonId: lesson.lessonId, unitId: lesson.unitId });
                                                         setDraggable(true);
                                                     }}>
+
                                                         <DoneIcon sx={{ color: '#276184' }} />
                                                     </IconButton>
                                                     <IconButton onClick={cancelEdit} >
@@ -334,18 +357,10 @@ function UnitPage() {
                     </div>
                 );
             })}
-            {/* end of lesson row */}
-
-
-            {isLoading ?
-                <LoadingBar />
-                :
-                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
-            }
 
             <div id="addLessonParent">
-                {/* add lesson row  */}
-                {user.access === 3 ?
+
+                    {user.access === 3 ?
                     <Button
                         id='addLesson'
                         onClick={() => {
@@ -358,6 +373,8 @@ function UnitPage() {
                         Add Lesson
                     </Button> : <></>}
             </div>
+
+
         </Box>
 
     );
