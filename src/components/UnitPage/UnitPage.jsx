@@ -303,7 +303,7 @@ function UnitPage() {
                                             }
                                         </div>
                                     );
-                                })};
+                                })}
 
                                 {/* button to add content row */}
                                 {lesson.lessonName && user.access === 3 ?
@@ -313,10 +313,10 @@ function UnitPage() {
                                             dispatch({
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
-                                            });
+                                            })
 
                                             setSelectedId(lesson.lessonId);
-                                            setSelectedUnitId(lesson.unitId);
+                                            setSelectedUnitId(lesson.unitId)
                                         }}>
                                             Add Content to {lesson.lessonName}
                                         </Button>
