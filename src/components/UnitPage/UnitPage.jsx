@@ -113,13 +113,11 @@ function UnitPage() {
                 type: "SWAP_LESSONS",
                 payload: { lessonId: otherLessonToSwap.lessonId, order: lessonToSwap.order, unitId: otherLessonToSwap.unitId }
             });
-
-        } else console.log('nothing');
+        } 
     };
 
     const swapContent = (otherContentToSwap) => {
         if (swappingContent) {
-            console.log('swap');
             dispatch({
                 type: "SWAP_CONTENT",
                 payload: { contentId: contentToSwap.contentId, order: otherContentToSwap.order, lessonId: otherContentToSwap.lessonId, unitId: otherContentToSwap.unitId }
@@ -129,7 +127,7 @@ function UnitPage() {
                 type: "SWAP_CONTENT",
                 payload: { contentId: otherContentToSwap.contentId, order: contentToSwap.order, lessonId: contentToSwap.lessonId, unitId: otherContentToSwap.unitId }
             });
-        } else console.log('nothing');
+        }
     };
 
 
@@ -206,12 +204,12 @@ function UnitPage() {
                                 }
 
 
-                                {unit[i].contentId?.map((id, index) => {
+                                {lesson.contentId?.map((id, index) => {
                                     return (
                                         <div key={index} >
 
                                             {/* content row within a lesson */}
-                                            {unit[i].contentId[index] === null ? <></> :
+                                            {lesson.contentId[index] === null ? <></> :
                                                 <div id='content'
                                                     draggable={user.access === 3 && draggable ? 'true' : 'false'}
                                                     onDragStart={() => {
@@ -222,9 +220,21 @@ function UnitPage() {
                                                     onDrop={() => swapContent({ contentId: id, order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId })}
                                                 >
 
-                                                    {draggable ?
+                                                    {/* is required? */}
+                                                    {lesson.contentIsRequired[index] ?
+                                                    <>
+                                                        {/* is complete? */}
+                                                        {lesson.contentIsComplete[index] ? 
+                                                        <div id="completed">✓</div> :
+                                                        <div id="incomplete"></div>
+                                                        } 
+                                                    </> : 
+                                                    <></>
+                                                    }
+            
+                                                    {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
-                                                            <DragHandleIcon sx={{ 'cursor': 'grab' }} />
+                                                            <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom:'auto', }} />
                                                         </IconButton> : <></>}
 
                                                     {/* content shown on screen */}
