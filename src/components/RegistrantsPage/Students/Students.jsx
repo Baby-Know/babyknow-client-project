@@ -221,36 +221,11 @@ const Students = () => {
       ),
     },
     {
-      field: "teacher.id",
-      headerName: "Teacher",
-      editable: false,
-      filterable: false,
-      renderCell: (cellValues) => (
-        <Select
-          variant="standard"
-          value={cellValues.row.teacher.id}
-          onChange={(event) => {
-            setIsEditing(cellValues.id);
-            handleSelectChange({
-              cellValues: cellValues,
-              value: event.target.value,
-            });
-          }}
-        >
-          {modifiedStudentData.teachers.map((teacher, i) => (
-            <MenuItem key={i} value={teacher.id}>
-              {teacher.firstName} {teacher.lastName}
-            </MenuItem>
-          ))}
-        </Select>
-      ),
-    },
-    {
       field: "units",
       headerName: "Units",
       editable: false,
       filterable: false,
-      flex: 1,
+      flex: 0.7,
       renderCell: (cellValues) => {
         //Finding specific student
         let studentObject = modifiedStudentData.students.find((student) => {
@@ -391,6 +366,7 @@ const Students = () => {
           columns={columns}
           onCellEditCommit={handleEditCell}
           onEditCellChange={handleEditCellChange}
+          disableColumnSelector
           components={{
             Toolbar: GridToolbar,
           }}
