@@ -52,17 +52,43 @@ const TeachersTable = () => {
     });
   }
 
-  //Handle changing the value of the access select in the modifiedRegistrants array
-  const handleSelectAccessChange = useCallback(
-    (cellValues) => {
-      const value = cellValues.value;
-      setModifiedTeachers((prevTeachers) =>
-        prevTeachers.map((teacher) =>
-          teacher.id === cellValues.cellValues.id
-            ? { ...teacher, access: value }
-            : teacher
-        )
-      );
+  //Handle changing the value of the access select in the teachers array of modifiedTeachers
+  const handleSelectChange = useCallback(
+    ({ cellValues, value }) => {
+      const field = cellValues.field;
+      const id = cellValues.id;
+
+      //Finding the new value that the student will be given
+      const newValue =
+        field === "cohort"
+          ? modifiedTeachers.allCohorts.find((cohort) => cohort.name === value)
+          : accessOptions.find((option) => option.value === value);
+
+      field === "cohort"
+        ? setModifiedTeachers((prevTeachers) => {
+            return {
+              ...prevTeachers,
+              teachers: prevTeachers.teachers.map((teacher) =>
+                teacher.id === cellValues.id
+                  ? {
+                      ...teacher,
+                      cohortsId: newValue.id,
+                      cohort: newValue.name,
+                    }
+                  : teacher
+              ),
+            };
+          })
+        : setModifiedTeachers((prevTeachers) => {
+            return {
+              ...prevTeachers,
+              teachers: prevTeachers.teachers.map((teacher) =>
+                teacher.id === cellValues.id
+                  ? { ...teacher, access: newValue?.value }
+                  : teacher
+              ),
+            };
+          });
     },
     [modifiedTeachers]
   );
@@ -71,11 +97,16 @@ const TeachersTable = () => {
     const { id, field, value } = cellValues;
     const teacherToUpdate = cellValues.row;
 
-    setModifiedTeachers((prevTeachers) =>
-      prevTeachers.map((teacher) =>
-        teacher.id === cellValues.id ? { ...teacher, [field]: value } : teacher
-      )
-    );
+    setModifiedTeachers((prevTeachers) => {
+      return {
+        ...modifiedTeachers,
+        teachers: prevTeachers.teachers.map((teacher) =>
+          teacher.id === cellValues.id
+            ? { ...teacher, [field]: value }
+            : teacher
+        ),
+      };
+    });
 
     dispatch({
       type: "UPDATE_TEACHER",
@@ -83,17 +114,17 @@ const TeachersTable = () => {
     });
   }
 
-  //Change the value of the item in the modifiedRegistrants array
+  //Change the value of the item in the teachers array in modifiedTeachers object
   const handleEditCellChange = useCallback((params) => {
     const { id, field, value } = params;
     setModifiedTeachers((prevTeachers) =>
-      prevNewRegistrants.map((teacher) =>
+      prevTeachers.teachers.map((teacher) =>
         teacher.id === id ? { ...teacher, [field]: value } : teacher
       )
     );
   }, []);
 
-  //Handle sending the newRegistrants to update to the database
+  //Handle sending the newTeacher to update to the database
   const handleEditCell = useCallback(
     (params) => {
       const { id, field, value } = params;
@@ -143,7 +174,7 @@ const TeachersTable = () => {
           value={cellValues.row.access}
           onChange={(event) => {
             setIsEditing(cellValues.id);
-            handleSelectAccessChange({
+            handleSelectChange({
               cellValues: cellValues,
               value: event.target.value,
             });
@@ -167,15 +198,15 @@ const TeachersTable = () => {
           value={cellValues.row.cohort}
           onChange={(event) => {
             setIsEditing(cellValues.id);
-            handleSelectAccessChange({
+            handleSelectChange({
               cellValues: cellValues,
               value: event.target.value,
             });
           }}
         >
-          {modifiedTeachers.allCohorts.map((option, i) => (
-            <MenuItem key={i} value={option.name}>
-              {option.name}
+          {modifiedTeachers.allCohorts.map((cohort, i) => (
+            <MenuItem key={i} value={cohort.name}>
+              {cohort.name}
             </MenuItem>
           ))}
         </Select>
@@ -276,7 +307,7 @@ const TeachersTable = () => {
           }}
         />
       </Box>
-      <button onClick={() => console.log(teachersData)}>cc</button>
+      <button onClick={() => console.log(modifiedTeachers.teachers)}>cc</button>
     </Box>
   );
 };
