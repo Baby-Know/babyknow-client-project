@@ -199,38 +199,34 @@ router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
     await connection.query(deleteUserContentQueryText, [studentId]);
 
     //Map over array of units by ID to insert user-content relationship into user_content table
-    await Promise.all(
-      studentUnits.map(async (unit) => {
-        const selectContentIdsText = `
+    studentUnits.map(async (unit) => {
+      const selectContentIdsText = `
       SELECT "content".id AS "contentId" FROM "units"
       JOIN "lessons" ON "lessons".units_id = "units".id
       JOIN "content" ON "content".lessons_id = "lessons".id
       WHERE "units".id = $1 AND "content"."isRequired" = true;
       `;
-        const selectContentIdsParams = [unit.id];
-        const result = await pool.query(
-          selectContentIdsText,
-          selectContentIdsParams
-        );
-        console.log(result.rows);
-        const contentIds = result.rows;
+      const selectContentIdsParams = [unit.id];
+      const result = await pool.query(
+        selectContentIdsText,
+        selectContentIdsParams
+      );
+      const contentIds = result.rows;
 
-        await Promise.all(
-          contentIds.map(async (contentId) => {
-            console.log(contentId);
-            const insertUserContentText = `
+      await Promise.all(
+        contentIds.map(async (contentId) => {
+          const insertUserContentText = `
             INSERT INTO "users_content" ("user_id", "content_id")
             VALUES ($1, $2)
           `;
-            const insertUserContentParams = [studentId, contentId.contentId];
-            return await connection.query(
-              insertUserContentText,
-              insertUserContentParams
-            );
-          })
-        );
-      })
-    );
+          const insertUserContentParams = [studentId, contentId.contentId];
+          return await connection.query(
+            insertUserContentText,
+            insertUserContentParams
+          );
+        })
+      );
+    });
 
     await connection.query('COMMIT');
     res.sendStatus(204);

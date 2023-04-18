@@ -9,12 +9,13 @@ const { s3Upload } = require('../s3Service');
 const aws = require('aws-sdk');
 
 //GET user-content table info
-router.get('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.get('/:userId/:contentId', rejectUnauthenticated, async (req, res) => {
   try {
+    console.log('req.body', req.params);
     const queryText = `
     SELECT * FROM "users_content" WHERE "user_id" = $1 AND "content_id" = $2;
     `;
-    const queryParams = [req.body.userId, req.body.contentId];
+    const queryParams = [req.params.userId, req.params.contentId];
     const queryResult = await pool.query(queryText, queryParams);
     userContent = queryResult.rows;
     res.send(userContent);

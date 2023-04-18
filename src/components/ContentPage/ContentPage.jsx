@@ -16,18 +16,17 @@ function ContentPage() {
     const userContent = useSelector(store => store.userContentReducer);
 
     console.log('content', content);
-    console.log('content.contentContent', content?.contentContent);
 
     useEffect(() => {
         dispatch({
             type: 'GET_UNIT_LESSON_CONTENT',
             payload: { unitId, lessonId, contentId }
         });
-        // console.log('Fetch params contentpage', userId, contentId);
-        // dispatch({
-        //     type: 'FETCH_USER_CONTENT',
-        //     payload: { userId, contentId }
-        // });
+        console.log('Fetch params contentpage', userId, contentId);
+        dispatch({
+            type: 'FETCH_USER_CONTENT',
+            payload: { userId, contentId }
+        });
     }, []);
 
     // const loadUserContentReducer = () => {
