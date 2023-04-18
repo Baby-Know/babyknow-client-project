@@ -34,7 +34,7 @@ function* deleteTeacher(action) {
 
 function* updateTeacher(action) {
   try {
-    yield axios.put(`/api/teachers/${action.payload.id}`, action.payload);
+    yield axios.put(`/api/teachers/${action.payload.userId}`, action.payload);
     yield put({ type: "FETCH_TEACHERS" });
   } catch (error) {
     console.error("Error getting unit", error);
