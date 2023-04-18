@@ -24,7 +24,9 @@ function* deleteTeacher(action) {
       showCancelButton: true,
     });
     if (sweet.isConfirmed) {
-      yield axios.delete(`/api/teachers/${action.payload}`);
+      yield axios.delete(
+        `/api/teachers/${action.payload.id}/${action.payload.cohortId}`
+      );
       yield put({ type: "FETCH_TEACHERS" });
     }
   } catch (error) {

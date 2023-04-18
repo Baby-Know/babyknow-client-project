@@ -48,7 +48,7 @@ const TeachersTable = () => {
 
     dispatch({
       type: "DELETE_TEACHER",
-      payload: rowToDelete.id,
+      payload: { id: rowToDelete.usersId, cohortId: rowToDelete.cohortsId },
     });
   }
 

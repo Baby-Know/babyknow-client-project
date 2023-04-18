@@ -73,7 +73,6 @@ GROUP BY
 
 //UPDATE TEACHER
 router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-  console.log("REQQQQ BODY:", req.body);
   const connection = await pool.connect();
   const email = req.body.email;
   const firstName = req.body.firstName;
@@ -119,27 +118,66 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     await connection.query("ROLLBACK");
     console.log("Error updating teacher :", error);
     res.sendStatus(500);
+  } finally {
+    connection.release();
   }
 });
 
 //DELETE TEACHER
 router.delete(
-  "/:id",
+  "/:id/:cohortId",
   rejectUnauthenticated,
   rejectNonAdmin,
   async (req, res) => {
+    const connection = await pool.connect();
+    const cohortId = Number(req.params.cohortId);
+    const teacherId = Number(req.params.id);
+
     try {
-      const queryText = `
+      await connection.query("BEGIN");
+
+      //First we have to go find all of the teachers students and swap their teachers to be BabyKnow
+      const usersCohortsQuery = `
+      SELECT u.id
+      FROM "users" AS u
+      JOIN "users_cohorts" AS uc
+          ON uc."user_id" = u.id
+      WHERE u."access" = 1 AND uc."cohorts_id" = $1
+      `;
+
+      const usersCohortsResponse = await connection.query(usersCohortsQuery, [
+        cohortId,
+      ]);
+
+      const students = usersCohortsResponse.rows;
+
+      //Map over all students of the teacher to be deleted and change their teacher
+      await Promise.all(
+        students.map((student) => {
+          const usersCohortsStudentQuery = `
+          UPDATE "users_cohorts"
+          SET "cohorts_id" = 1
+          WHERE "user_id" = $1
+          `;
+          return connection.query(usersCohortsStudentQuery, [student.id]);
+        })
+      );
+
+      //Finally after students are changed we can delete teacher
+      const usersQueryText = `
         DELETE FROM "users"
         WHERE "id" = $1
         `;
 
-      await pool.query(queryText, [req.params.id]);
-
+      await connection.query(usersQueryText, [teacherId]);
+      await connection.query("COMMIT");
       res.sendStatus(204);
     } catch (error) {
+      await connection.query("ROLLBACK");
       console.log("Error deleting teacher :", error);
       res.sendStatus(500);
+    } finally {
+      connection.release();
     }
   }
 );

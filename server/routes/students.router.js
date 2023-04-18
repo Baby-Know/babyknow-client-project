@@ -256,6 +256,8 @@ router.delete(
     } catch (error) {
       console.log(`Error deleting student :`, error);
       res.sendStatus(500);
+    } finally {
+      connection.release();
     }
   }
 );

@@ -26,13 +26,16 @@ router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
 
 //UPDATE NEW USER
 router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  const connection = await pool.connect();
+
   try {
+    await connection.query("BEGIN");
     const usersQueryText = `
     UPDATE "users" 
     SET "email" = $1, "firstName" = $2, "lastName" = $3, "access" = $4, "organization" = $5
     WHERE id = $6;
     `;
-    await pool.query(usersQueryText, [
+    await connection.query(usersQueryText, [
       req.body.email,
       req.body.firstName,
       req.body.lastName,
@@ -41,10 +44,22 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
       req.params.id,
     ]);
 
+    const usersCohortsQueryText = `
+      INSERT INTO "users_cohorts" ("cohorts_id", "user_id")
+      VALUES ($1, $2)
+    `;
+
+    //If the newRegistrant is a student then their default teacher is BabyKnow
+    req.body.access === 1 &&
+      (await connection.query(usersCohortsQueryText, [1, req.params.id]));
+    await connection.query("COMMIT");
     res.sendStatus(200);
   } catch (error) {
+    await connection.query("ROLLBACK");
     res.sendStatus(500);
     console.log("Error updating new registrant :", error);
+  } finally {
+    connection.release();
   }
 });
 
