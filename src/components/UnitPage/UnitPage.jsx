@@ -176,7 +176,7 @@ function UnitPage() {
                                 onDrop={() => swapLessons({ lessonId: lesson.lessonId, order: lesson.lessonOrder, unitId: lesson.unitId })}
                                 expandIcon={<ExpandMoreIcon sx={{ color: '#276184' }} />}
                             >
-                                {draggable ?
+                                {draggable && user.access === 3 ?
                                     <IconButton sx={{ padding: '0', marginRight: '16px', color: '#276184' }}>
                                         <DragHandleIcon sx={{ 'cursor': 'grab' }} />
                                     </IconButton> : <></>}
@@ -302,8 +302,8 @@ function UnitPage() {
                                                 </div>
                                             }
                                         </div>
-                                    );
-                                })};
+                                    )
+                                })}
 
                                 {/* button to add content row */}
                                 {lesson.lessonName && user.access === 3 ?

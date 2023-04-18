@@ -46,6 +46,7 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
           studentUnits: [],
         };
 
+        console.log(student.id)
         const usersCohortsStudentQuery = `
         SELECT 
            uc.cohorts_id, c.name FROM "users_cohorts" AS UC
@@ -67,6 +68,7 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
           },
         };
 
+        console.log(studentObject.cohort.id)
         //Selecting the student's teacher
         const usersCohortsTeacherQuery = `
         SELECT 
@@ -79,7 +81,7 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
           usersCohortsTeacherQuery,
           [usersCohortsStudentResponse.rows[0].cohorts_id]
         );
-
+        
         studentObject = {
           ...studentObject,
           teacher: {
@@ -105,7 +107,7 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
         studentData.students.push(studentObject);
       })
     );
-
+    
     //Selecting all teachers and adding them to the teachers array
     const usersTeacherQuery = `
     SELECT 

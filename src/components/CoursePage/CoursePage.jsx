@@ -118,8 +118,6 @@ function CoursePage() {
       <AddUnitForm />
       <AddCohortForm />
 
-      <Chat />
-
       <div>
               <Grid
                 container
