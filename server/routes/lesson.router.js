@@ -13,10 +13,10 @@ router.post("/:units_id", rejectUnauthenticated, rejectNonAdmin, async (req, res
 
     try {
       const queryText = `
-      INSERT INTO "lessons" ("name", "description", "lessonOrder", "units_id")
-      VALUES($1, $2, $3, $4)
+      INSERT INTO "lessons" ("name", "description", "units_id")
+      VALUES($1, $2, $3)
       `;
-      const params = [req.body.name, req.body.description, req.body.lessonOrder, req.params.units_id]
+      const params = [req.body.name, req.body.description, req.params.units_id]
 
       await pool.query(queryText, params);
   
