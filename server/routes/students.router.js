@@ -12,7 +12,6 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
   //Array to send back to client
   const studentData = {
     students: [],
-    teachers: [],
     cohorts: [],
     units: [],
   };
@@ -105,17 +104,6 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
         studentData.students.push(studentObject);
       })
     );
-
-    //Selecting all teachers and adding them to the teachers array
-    const usersTeacherQuery = `
-    SELECT 
-        "id", "email", "firstName", "lastName", "organization" FROM "users" 
-    WHERE "users".access >= 2;
-    `;
-
-    const usersTeacherResponse = await pool.query(usersTeacherQuery);
-
-    studentData.teachers = usersTeacherResponse.rows;
 
     const cohortsQuery = `
     SELECT * FROM "cohorts";
