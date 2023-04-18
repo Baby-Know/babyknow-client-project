@@ -19,6 +19,7 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
+import Chat from '../Chat/Chat';
 
 function CoursePage() {
   const dispatch = useDispatch();
@@ -116,6 +117,8 @@ function CoursePage() {
       <h2 style={{ marginLeft: 20}} >Welcome, {user.firstName}!</h2>
       <AddUnitForm />
       <AddCohortForm />
+
+      <Chat />
 
       <div>
               <Grid
