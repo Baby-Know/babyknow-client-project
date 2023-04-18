@@ -1,14 +1,14 @@
-const express = require("express");
-const pool = require("../modules/pool");
+const express = require('express');
+const pool = require('../modules/pool');
 const router = express.Router();
 const {
   rejectUnauthenticated,
-} = require("../modules/authentication-middleware");
+} = require('../modules/authentication-middleware');
 
-const { rejectStudent } = require("../modules/teacher-middleware");
+const { rejectStudent } = require('../modules/teacher-middleware');
 
 //GET all students
-router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
+router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
   //Array to send back to client
   const studentData = {
     students: [],
@@ -36,12 +36,12 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
           email: student.email,
           cohort: {
             id: null,
-            name: "",
+            name: '',
           },
           teacher: {
             id: null,
-            firstName: "",
-            lastName: "",
+            firstName: '',
+            lastName: '',
           },
           studentUnits: [],
         };
@@ -139,7 +139,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
   }
 });
 
-router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
+router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
   const connection = await pool.connect();
   const studentId = req.body.id;
   const firstName = req.body.firstName;
@@ -149,7 +149,7 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
   const studentUnits = req.body.studentUnits;
 
   try {
-    await connection.query("BEGIN");
+    await connection.query('BEGIN');
     const usersQueryText = `
     UPDATE "users"
     SET "firstName" = $1, "lastName" = $2, "email" = $3
@@ -190,10 +190,50 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
       })
     );
 
-    await connection.query("COMMIT");
+    //Delete user_content by user ID to update
+    const deleteUserContentQueryText = `
+      DELETE FROM "users_content"
+      WHERE "user_id" = $1;
+  `;
+    await connection.query(deleteUserContentQueryText, [studentId]);
+
+    //Map over array of units by ID to insert user-content relationship into user_content table
+    await Promise.all(
+      studentUnits.map(async (unit) => {
+        const selectContentIdsText = `
+      SELECT "content".id AS "contentId" FROM "units"
+      JOIN "lessons" ON "lessons".units_id = "units".id
+      JOIN "content" ON "content".lessons_id = "lessons".id
+      WHERE "units".id = $1 AND "content"."isRequired" = true;
+      `;
+        const selectContentIdsParams = [unit.id];
+        const result = await pool.query(
+          selectContentIdsText,
+          selectContentIdsParams
+        );
+        const contentIds = result.rows;
+
+        await Promise.all(
+          contentIds.map(async (contentId) => {
+            console.log(contentId);
+            const insertUserContentText = `
+            INSERT INTO "users_content" ("user_id", "content_id")
+            VALUES ($1, $2)
+          `;
+            const insertUserContentParams = [studentId, contentId.contentId];
+            return await connection.query(
+              insertUserContentText,
+              insertUserContentParams
+            );
+          })
+        );
+      })
+    );
+
+    await connection.query('COMMIT');
     res.sendStatus(204);
   } catch (error) {
-    await connection.query("ROLLBACK");
+    await connection.query('ROLLBACK');
     console.log(`Transaction Error - Rolling back student update`, error);
     res.sendStatus(500);
   } finally {
@@ -202,7 +242,7 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
 });
 
 router.delete(
-  "/:id",
+  '/:id',
   rejectUnauthenticated,
   rejectStudent,
   async (req, res) => {

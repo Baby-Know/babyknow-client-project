@@ -1,15 +1,16 @@
-import { combineReducers } from "redux";
-import errors from "./errors.reducer";
-import user from "./user.reducer";
-import unit from "./unit.reducer";
-import contentReducer from "./content.reducer";
-import conditionalForms from "./conditionalForms";
-import newRegistrantsReducer from "./newRegistrants.reducer";
-import studentsReducer from "./students.reducer";
-import teacherReducer from "./teachers.reducer";
+import { combineReducers } from 'redux';
+import errors from './errors.reducer';
+import user from './user.reducer';
+import unit from './unit.reducer';
+import contentReducer from './content.reducer';
+import conditionalForms from './conditionalForms';
+import newRegistrantsReducer from './newRegistrants.reducer';
+import studentsReducer from './students.reducer';
+import teacherReducer from './teachers.reducer';
 import loadingReducer from './loading.reducer';
 import lessonsReducer from './lessons.reducer';
 import messageReducer from './message.reducer';
+import userContentReducer from './userContent.reducer';
 
 // rootReducer is the primary reducer for our entire project
 // It bundles up all of the other reducers so our project can use them.
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   teacherReducer, //Contains all teachers and their students
   loadingReducer,
   lessonsReducer,
+  userContentReducer,
   messageReducer
 });
 

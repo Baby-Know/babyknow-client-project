@@ -28,8 +28,8 @@ io.on("connection", (socket) => {
 });
 
 
-const sessionMiddleware = require("./modules/session-middleware");
-const passport = require("./strategies/user.strategy");
+const sessionMiddleware = require('./modules/session-middleware');
+const passport = require('./strategies/user.strategy');
 
 
 
@@ -42,7 +42,8 @@ const newRegistrantsRouter = require("./routes/newRegistrants.router");
 const studentsRouter = require("./routes/students.router");
 const contentRouter = require("./routes/content.router");
 const teacherRouter = require("./routes/teachers.router");
-const messageRouter = require("./routes/message.router")
+const messageRouter = require("./routes/message.router");
+const userContentRouter = require('./routes/userContent.router');
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -65,9 +66,10 @@ app.use("/api/students", studentsRouter);
 app.use("/api/content", contentRouter);
 app.use("/api/teachers", teacherRouter);
 app.use("/api/message", messageRouter);
+app.use('/api/user-content', userContentRouter);
 
 // Serve static files
-app.use(express.static("build"));
+app.use(express.static('build'));
 
 /** Listen * */
 httpServer.listen(PORT, () => {
