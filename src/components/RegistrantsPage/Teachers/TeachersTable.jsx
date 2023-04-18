@@ -128,10 +128,10 @@ const TeachersTable = () => {
   const handleEditCell = useCallback(
     (params) => {
       const { id, field, value } = params;
-      const teacher = modifiedTeachers.find((item) => item.id === id);
+      const teacher = modifiedTeachers.teachers.find((item) => item.id === id);
       teacher[field] = value;
       dispatch({
-        type: "UPDATE_NEW_REGISTRANT",
+        type: "UPDATE_TEACHER",
         payload: teacher,
       });
     },
@@ -307,7 +307,6 @@ const TeachersTable = () => {
           }}
         />
       </Box>
-      <button onClick={() => console.log(modifiedTeachers.teachers)}>cc</button>
     </Box>
   );
 };

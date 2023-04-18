@@ -85,7 +85,7 @@ GROUP BY
 
     //Selecting all cohorts for select on the client side
     const cohortsQuery = `
-    SELECT * FROM "cohorts" 
+    SELECT * FROM "cohorts"; 
     `;
 
     const cohortsResult = await pool.query(cohortsQuery);
@@ -105,11 +105,55 @@ GROUP BY
   }
 });
 
-/**
- * POST route template
- */
-router.post("/", (req, res) => {
-  // POST route code here
+//UPDATE TEACHER
+router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  console.log("REQQQQ BODY:", req.body);
+  const connection = await pool.connect();
+  const email = req.body.email;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const access = req.body.access;
+  const organization = req.body.organization;
+  const id = req.body.usersId;
+  const cohortsId = req.body.cohortsId;
+
+  try {
+    await connection.query("BEGIN");
+
+    const usersQueryText = `
+    UPDATE "users"
+    SET 
+     "email" = $1,
+     "firstName" = $2,     
+     "lastName" = $3,
+     "access" = $4,
+     "organization" = $5
+     WHERE "id" = $6;
+    `;
+
+    await connection.query(usersQueryText, [
+      email,
+      firstName,
+      lastName,
+      access,
+      organization,
+      id,
+    ]);
+
+    const usersCohortsQueryText = `
+    UPDATE "users_cohorts"
+    SET "cohorts_id" = $1
+    WHERE "user_id" = $2;
+    `;
+
+    await connection.query(usersCohortsQueryText, [cohortsId, id]);
+    await connection.query("COMMIT");
+    res.sendStatus(204);
+  } catch (error) {
+    await connection.query("ROLLBACK");
+    console.log("Error updating teacher :", error);
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;
