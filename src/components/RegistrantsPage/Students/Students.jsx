@@ -159,17 +159,6 @@ const Students = () => {
         studentUnits.push(matchingUnit);
       });
 
-      //Find the student that has updated units
-      let studentToModify = modifiedStudentData.students.find(
-        (student) => student.id === id
-      );
-
-      //Add the units to the student
-      studentToModify = {
-        ...studentToModify,
-        studentUnits: studentUnits,
-      };
-
       //Resetting the students array with the updated student
       setModifiedStudentData((prevStudentData) => {
         return {

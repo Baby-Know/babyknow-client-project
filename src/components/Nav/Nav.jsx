@@ -74,6 +74,8 @@ function Nav() {
                 <LightModeOutlinedIcon />
               )}
             </IconButton>
+
+            {/* course page */}
             <Button
               to="/course"
               onClick={() => {
@@ -83,21 +85,22 @@ function Nav() {
               <Typography variant="body1">Courses</Typography>
             </Button>
 
+            {/* conditionally renders registrants, my students, my teacher or contacts page */}
             {user.access === 3 ?
-            <Button onClick={() => history.push("/registrants")}>
-              <Typography variant="body1">Registrants</Typography>
-            </Button> : user.access === 2 ?
-            <Button onClick={() => history.push("/myStudents")}>
-              <Typography variant="body1">My Students</Typography>
-            </Button> : user.access === 1 ?
-            <Button onClick={() => history.push("/myTeacher")}>
-              <Typography variant="body1">My Teacher</Typography>
-            </Button> :
-            <Button onClick={() => history.push("/about")}>
-              <Typography variant="body1">Contacts</Typography>
-            </Button>}
+              <Button onClick={() => history.push("/registrants")}>
+                <Typography variant="body1">Registrants</Typography>
+              </Button> : user.access === 2 ?
+                <Button onClick={() => history.push("/myStudents")}>
+                  <Typography variant="body1">My Students</Typography>
+                </Button> : user.access === 1 ?
+                  <Button onClick={() => history.push("/myTeacher")}>
+                    <Typography variant="body1">My Teacher</Typography>
+                  </Button> :
+                  <Button onClick={() => history.push("/about")}>
+                    <Typography variant="body1">Contacts</Typography>
+                  </Button>}
 
-
+            {/* about page */}
             <Button
               onClick={() => {
                 history.push("/about");
@@ -105,7 +108,17 @@ function Nav() {
             >
               <Typography variant="body1">About</Typography>
             </Button>
+            
+              {/* messages */}
+            <Button
+              onClick={() => {
+                history.push("/messages");
+              }}
+            >
+              <Typography variant="body1">Messages</Typography>
+            </Button>
 
+            {/* logout */}
             <Button onClick={() => dispatch({ type: "LOGOUT" })}>
               <Typography variant="body1">Log Out</Typography>
             </Button>

@@ -20,24 +20,23 @@ function AddUnitForm() {
   //Setting initial values so that they are controlled for MUI
   const [unitToSend, setUnitToSend] = useState({
     name: "",
-    unitOrder: "",
     subtitle: "",
   });
 
   //Function to handle sending new unit to the database
   async function handleAddUnit() {
     try {
-     await axios.post("/api/unit", unitToSend);
-     dispatch({type: 'GET_UNITS'});
+      await axios.post("/api/unit", unitToSend);
+      dispatch({ type: 'GET_UNITS' });
 
-     dispatch({
-      type: "SET_SHOW_ADD_UNIT",
-      payload: false });
+      dispatch({
+        type: "SET_SHOW_ADD_UNIT",
+        payload: false
+      });
 
       //Clear inputs
       setUnitToSend({
         name: "",
-        unitOrder: "",
         subtitle: "",
       });
     } catch (error) {
@@ -50,6 +49,14 @@ function AddUnitForm() {
       <Dialog
         open={showForm}
         sx={{
+          "& .MuiButton-sizeMedium": {
+            backgroundColor: colors.tealAccent[500],
+          },
+          "& .MuiButton-sizeMedium:hover": {
+            backgroundColor: colors.tealAccent[700],
+          },
+          display: 'box',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           "& .MuiPaper-root": {
             backgroundColor: colors.tealAccent[800],
           },
@@ -87,20 +94,6 @@ function AddUnitForm() {
             autoFocus
             margin="dense"
             fullWidth
-            type="number"
-            label="Unit Order"
-            value={unitToSend.unitOrder}
-            onChange={(event) => {
-              setUnitToSend({
-                ...unitToSend,
-                unitOrder: event.target.value,
-              });
-            }}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            fullWidth
             type="text"
             label="Unit Subtitle"
             value={unitToSend.subtitle}
@@ -111,8 +104,8 @@ function AddUnitForm() {
               });
             }}
           />
-          <Button 
-          variant="outlined"
+          <Button
+            variant="outlined"
             onClick={() => {
               handleAddUnit();
             }}

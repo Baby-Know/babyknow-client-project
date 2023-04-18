@@ -72,7 +72,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
         SELECT 
             uc.user_id, u."firstName", u."lastName" FROM "users_cohorts" AS uc
         JOIN "users" AS u ON u.id = uc.user_id
-        WHERE u.access = 2 AND uc.cohorts_id = $1;
+        WHERE u.access >= 2 AND uc.cohorts_id = $1;
         `;
 
         const usersCohortsTeacherResponse = await pool.query(
@@ -110,7 +110,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
     const usersTeacherQuery = `
     SELECT 
         "id", "email", "firstName", "lastName", "organization" FROM "users" 
-    WHERE "users".access = 2;
+    WHERE "users".access >= 2;
     `;
 
     const usersTeacherResponse = await pool.query(usersTeacherQuery);
@@ -190,6 +190,45 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
       })
     );
 
+    //Delete user_content by user ID to update
+    const deleteUserContentQueryText = `
+      DELETE FROM "users_content"
+      WHERE "user_id" = $1;
+  `;
+    await connection.query(deleteUserContentQueryText, [studentId]);
+
+    //Map over array of units by ID to insert user-content relationship into user_content table
+    await Promise.all(
+      studentUnits.map(async (unit) => {
+        const selectContentIdsText = `
+      SELECT "content".id AS "contentId" FROM "units"
+      JOIN "lessons" ON "lessons".units_id = "units".id
+      JOIN "content" ON "content".lessons_id = "lessons".id
+      WHERE "units".id = $1 AND "content"."isRequired" = true;
+      `;
+        const selectContentIdsParams = [unit.id];
+        const result = await pool.query(
+          selectContentIdsText,
+          selectContentIdsParams
+        );
+        const contentIds = result.rows;
+
+        await Promise.all(
+          contentIds.map(async (contentId) => {
+            const insertUserContentText = `
+            INSERT INTO "users_content" ("user_id", "content_id")
+            VALUES ($1, $2)
+          `;
+            const insertUserContentParams = [studentId, contentId.contentId];
+            return await connection.query(
+              insertUserContentText,
+              insertUserContentParams
+            );
+          })
+        );
+      })
+    );
+
     await connection.query("COMMIT");
     res.sendStatus(204);
   } catch (error) {
@@ -217,6 +256,8 @@ router.delete(
     } catch (error) {
       console.log(`Error deleting student :`, error);
       res.sendStatus(500);
+    } finally {
+      connection.release();
     }
   }
 );

@@ -25,6 +25,8 @@ import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
 import MyTeacherPage from "../MyPages/MyTeacherPage";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
+import Messages from '../Messages/Messages';
+
 function App() {
   //giving app access to theme and color mode
   const [theme, colorMode] = useMode();
@@ -64,30 +66,36 @@ function App() {
                 </ProtectedRoute>
 
                 <ProtectedRoute
+                exact
+                path='/messages'
+                > <Messages />
+                </ProtectedRoute>
+
+                <ProtectedRoute
                   exact
-                  path="/content/:id"
+                  path="/unit/:unitId/lesson/:lessonId/content/:contentId"
                 >
                   <ContentPage />
                 </ProtectedRoute>
 
-              
+
                 <ProtectedRoute exact path="/registrants">
                   {user.access === 3 ?
-                  (<RegistrantsPage />) : (<Redirect to='/about'/>)
+                    (<RegistrantsPage />) : (<Redirect to='/about' />)
                   }
-                </ProtectedRoute> 
-                
+                </ProtectedRoute>
+
                 <ProtectedRoute exact path="/myStudents">
-                {user.access === 2 ?
-                  (<MyStudentsPage />) : (<Redirect to='/about'/>)
-                }
-                </ProtectedRoute> 
-              
+                  {user.access === 2 ?
+                    (<MyStudentsPage />) : (<Redirect to='/about' />)
+                  }
+                </ProtectedRoute>
+
                 <ProtectedRoute exact path="/myTeacher">
                   {user.access === 1 ?
-                    (<MyTeacherPage />) : (<Redirect to='/about'/>)
+                    (<MyTeacherPage />) : (<Redirect to='/about' />)
                   }
-                </ProtectedRoute> 
+                </ProtectedRoute>
 
                 <ProtectedRoute
                   exact
@@ -120,6 +128,7 @@ function App() {
                 <Route>
                   <h1>404</h1>
                 </Route>
+                
               </Switch>
               <Footer />
             </div>

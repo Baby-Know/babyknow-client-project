@@ -20,6 +20,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 
+
 function CoursePage() {
   const dispatch = useDispatch();
   const history = useHistory();
