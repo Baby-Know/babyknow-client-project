@@ -25,10 +25,6 @@ import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
 import MyPathPage from "../MyPages/MyPath";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
-<<<<<<< HEAD
-=======
-import Messages from "../Messages/Messages";
->>>>>>> d7ac8347c15723e169cb50c45d7dd8e5f44677f1
 
 function App() {
   //giving app access to theme and color mode
