@@ -23,9 +23,9 @@ import ContentPage from "../ContentPage/ContentPage";
 import LoginPage from "../LoginPage/LoginPage";
 import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
-import MyPathPage from "../MyPages/MyTeacherPage";
+import MyPathPage from "../MyPages/MyPath";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
-import Messages from '../Messages/Messages';
+import Messages from "../Messages/Messages";
 
 function App() {
   //giving app access to theme and color mode
@@ -51,24 +51,17 @@ function App() {
                 {/* Visiting localhost:3000 will redirect to localhost:3000/home */}
                 <Redirect exact from="/" to="/registration" />
 
-                <ProtectedRoute
-                  exact
-                  path="/course"
-                >
+                <ProtectedRoute exact path="/course">
                   <CoursePage />
                 </ProtectedRoute>
 
-                <ProtectedRoute
-                  exact
-                  path="/unit/:id"
-                >
+                <ProtectedRoute exact path="/unit/:id">
                   <UnitPage />
                 </ProtectedRoute>
 
-                <ProtectedRoute
-                exact
-                path='/messages'
-                > <Messages />
+                <ProtectedRoute exact path="/messages">
+                  {" "}
+                  <Messages />
                 </ProtectedRoute>
 
                 <ProtectedRoute
@@ -78,29 +71,31 @@ function App() {
                   <ContentPage />
                 </ProtectedRoute>
 
-
                 <ProtectedRoute exact path="/registrants">
-                  {user.access === 3 ?
-                    (<RegistrantsPage />) : (<Redirect to='/about' />)
-                  }
+                  {user.access === 3 ? (
+                    <RegistrantsPage />
+                  ) : (
+                    <Redirect to="/about" />
+                  )}
                 </ProtectedRoute>
 
                 <ProtectedRoute exact path="/myStudents">
-                  {user.access === 2 ?
-                    (<MyStudentsPage />) : (<Redirect to='/about' />)
-                  }
+                  {user.access === 2 ? (
+                    <MyStudentsPage />
+                  ) : (
+                    <Redirect to="/about" />
+                  )}
                 </ProtectedRoute>
 
                 <ProtectedRoute exact path="/myPath">
-                  {user.access === 1 ?
-                    (<MyPathPage />) : (<Redirect to='/about' />)
-                  }
+                  {user.access === 1 ? (
+                    <MyPathPage />
+                  ) : (
+                    <Redirect to="/about" />
+                  )}
                 </ProtectedRoute>
 
-                <ProtectedRoute
-                  exact
-                  path="/about"
-                >
+                <ProtectedRoute exact path="/about">
                   <AboutPage />
                 </ProtectedRoute>
 
@@ -128,7 +123,6 @@ function App() {
                 <Route>
                   <h1>404</h1>
                 </Route>
-                
               </Switch>
               <Footer />
             </div>
