@@ -107,7 +107,7 @@ ALTER TABLE "users_units" ADD CONSTRAINT "users_units_fk0" FOREIGN KEY ("users_i
 ALTER TABLE "users_units" ADD CONSTRAINT "users_units_fk1" FOREIGN KEY ("units_id") REFERENCES "units"("id");
 
 ALTER TABLE "users_cohorts" ADD CONSTRAINT "users_cohorts_fk0" FOREIGN KEY ("cohorts_id") REFERENCES "cohorts"("id");
-ALTER TABLE "users_cohorts" ADD CONSTRAINT "users_cohorts_fk1" FOREIGN KEY ("user_id") REFERENCES "users"("id");
+ALTER TABLE "users_cohorts" ADD CONSTRAINT "users_cohorts_fk1" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;
 
 ALTER TABLE "content" ADD CONSTRAINT "content_fk0" FOREIGN KEY ("lessons_id") REFERENCES "lessons"("id") ON DELETE CASCADE;
 
@@ -123,15 +123,15 @@ INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequire
 VALUES ('Video 1', 'Video 1', 'about the first video', false, false, 1), ('Video 2', 'Video 2', 'describe second video', false, false, 1), ('Survey 1', 'Survey 1', 'about the first survey', true, false, 1);
 
 INSERT INTO "users" ("email", "password", "firstName", "lastName", "access", "organization" )
-VALUES ('babyknow@baby.com', 'Babyknow', 'Baby', 'Know', 3, 'BabyKnow'), ('pimpin@baby.com', 'Pimpin', 'Snoop', 'Dogg', 2, 'LA'), ('heisenberg@baby.com', 'Science', 'Walter', 'White', 2, 'Chemistry'), ('bigboned@baby.com', 'HippyHater', 'Eric', 'Cartman', 1, 'Shakeys'),
+VALUES ('thisbabyknows@gmail.com', '$2a$10$cY0xmRTmMIOEvpWg4cH0c.HabDOSGZdnO6/QJfovDBhtsgJpxqfkC', 'Baby', 'Know', 3, 'BabyKnow'), ('pimpin@baby.com', 'Pimpin', 'Snoop', 'Dogg', 2, 'LA'), ('heisenberg@baby.com', 'Science', 'Walter', 'White', 2, 'Chemistry'), ('bigboned@baby.com', 'HippyHater', 'Eric', 'Cartman', 1, 'Shakeys'),
  ('middleearth@baby.com', 'Myprecious', 'Bilbo', 'Baggins', 1, 'Burglar'), ('coach@baby.com', 'Tenessewhiskey', 'Ted', 'Lasso', 1, 'Richmond FC'),
  ('superminion@minions.com', 'bananna', 'Kevin', 'Evil', 0, 'Evil Corp.');
 
 INSERT INTO "cohorts" ("name")
-VALUES ('Snoops'), ('WW Chemistry');
+VALUES ('BabyKnow'), ('Snoops'), ('WW Chemistry');
 
 INSERT INTO "users_cohorts"("cohorts_id", "user_id")
-VALUES(1, 3), (1, 4), (2, 5), (2, 6), (1, 2), (2, 3);
+VALUES (1, 1), (2, 2), (3, 3), (1, 4), (2, 5), (3, 6), (1, 7);
 
 INSERT INTO "users_units" ("users_id", "units_id")
 VALUES(4, 1), (5, 1), (4, 2);

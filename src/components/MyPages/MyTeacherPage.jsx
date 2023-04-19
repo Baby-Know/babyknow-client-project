@@ -1,20 +1,48 @@
 import { useSelector, useDispatch } from "react-redux"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-function MyTeacherPage () {
+function MyPathPage () {
     const user = useSelector(store => store.user);
     const teacher = useSelector(store => store.teacherReducer);
+    const progressArrays = useSelector(store => store.progressReducer);
     const dispatch = useDispatch()
-
-    console.log(teacher)
-
 
     useEffect(() => {
         dispatch({
             type: "GET_TEACHER",
             payload: user.id
         });
+        dispatch({
+            type: "GET_PROGRESS",
+            payload: user.id
+        });
     }, []);
+
+
+    let totalCompleted = 0
+    let totalRequired = 0
+    let units = []
+
+    for(let unit of progressArrays) {
+        let completed = 0
+        let required = 0
+
+        for(let content of unit) {
+            if (content.isComplete) {
+                completed++
+                totalCompleted ++
+            } 
+            required++
+            totalRequired++
+
+        }
+        {unit[0] ? units.push( {name: unit[0].name, progress: completed/required * 100} )  : null }
+    
+    }
+
+    console.log(progressArrays)
+
+
 
     return (
     <div id="pathPage">
@@ -36,14 +64,22 @@ function MyTeacherPage () {
             </div>
             <div className="pathContent">
                 <h2>My Progress</h2>
-                    <div>unit progression</div>
-                    <div>unit progression</div>
-                    <div>unit progression</div>
-                    <div>total progression</div>
+
+                    {units.map((unit, i) => {
+                        return (
+                            <div key={i}>
+                                <h3>{unit.name}</h3>
+                                <div>{unit.progress} % </div>
+                            </div>
+                        )
+                    })}
+                
+                    <h3>Total Progress</h3>
+                        <div>{totalCompleted/totalRequired * 100} %</div>
             </div>
         </div>
     </div>
     )
 }
 
-export default MyTeacherPage
+export default MyPathPage

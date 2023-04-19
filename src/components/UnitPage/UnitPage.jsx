@@ -220,17 +220,16 @@ function UnitPage() {
                                                     onDrop={() => swapContent({ contentId: id, order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId })}
                                                 >
 
-                                                    {/* is required? */}
-                                                    {lesson.contentIsRequired[index] ?
+                                                    {/* is required? is complete?  */}
+                                                    {/* {lesson.contentIsRequired[index] ?
                                                     <>
-                                                        {/* is complete? */}
                                                         {lesson.contentIsComplete[index] ? 
                                                         <div id="completed">✓</div> :
                                                         <div id="incomplete"></div>
                                                         } 
                                                     </> : 
                                                     <></>
-                                                    }
+                                                    }  */}
             
                                                     {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
@@ -313,10 +312,10 @@ function UnitPage() {
                                             dispatch({
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
-                                            });
+                                            })
 
                                             setSelectedId(lesson.lessonId);
-                                            setSelectedUnitId(lesson.unitId);
+                                            setSelectedUnitId(lesson.unitId)
                                         }}>
                                             Add Content to {lesson.lessonName}
                                         </Button>

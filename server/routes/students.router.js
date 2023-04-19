@@ -1,18 +1,17 @@
-const express = require('express');
-const pool = require('../modules/pool');
+const express = require("express");
+const pool = require("../modules/pool");
 const router = express.Router();
 const {
   rejectUnauthenticated,
-} = require('../modules/authentication-middleware');
+} = require("../modules/authentication-middleware");
 
-const { rejectStudent } = require('../modules/teacher-middleware');
+const { rejectStudent } = require("../modules/teacher-middleware");
 
 //GET all students
-router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
+router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
   //Array to send back to client
   const studentData = {
     students: [],
-    teachers: [],
     cohorts: [],
     units: [],
   };
@@ -36,12 +35,12 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
           email: student.email,
           cohort: {
             id: null,
-            name: '',
+            name: "",
           },
           teacher: {
             id: null,
-            firstName: '',
-            lastName: '',
+            firstName: "",
+            lastName: "",
           },
           studentUnits: [],
         };
@@ -74,7 +73,7 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
         SELECT 
             uc.user_id, u."firstName", u."lastName" FROM "users_cohorts" AS uc
         JOIN "users" AS u ON u.id = uc.user_id
-        WHERE u.access = 2 AND uc.cohorts_id = $1;
+        WHERE u.access >= 2 AND uc.cohorts_id = $1;
         `;
 
         const usersCohortsTeacherResponse = await pool.query(
@@ -107,17 +106,6 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
         studentData.students.push(studentObject);
       })
     );
-    
-    //Selecting all teachers and adding them to the teachers array
-    const usersTeacherQuery = `
-    SELECT 
-        "id", "email", "firstName", "lastName", "organization" FROM "users" 
-    WHERE "users".access = 2;
-    `;
-
-    const usersTeacherResponse = await pool.query(usersTeacherQuery);
-
-    studentData.teachers = usersTeacherResponse.rows;
 
     const cohortsQuery = `
     SELECT * FROM "cohorts";
@@ -141,7 +129,7 @@ router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
   }
 });
 
-router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
+router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
   const connection = await pool.connect();
   const studentId = req.body.id;
   const firstName = req.body.firstName;
@@ -151,7 +139,7 @@ router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
   const studentUnits = req.body.studentUnits;
 
   try {
-    await connection.query('BEGIN');
+    await connection.query("BEGIN");
     const usersQueryText = `
     UPDATE "users"
     SET "firstName" = $1, "lastName" = $2, "email" = $3
@@ -217,7 +205,6 @@ router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
 
         await Promise.all(
           contentIds.map(async (contentId) => {
-            console.log(contentId);
             const insertUserContentText = `
             INSERT INTO "users_content" ("user_id", "content_id")
             VALUES ($1, $2)
@@ -232,10 +219,10 @@ router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
       })
     );
 
-    await connection.query('COMMIT');
+    await connection.query("COMMIT");
     res.sendStatus(204);
   } catch (error) {
-    await connection.query('ROLLBACK');
+    await connection.query("ROLLBACK");
     console.log(`Transaction Error - Rolling back student update`, error);
     res.sendStatus(500);
   } finally {
@@ -244,7 +231,7 @@ router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
 });
 
 router.delete(
-  '/:id',
+  "/:id",
   rejectUnauthenticated,
   rejectStudent,
   async (req, res) => {
@@ -259,6 +246,8 @@ router.delete(
     } catch (error) {
       console.log(`Error deleting student :`, error);
       res.sendStatus(500);
+    } finally {
+      connection.release();
     }
   }
 );

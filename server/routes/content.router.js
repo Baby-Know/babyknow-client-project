@@ -49,7 +49,7 @@ router.get('/:id', async (req, res) => {
     });
 });
 
-// posting content from content form surveys
+// posting content from content form - surveys
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     const connect = await pool.connect()
     try {
@@ -76,20 +76,18 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
         await connect.query('ROLLBACK')
         console.error('error posting content', error)
         res.sendStatus(500);
+    } finally {
+      connect.release();
     }
 })
 
-router.post(
-  '/file',
-  rejectUnauthenticated,
-  rejectNonAdmin,
-  upload.single('file'),
-  async (req, res) => {
-    const connect = await pool.connect();
-    try {
-      await connect.query('BEGIN');
-      const results = await s3Upload(req.file);
-      console.log('AWS S3 upload success');
+// posting content from content form - video
+router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'), async (req, res) => {
+    const connect = await pool.connect()
+    try { 
+        await connect.query('BEGIN')
+        const results = await s3Upload(req.file);
+        console.log('AWS S3 upload success');
 
         const contentSqlQuery =  `
         INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired",  "lessons_id")
@@ -100,12 +98,13 @@ router.post(
         await connect.query('COMMIT')
         res.sendStatus(200)
     } catch (error) {
-      await connect.query('ROLLBACK');
-      console.error('error posting content', error);
-      res.sendStatus(500);
+        await connect.query('ROLLBACK')
+        console.error('error posting content', error)
+        res.sendStatus(500);
+    }  finally {
+      connect.release();
     }
-  }
-);
+})
 
 //GET content
 router.get(

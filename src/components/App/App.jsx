@@ -23,9 +23,9 @@ import ContentPage from "../ContentPage/ContentPage";
 import LoginPage from "../LoginPage/LoginPage";
 import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
-import MyTeacherPage from "../MyPages/MyTeacherPage";
+import MyPathPage from "../MyPages/MyTeacherPage";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
-import ChatEngine from '../Chat/Chat';
+import Messages from '../Messages/Messages';
 
 function App() {
   //giving app access to theme and color mode
@@ -66,6 +66,12 @@ function App() {
                 </ProtectedRoute>
 
                 <ProtectedRoute
+                exact
+                path='/messages'
+                > <Messages />
+                </ProtectedRoute>
+
+                <ProtectedRoute
                   exact
                   path="/unit/:unitId/lesson/:lessonId/content/:contentId"
                 >
@@ -85,9 +91,9 @@ function App() {
                   }
                 </ProtectedRoute>
 
-                <ProtectedRoute exact path="/myTeacher">
+                <ProtectedRoute exact path="/myPath">
                   {user.access === 1 ?
-                    (<MyTeacherPage />) : (<Redirect to='/about' />)
+                    (<MyPathPage />) : (<Redirect to='/about' />)
                   }
                 </ProtectedRoute>
 

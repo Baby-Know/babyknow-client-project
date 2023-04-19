@@ -19,7 +19,7 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
-import Chat from '../Chat/Chat';
+
 
 function CoursePage() {
   const dispatch = useDispatch();
