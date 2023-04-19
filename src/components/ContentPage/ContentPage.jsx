@@ -7,9 +7,7 @@ import { Card, Checkbox, Typography, Breadcrumbs } from "@mui/material";
 function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
     const dispatch = useDispatch();
-    const location = useLocation();
-    const contentArray = useSelector(store => store.contentReducer);
-    const content = contentArray[0];
+    const content = useSelector(store => store.contentReducer);
 
     const user = useSelector(store => store.user);
     const userId = user.id;
@@ -27,7 +25,7 @@ function ContentPage() {
         <>
             <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
                 <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}`}>
-                    <h3>{content?.unitName}</h3>
+                    <h3>{content.unitName}</h3>
                 </Link>
                 <Typography color="text.primary">{content?.lessonName}</Typography>
                 <Typography color="text.primary">{content?.contentTitle}</Typography>
@@ -49,7 +47,7 @@ function ContentPage() {
                     <></>
                 }
             </Card>
-                    {contentArray.contentIsSurvey ?
+                    {content?.contentIsSurvey ?
                             <Card id='surveyCard'>
                                 <h4><a href={`https://${content?.contentContent}`}>Please follow this link to complete a survey!</a></h4>
                             </Card> :

@@ -35,6 +35,7 @@ function UnitPage() {
 
     const [selectedId, setSelectedId] = useState(0);
     const [selectedUnitId, setSelectedUnitId] = useState(0);
+    const [selectedContentId, setSelectedContentId] = useState(0);
 
     const isLoading = useSelector((store) => store.loadingReducer);
 
@@ -53,12 +54,6 @@ function UnitPage() {
     }, []);
 
     const selectContent = (unitId, lessonId, contentId) => {
-        // const userContent = { userId: user.id, contentId: contentId, isComplete: false, media: '', comment: '' };
-        // dispatch({
-        //     type: "POST_USER_CONTENT",
-        //     payload: { userContent }
-        // });
-        // console.log('Post userContent unit page', userContent);
         history.push({
             pathname: `/unit/${unitId}/lesson/${lessonId}/content/${contentId}`
         });
@@ -148,7 +143,7 @@ function UnitPage() {
             {isLoading ?
                 <LoadingBar />
                 :
-                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
+                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} selectedContentId={selectedContentId} />
             }
 
             {unit.map((lesson, i) => {
@@ -314,7 +309,7 @@ function UnitPage() {
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
                                             })
-
+                                            setSelectedContentId(lesson.contentId);
                                             setSelectedId(lesson.lessonId);
                                             setSelectedUnitId(lesson.unitId);
                                         }}>
