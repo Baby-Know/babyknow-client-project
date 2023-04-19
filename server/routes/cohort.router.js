@@ -7,6 +7,24 @@ const {
 
 const { rejectNonAdmin } = require("../modules/admin-middleware");
 
+//GET all cohorts
+router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
+    SELECT * FROM "cohorts"
+    `;
+
+    const cohortsResponse = await pool.query(queryText);
+    const cohorts = cohortsResponse.rows;
+
+    res.send(cohorts);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log("Error getting all Cohorts :", error);
+  }
+});
+
+//POST new cohort
 router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const query = `

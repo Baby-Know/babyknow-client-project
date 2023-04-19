@@ -9,7 +9,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckIcon from "@mui/icons-material/Check";
 import { Select, MenuItem, Tooltip, Button } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
-import AddCohortForm from "../AddCohortForm/AddCohortForm";
+import CohortsList from "./CohortsList/CohortsList";
 
 const Teachers = () => {
   const dispatch = useDispatch();
@@ -311,18 +311,7 @@ const Teachers = () => {
           }}
         />
       </Box>
-      <AddCohortForm />
-      <Button
-        // sx={{ margin: 10 }}
-        onClick={() => {
-          dispatch({
-            type: "SET_SHOW_ADD_COHORT",
-            payload: true,
-          });
-        }}
-      >
-        Add Cohort
-      </Button>
+      <CohortsList />
     </Box>
   );
 };

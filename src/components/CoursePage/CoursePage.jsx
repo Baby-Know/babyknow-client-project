@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import AddUnitForm from "./AddUnitForm/AddUnitForm";
-import AddCohortForm from "../RegistrantsPage/AddCohortForm/AddCohortForm";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -115,7 +114,6 @@ function CoursePage() {
       <h1 style={{ marginLeft: 20 }}>Course</h1>
       <h2 style={{ marginLeft: 20 }}>Welcome, {user.firstName}!</h2>
       <AddUnitForm />
-      <AddCohortForm />
 
       <div>
         <Grid
@@ -281,17 +279,6 @@ function CoursePage() {
           >
             Add Unit
           </Button>
-          <Button
-            sx={{ margin: 10 }}
-            onClick={() => {
-              dispatch({
-                type: "SET_SHOW_ADD_COHORT",
-                payload: true,
-              });
-            }}
-          >
-            Add Cohort
-          </Button>
         </div>
       ) : (
         <></>
@@ -300,5 +287,4 @@ function CoursePage() {
   );
 }
 
-// this allows us to use <App /> in index.js
 export default CoursePage;

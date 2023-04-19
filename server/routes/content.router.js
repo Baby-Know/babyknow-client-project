@@ -88,13 +88,14 @@ router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'
         await connect.query('BEGIN')
         const results = await s3Upload(req.file);
         console.log('AWS S3 upload success');
+        console.log('req.body', req.body)
 
         const contentSqlQuery =  `
         INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired",  "lessons_id")
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING "id";
         `
-        await connect.query(contentSqlQuery, [results.Location, req.body.title, req.body.description, req.body.isSurvey, req.body.isRequire, req.body.lessons_id])
+        await connect.query(contentSqlQuery, [results.Location, req.body.title, req.body.description, req.body.isSurvey, req.body.isRequired, req.body.lessons_id])
         await connect.query('COMMIT')
         res.sendStatus(200)
     } catch (error) {
@@ -106,7 +107,7 @@ router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'
     }
 })
 
-//GET content
+//GET content by unit, lesson and content ids
 router.get(
   '/:unitId/:lessonId/:contentId',
   rejectUnauthenticated,
@@ -124,8 +125,9 @@ router.get(
         req.params.lessonId,
         req.params.contentId,
       ];
+      console.log("params", params)
       const unitResult = await pool.query(queryText, params);
-      content = unitResult.rows;
+      content = unitResult.rows[0];
       res.send(content);
     } catch (error) {
       res.sendStatus(500);

@@ -1,38 +1,34 @@
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, useTheme } from "@mui/system";
-import { tokens } from "../../../theme";
-import { IconButton, TextField, Button } from "@mui/material";
-import Close from "@mui/icons-material/Close";
-import { useState } from "react";
-import axios from "axios";
+import { tokens } from "../../../../theme";
+import { IconButton, TextField, Button, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
 
-function AddCohortForm() {
+function CohortsList() {
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [cohort, setCohort] = useState("");
+
+  //Fetch cohorts on page load
+  useEffect(() => {
+    dispatch({
+      type: "FETCH_COHORTS",
+    });
+  }, []);
 
   //Variable to show whether the add cohort form is showing
-  const showForm = useSelector(
-    (store) => store.conditionalForms?.showCohortForm
+  const cohorts = useSelector((store) => store.cohortReducer);
+
+  return (
+    <Box
+      sx={{
+        backgroundColor: colors.primary[500],
+      }}
+    >
+      {cohorts?.map((cohort) => {
+        return <></>;
+      })}
+    </Box>
   );
-
-  async function addCohort() {
-    try {
-      axios.post("/api/cohort", { cohort });
-      dispatch({
-        type: "SET_SHOW_ADD_COHORT",
-        payload: false,
-      });
-      setCohort("");
-    } catch (error) {
-      console.log("Error posting Cohort:", error);
-    }
-  }
-
-  return <Box></Box>;
 }
-export default AddCohortForm;
+export default CohortsList;

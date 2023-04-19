@@ -6,7 +6,7 @@ import withReactContent from "sweetalert2-react-content";
 function* fetchCohorts() {
   try {
     let response = yield axios.get("/api/cohort");
-    yield put({ type: "SET_COHORT", payload: response.data });
+    yield put({ type: "SET_COHORTS", payload: response.data });
   } catch (error) {
     console.error("Error getting unit", error);
   }
