@@ -71,6 +71,39 @@ GROUP BY
   }
 });
 
+router.get("/:id", rejectUnauthenticated, async (req, res) => {
+  console.log(req.params.id)
+
+  try {
+    const cohortQuery = `
+      SELECT "users_cohorts".cohorts_id AS "cohortId" FROM "users_cohorts"
+      WHERE "users_cohorts".user_id = $1;
+    `;
+
+    const cohortParams = [req.params.id]
+
+    const cohortResult = await pool.query(cohortQuery, cohortParams);
+
+    const cohortId = cohortResult.rows[0].cohortId
+
+    const teacherQuery = `
+      SELECT "users"."firstName", "users"."lastName", "users".email, "users".organization FROM "users"
+      JOIN "users_cohorts" ON "users_cohorts".user_id = "users".id
+      WHERE "users_cohorts".cohorts_id = $1 AND "users".access >= 2 
+    `;
+
+    const teacherParams = [cohortId]
+
+    const teacherResult = await pool.query(teacherQuery, teacherParams);
+
+    res.send(teacherResult.rows[0]);
+  } catch (error) {
+    console.log("Error fetching all teachers:", error);
+    res.sendStatus(500);
+  }
+});
+
+
 //UPDATE TEACHER
 router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   const connection = await pool.connect();

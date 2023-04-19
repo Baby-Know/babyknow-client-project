@@ -12,6 +12,14 @@ function* fetchTeachers() {
   }
 }
 
+function* getTeacher(action) {
+  try {
+     let response = yield axios.get(`/api/teachers/${action.payload}`);
+     yield put({ type: "SET_TEACHER", payload: response.data })
+  } catch (error) {
+    console.error("Error getting teachers", error);
+  }
+}
 function* deleteTeacher(action) {
   const swal = withReactContent(Swal);
   try {
@@ -45,6 +53,7 @@ function* updateTeacher(action) {
 
 function* teachersSaga() {
   yield takeLatest("FETCH_TEACHERS", fetchTeachers);
+  yield takeLatest("GET_TEACHER", getTeacher);
   yield takeLatest("DELETE_TEACHER", deleteTeacher);
   yield takeLatest("UPDATE_TEACHER", updateTeacher);
 }

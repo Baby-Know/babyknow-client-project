@@ -176,7 +176,7 @@ function UnitPage() {
                                 onDrop={() => swapLessons({ lessonId: lesson.lessonId, order: lesson.lessonOrder, unitId: lesson.unitId })}
                                 expandIcon={<ExpandMoreIcon sx={{ color: '#276184' }} />}
                             >
-                                {draggable ?
+                                {draggable && user.access === 3 ?
                                     <IconButton sx={{ padding: '0', marginRight: '16px', color: '#276184' }}>
                                         <DragHandleIcon sx={{ 'cursor': 'grab' }} />
                                     </IconButton> : <></>}
@@ -220,17 +220,16 @@ function UnitPage() {
                                                     onDrop={() => swapContent({ contentId: id, order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId })}
                                                 >
 
-                                                    {/* is required? */}
-                                                    {lesson.contentIsRequired[index] ?
+                                                    {/* is required? is complete?  */}
+                                                    {/* {lesson.contentIsRequired[index] ?
                                                     <>
-                                                        {/* is complete? */}
                                                         {lesson.contentIsComplete[index] ? 
                                                         <div id="completed">✓</div> :
                                                         <div id="incomplete"></div>
                                                         } 
                                                     </> : 
                                                     <></>
-                                                    }
+                                                    }  */}
             
                                                     {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
@@ -302,7 +301,7 @@ function UnitPage() {
                                                 </div>
                                             }
                                         </div>
-                                    );
+                                    )
                                 })}
 
                                 {/* button to add content row */}
