@@ -29,13 +29,8 @@ const rootReducer = combineReducers({
   teacherReducer, //Contains all teachers and their students
   loadingReducer,
   lessonsReducer,
-<<<<<<< HEAD
-  userContentReducer
-=======
   userContentReducer,
-  messageReducer,
   progressReducer
->>>>>>> d7ac8347c15723e169cb50c45d7dd8e5f44677f1
 });
 
 export default rootReducer;
