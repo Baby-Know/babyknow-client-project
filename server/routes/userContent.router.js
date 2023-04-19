@@ -17,6 +17,7 @@ router.get('/:userId/:contentId', rejectUnauthenticated, async (req, res) => {
     const queryParams = [req.params.userId, req.params.contentId];
     const queryResult = await pool.query(queryText, queryParams);
     userContent = queryResult.rows;
+    console.log('userContent', userContent);
     res.send(userContent);
   } catch (error) {
     res.sendStatus(500);

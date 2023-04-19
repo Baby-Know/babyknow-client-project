@@ -169,3 +169,19 @@ body,
   text-align: center;
   font-size: xx-large;
 }
+
+#textFieldCard {
+  width: fit-content;
+  margin: 3%;
+  background-color: #263549;
+  padding: 16px;
+}
+
+#textFieldInput {
+  padding: 2%;
+}
+
+.studentCommentButton {
+  float: right;
+  color: #276184;
+}

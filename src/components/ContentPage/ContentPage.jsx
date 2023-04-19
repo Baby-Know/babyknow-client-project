@@ -52,15 +52,6 @@ function ContentPage() {
         setIsCompleteControl(event.target.isCompleteControl);
     };
 
-    //Submit student comment
-    const submitComment = (newComment) => {
-        console.log(newComment);
-        dispatch({
-            type: 'POST_COMMENT',
-            payload: { userContentId, newComment, userId, contentId }
-        });
-    };
-
     return (
         <>
             <span>
@@ -99,18 +90,19 @@ function ContentPage() {
                 </Card> :
                 <Card id='videoCard'>
                     <video width="320" height="240" controls >
-                        <source src={`${content?.contentContent}`} type="video/mp4"></source>
+                        <source src={`${content?.contentContent}`} type="video/*"></source>
                     </video>
                 </Card>
             }
-            <h2>Leave any questions or comments below!</h2>
+            <h2 style={{ paddingLeft: "2%" }}>Student Comments and Media Upload</h2>
             {userContent?.comment ?
                 <Card>
+                    <span>{user.firstName} {user.lastName}</span>
                     <p>{userContent.comment}</p>
                 </Card> :
                 <></>
             }
-            <CommentBox userId={userId} contentId={contentId} />
+            <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
 
 
         </>
