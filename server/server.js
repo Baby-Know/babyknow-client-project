@@ -46,6 +46,7 @@ const contentRouter = require("./routes/content.router");
 const teacherRouter = require("./routes/teachers.router");
 const messageRouter = require("./routes/message.router");
 const userContentRouter = require('./routes/userContent.router');
+const progressRouter = require("./routes/progress.router")
 
 // Body parser middleware
 app.use(bodyParser.json());
@@ -69,6 +70,7 @@ app.use("/api/content", contentRouter);
 app.use("/api/teachers", teacherRouter);
 app.use("/api/message", messageRouter);
 app.use('/api/user-content', userContentRouter);
+app.use('/api/progress', progressRouter);
 
 // Serve static files
 app.use(express.static('build'));

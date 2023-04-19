@@ -93,8 +93,8 @@ function Nav() {
                 <Button onClick={() => history.push("/myStudents")}>
                   <Typography variant="body1">My Students</Typography>
                 </Button> : user.access === 1 ?
-                  <Button onClick={() => history.push("/myTeacher")}>
-                    <Typography variant="body1">My Teacher</Typography>
+                  <Button onClick={() => history.push("/myPath")}>
+                    <Typography variant="body1">My Path</Typography>
                   </Button> :
                   <Button onClick={() => history.push("/about")}>
                     <Typography variant="body1">Contacts</Typography>
