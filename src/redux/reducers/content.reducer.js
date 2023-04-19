@@ -1,10 +1,6 @@
-const contentReducer = (state = [], action) => {
+const contentReducer = (state = {}, action) => {
   switch (action.type) {
-    case 'SET_VIDEO_UPLOAD':
-      return action.payload;
-    case 'SET_CONTENT':
-      return action.payload;
-    case 'SET_SURVEY_UPLOAD':
+    case 'SET_CONTENT_VIEW':
       return action.payload;
     default:
       return state;
