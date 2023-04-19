@@ -9,7 +9,6 @@ import studentsReducer from './students.reducer';
 import teacherReducer from './teachers.reducer';
 import loadingReducer from './loading.reducer';
 import lessonsReducer from './lessons.reducer';
-import messageReducer from './message.reducer';
 import userContentReducer from './userContent.reducer';
 
 // rootReducer is the primary reducer for our entire project
@@ -29,8 +28,7 @@ const rootReducer = combineReducers({
   teacherReducer, //Contains all teachers and their students
   loadingReducer,
   lessonsReducer,
-  userContentReducer,
-  messageReducer
+  userContentReducer
 });
 
 export default rootReducer;
