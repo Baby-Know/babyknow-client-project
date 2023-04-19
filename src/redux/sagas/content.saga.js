@@ -27,15 +27,15 @@ function* addContentWithUpload(action) {
     data.append('description', action.payload.contentToSend.description);
     data.append('isSurvey', action.payload.contentToSend.isSurvey);
     data.append('isRequired', action.payload.contentToSend.isRequired);
-    data.append('contentOrder', action.payload.contentToSend.contentOrder);
     data.append('lessons_id', action.payload.selectedId);
 
-    const response = yield axios.post('/api/content/file', data, {
+    yield axios.post('/api/content/file', data, {
       headers: {
         'content-type': 'multipart/form-data',
       },
     });
-    yield put({ type: 'SET_VIDEO_UPLOAD', payload: response.data });
+
+    yield put({ type: 'GET_UNIT_LESSON_CONTENT'});
     yield put({ type: 'SET_LOADING_FALSE' });
     yield put({ type: 'GET_UNIT', payload: action.payload.selectedUnitId });
   } catch (error) {
@@ -50,7 +50,7 @@ function* getContent(action) {
     let response = yield axios.get(
       `/api/content/${action.payload.unitId}/${action.payload.lessonId}/${action.payload.contentId}`
     );
-    yield put({ type: 'SET_CONTENT', payload: response.data });
+    yield put({ type: 'SET_CONTENT_VIEW', payload: response.data });
   } catch (error) {
     console.error('Error getting content', error);
   }

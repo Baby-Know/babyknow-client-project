@@ -316,7 +316,7 @@ function UnitPage() {
                                             })
 
                                             setSelectedId(lesson.lessonId);
-                                            setSelectedUnitId(lesson.unitId)
+                                            setSelectedUnitId(lesson.unitId);
                                         }}>
                                             Add Content to {lesson.lessonName}
                                         </Button>

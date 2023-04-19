@@ -30,27 +30,6 @@ CREATE TABLE "units" (
   OIDS=FALSE
 );
 
-CREATE TABLE "messages" (
-	"id" serial NOT NULL,
-	"room_id" integer NOT NULL,
-	"messageText" varchar(400) NOT NULL,
-	"timestamp" TIMESTAMP,
-	CONSTRAINT "messages_pk" PRIMARY KEY ("id")
-) WITH (
-  OIDS=FALSE
-);
-
-CREATE TABLE "room" (
-	"id" serial NOT NULL,
-	"roomName" varchar(400) NOT NULL,
-	"user_id_1" integer NOT NULL,
-	"user_id_2"integer NOT NULL,
-	CONSTRAINT "room_pk" PRIMARY KEY ("id")
-) WITH (
-  OIDS=FALSE
-);
-
-
 CREATE TABLE "content" (
 	"id" serial NOT NULL,
 	"lessons_id" integer NOT NULL,
@@ -118,10 +97,6 @@ CREATE TABLE "users_cohorts" (
 
 ALTER TABLE "users_content" ADD CONSTRAINT "users_content_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
 ALTER TABLE "users_content" ADD CONSTRAINT "users_content_fk1" FOREIGN KEY ("content_id") REFERENCES "content"("id");
-
-ALTER TABLE "messages" ADD CONSTRAINT "messages_fk0" FOREIGN KEY ("room_id") REFERENCES "room"("id");
-ALTER TABLE "room" ADD CONSTRAINT "messages_fk0" FOREIGN KEY ("user_id_1") REFERENCES "users"("id");
-ALTER TABLE "room" ADD CONSTRAINT "messages_fk1" FOREIGN KEY ("user_id_2") REFERENCES "users"("id");
 
 
 ALTER TABLE "lessons" ADD CONSTRAINT "lessons_fk0" FOREIGN KEY ("units_id") REFERENCES "units"("id") ON DELETE CASCADE;
