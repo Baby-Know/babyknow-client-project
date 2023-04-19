@@ -48,7 +48,7 @@ function* addContentWithUpload(action) {
 
 // get content with id
 function* getUnitLessonContent(action) {
-  console.log('action.payload', action.payload)
+  console.log('action.payload in the get', action.payload)
   try {
     let response = yield axios.get(
       `/api/content/${action.payload.unitId}/${action.payload.lessonId}/${action.payload.contentId}`

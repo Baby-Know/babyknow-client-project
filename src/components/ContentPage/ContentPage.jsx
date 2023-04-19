@@ -6,6 +6,7 @@ import { Card, Checkbox, Typography, Breadcrumbs } from "@mui/material";
 
 function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
+    console.log('unitId', unitId, "lessonId", lessonId, "contentId", contentId)
     const dispatch = useDispatch();
     const content = useSelector(store => store.contentReducer);
 
@@ -16,7 +17,7 @@ function ContentPage() {
     useEffect(() => {
         dispatch({
             type: 'GET_UNIT_LESSON_CONTENT',
-            payload: { unitId, lessonId, contentId }
+            payload: { unitId: Number(unitId), lessonId: Number(lessonId), contentId: Number(contentId) }
         });
     }, []);
 
@@ -49,7 +50,7 @@ function ContentPage() {
             </Card>
                     {content?.contentIsSurvey ?
                             <Card id='surveyCard'>
-                                <h4><a href={`https://${content?.contentContent}`}>Please follow this link to complete a survey!</a></h4>
+                                <h4><a href={`https://${content?.contentContent}`} target="_blank" rel="noopener noreferrer">Please follow this link to complete a survey!</a></h4>
                             </Card> :
                             <Card id='videoCard'>
                                 <video width="320" height="240" controls >

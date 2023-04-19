@@ -35,10 +35,6 @@ function AddContentForm({ selectedId, selectedUnitId }) {
         isRequired: false,
     });
 
-    useEffect(() => {
-        dispatch({ type: "GET_UNIT_LESSON_CONTENT" });
-      }, []);
-
     function handleAddContent(event) {
         event.preventDefault()
         {

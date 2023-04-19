@@ -55,6 +55,7 @@ router.get("/:id", rejectUnauthenticated, async (req, res) => {
 ;`;
 
     const params = [req.params.id];
+    console.log('params in unit router', params)
     const unitResult = await pool.query(queryText, params);
     units = unitResult.rows;
     res.send(units);

@@ -33,10 +33,6 @@ function UnitPage() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const [selectedId, setSelectedId] = useState(0);
-    const [selectedUnitId, setSelectedUnitId] = useState(0);
-    const [selectedContentId, setSelectedContentId] = useState(0);
-
     const isLoading = useSelector((store) => store.loadingReducer);
 
     const [lessonToEdit, setLessonToEdit] = useState({ id: 0, lessonName: '', lessonDescription: '' });
@@ -108,7 +104,7 @@ function UnitPage() {
                 type: "SWAP_LESSONS",
                 payload: { lessonId: otherLessonToSwap.lessonId, order: lessonToSwap.order, unitId: otherLessonToSwap.unitId }
             });
-        } 
+        }
     };
 
     const swapContent = (otherContentToSwap) => {
@@ -143,7 +139,7 @@ function UnitPage() {
             {isLoading ?
                 <LoadingBar />
                 :
-                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} selectedContentId={selectedContentId} />
+                <AddContentForm  />
             }
 
             {unit.map((lesson, i) => {
@@ -225,10 +221,10 @@ function UnitPage() {
                                                     </> : 
                                                     <></>
                                                     }  */}
-            
+
                                                     {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
-                                                            <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom:'auto', }} />
+                                                            <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom: 'auto', }} />
                                                         </IconButton> : <></>}
 
                                                     {/* content shown on screen */}
@@ -308,9 +304,7 @@ function UnitPage() {
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
                                             })
-                                            setSelectedContentId(lesson.contentId);
-                                            setSelectedId(lesson.lessonId);
-                                            setSelectedUnitId(lesson.unitId);
+
                                         }}>
                                             Add Content to {lesson.lessonName}
                                         </Button>
@@ -354,7 +348,7 @@ function UnitPage() {
 
             <div id="addLessonParent">
 
-                    {user.access === 3 ?
+                {user.access === 3 ?
                     <Button
                         id='addLesson'
                         onClick={() => {
