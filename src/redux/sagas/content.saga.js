@@ -35,7 +35,7 @@ function* addContentWithUpload(action) {
         'content-type': 'multipart/form-data',
       },
     });
-    yield put({type: 'SET_CONTENT_VIEW', payload: action.payload });
+    // yield put({type: 'SET_CONTENT_VIEW', payload: action.payload });
     console.log('action.payload', action.payload)
     yield put({ type: 'SET_LOADING_FALSE' });
     yield put({ type: 'GET_UNIT', payload: action.payload.selectedUnitId });
