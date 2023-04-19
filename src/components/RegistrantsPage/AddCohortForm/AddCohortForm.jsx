@@ -13,25 +13,23 @@ function AddCohortForm() {
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [ cohort, setCohort ] = useState("")
+  const [cohort, setCohort] = useState("");
 
   //Variable to show whether the add cohort form is showing
   const showForm = useSelector(
     (store) => store.conditionalForms?.showCohortForm
   );
 
-  async function addCohort () {
-    console.log(cohort)
-    try { 
-      axios.post("/api/cohort", {cohort})
+  async function addCohort() {
+    try {
+      axios.post("/api/cohort", { cohort });
       dispatch({
         type: "SET_SHOW_ADD_COHORT",
         payload: false,
       });
-      setCohort("")
-    }
-    catch (error) {
-      console.log("Error posting Cohort:", error)
+      setCohort("");
+    } catch (error) {
+      console.log("Error posting Cohort:", error);
     }
   }
 
@@ -59,23 +57,21 @@ function AddCohortForm() {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-            <TextField 
-            autoFocus 
+          <TextField
+            autoFocus
             margin="dense"
             fullWidth
             type="text"
             label="Cohort Name"
             value={cohort}
             onChange={(event) => setCohort(event.target.value)}
-            />
-          <Button variant="outlined" onClick={addCohort}>Add Cohort</Button>
+          />
+          <Button variant="outlined" onClick={addCohort}>
+            Add Cohort
+          </Button>
         </DialogContent>
       </Dialog>
     </Box>
   );
 }
 export default AddCohortForm;
-
-
-
-
