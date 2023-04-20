@@ -65,8 +65,8 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
       req.body.contentToSend.description,
       req.body.contentToSend.isSurvey,
       req.body.contentToSend.isRequired,
-      req.body.selectedId,
-    ];
+      req.body.lessonId
+    ]
 
     await connect.query(contentSqlQuery, sqlParams);
     await connect.query('COMMIT');

@@ -25,15 +25,12 @@ function ContentPage() {
     const userContentId = userContent?.id;
     const isComplete = userContent?.isComplete;
 
-    console.log('content', content);
-
     //on page load get the content title, info, video/survey and the user-specific tracker for complete, comments, media
     useEffect(() => {
         dispatch({
             type: 'GET_UNIT_LESSON_CONTENT',
             payload: { unitId: Number(unitId), lessonId: Number(lessonId), contentId: Number(contentId) }
         });
-        console.log('Fetch params contentpage', userId, contentId);
         dispatch({
             type: 'FETCH_USER_CONTENT',
             payload: { userId, contentId }
@@ -64,7 +61,6 @@ function ContentPage() {
 
     //toggle the isComplete column in users_content table with the checkmark
     const toggleComplete = (bool) => {
-        console.log(bool);
         dispatch({
             type: 'TOGGLE_COMPLETE',
             payload: { userContentId, bool, userId, contentId }
@@ -84,7 +80,6 @@ function ContentPage() {
 
     const editComment = (commentToEdit) => {
         let newComment = commentToEdit.comment;
-        console.log('comment', newComment);
         dispatch({
             type: 'POST_COMMENT',
             payload: { userContentId, newComment, userId, contentId }
@@ -130,7 +125,7 @@ function ContentPage() {
 
                 {content?.contentIsRequired ?
 
-                    <Typography>
+                    <Typography style={{ float: "right", paddingLeft: "2%" }}>
                         Check the box when you've finished the lesson! <Checkbox checked={isComplete ? true : false}
                             onClick={() => toggleComplete(!isComplete)} onChange={handleCompleteToggle}
                         />
