@@ -58,8 +58,9 @@ function ContentPage() {
     //Edit comment
     const [commentToEdit, setCommentToEdit] = useState({ id: -1, comment: '' });
 
-    const editComment = () => {
+    const editComment = (commentToEdit) => {
         let comment = commentToEdit.comment;
+        console.log('comment', comment);
         dispatch({
             type: 'POST_COMMENT',
             payload: { comment, userId, contentId }
@@ -165,7 +166,7 @@ function ContentPage() {
                             }}>Delete</Button>
                         </> :
                         <>
-                            <IconButton onClick={() => editComment()}>
+                            <IconButton onClick={() => editComment(commentToEdit)}>
                                 <DoneIcon />
                             </IconButton>
                             <IconButton onClick={cancelEdit} >
