@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Checkbox, Typography, Breadcrumbs } from "@mui/material";
+import { Card, Checkbox, Typography, Breadcrumbs, Button } from "@mui/material";
 import CommentBox from "./CommentBox/CommmentBox";
 
 
@@ -52,6 +52,22 @@ function ContentPage() {
         setIsCompleteControl(event.target.isCompleteControl);
     };
 
+    //Edit comment
+    const [commentToEdit, setCommentToEdit] = useState({ id: -1, comment: '' });
+
+    const editComment = (commentToEdit) => {
+        console.log(commentToEdit);
+        dispatch({
+            type: 'POST_COMMENT',
+            payload: { commentToEdit }
+        });
+    };
+
+    const deleteComment = (comment) => {
+        console.log(comment);
+    };
+
+
     return (
         <>
             <span>
@@ -62,8 +78,7 @@ function ContentPage() {
                     <Typography color="text.primary">{content?.lessonName}</Typography>
                     <Typography color="text.primary">{content?.contentTitle}</Typography>
                 </Breadcrumbs >
-            </span>
-            <span>
+
                 {content?.contentIsRequired ?
 
                     <Typography>
@@ -96,14 +111,38 @@ function ContentPage() {
             }
             <h2 style={{ paddingLeft: "2%" }}>Student Comments and Media Upload</h2>
             {userContent?.comment ?
-                <Card>
+                <Card id="renderCommentCard">
                     <span>{user.firstName} {user.lastName}</span>
                     <p>{userContent.comment}</p>
-                </Card> :
-                <></>
-            }
-            <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
 
+
+                    {userContentId !== commentToEdit.id ?
+                        <>
+                            <Button sx={{ backgroundColor: 'teal' }}
+                                className="studentCommentButton"
+                                onClick={() => setCommentToEdit({ id: userContentId, comment: comment })}
+                            >Edit Comment</Button>
+                            <Button sx={{ backgroundColor: 'orange' }} className="studentCommentButton" onClick={() => {
+                                deleteComment(userContent.comment);
+                            }}>Cancel</Button>
+                        </> :
+                        <>
+                            <IconButton onClick={() => editComment({ commentToEdit })}>
+                                <DoneIcon />
+                            </IconButton>
+                            <IconButton onClick={cancelEdit} >
+                                <ClearIcon />
+                            </IconButton>
+                        </>
+
+                    }
+
+                </Card> :
+                <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
+
+            }
+
+            <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
 
         </>
     );

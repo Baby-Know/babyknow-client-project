@@ -67,7 +67,7 @@ router.put('/', rejectUnauthenticated, async (req, res) => {
 });
 
 //PUT to submit user comment
-router.put('/', rejectUnauthenticated, async (req, res) => {
+router.put('/newComment', rejectUnauthenticated, async (req, res) => {
   try {
     const queryText = `
         UPDATE "users_content"
@@ -76,7 +76,7 @@ router.put('/', rejectUnauthenticated, async (req, res) => {
         `;
     const queryParams = [req.body.userContentId, req.body.newComment];
     await pool.query(queryText, queryParams);
-    res.sendStatus(500);
+    res.sendStatus(200);
   } catch (error) {
     res.sendStatus(500);
     console.log('Error in submitting new student comment', error);

@@ -16,9 +16,10 @@ function* fetchUserContent(action) {
 
 function* postUserComment(action) {
   try {
-    let response = yield axios.put('/api/user-content', action.payload);
-    console.log(response.data);
-    yield put({ type: 'FETCH_USER_CONTENT', payload: response.data });
+    console.log('action.payload', action.payload);
+
+    yield axios.put(`/api/user-content/newComment`, action.payload);
+    yield put({ type: 'FETCH_USER_CONTENT', payload: action.payload });
   } catch (error) {
     console.error('Error in submitting user comment saga', error);
   }

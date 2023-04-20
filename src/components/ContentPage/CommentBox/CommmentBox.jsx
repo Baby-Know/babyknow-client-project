@@ -1,6 +1,10 @@
 import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Card, TextareaAutosize } from "@mui/material";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+
 
 
 const CommentBox = ({ userId, contentId, userContentId }) => {
@@ -15,6 +19,24 @@ const CommentBox = ({ userId, contentId, userContentId }) => {
         dispatch({
             type: 'POST_COMMENT',
             payload: { userContentId, newComment, userId, contentId }
+        });
+        setNewComment('');
+    };
+
+    const handleCancel = () => {
+        const swal = withReactContent(Swal);
+        Swal.fire({
+            title: "Are you sure you want to cancel your comment?",
+            text: "Your comment will be deleted and lost forever.",
+            confirmButtonText: "Delete",
+            confirmButtonColor: "#D21304",
+            cancelButtonColor: "#263549",
+            showConfirmButton: true,
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setNewComment('');
+            }
         });
     };
 
@@ -31,14 +53,13 @@ const CommentBox = ({ userId, contentId, userContentId }) => {
                     onChange={(event) => setNewComment(event.target.value)}>
                 </TextareaAutosize>
                 <div>
-                    <Button sx={{ backgroundColor: 'teal' }} className="studentCommentButton" onClick={() => {
-                        console.log(newComment, userId, contentId);
-                        dispatch({
-                            type: 'POST_COMMENT',
-                            payload: userContentId, newComment, userId, contentId
-                        });
-                    }}> Submit</Button>
-                    <Button sx={{ backgroundColor: 'orange' }} className="studentCommentButton">Cancel</Button>
+                    <Button sx={{ backgroundColor: 'teal' }} className="studentCommentButton" disabled={newComment.length < 1}
+                        onClick={() => {
+                            submitComment();
+                        }}> Submit</Button>
+                    <Button sx={{ backgroundColor: 'orange' }} className="studentCommentButton" onClick={() => {
+                        handleCancel();
+                    }}>Cancel</Button>
                 </div>
             </Card >
         </div >
