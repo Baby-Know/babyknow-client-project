@@ -28,17 +28,15 @@ function* addContentWithUpload(action) {
     data.append('description', action.payload.contentToSend.description);
     data.append('isSurvey', action.payload.contentToSend.isSurvey);
     data.append('isRequired', action.payload.contentToSend.isRequired);
-    data.append('lessons_id', action.payload.selectedId);
+    data.append('lessons_id', action.payload.lessonId);
 
     yield axios.post('/api/content/file', data, {
       headers: {
         'content-type': 'multipart/form-data',
       },
     });
-    // yield put({type: 'SET_CONTENT_VIEW', payload: action.payload });
-    console.log('action.payload', action.payload)
     yield put({ type: 'SET_LOADING_FALSE' });
-    yield put({ type: 'GET_UNIT', payload: action.payload.selectedUnitId });
+    yield put({ type: 'GET_UNIT', payload: action.payload.unitId });
   } catch (error) {
     console.log('error uploading video', error);
     yield put({ type: 'SET_LOADING_FALSE' });
