@@ -5,11 +5,12 @@ import withReactContent from 'sweetalert2-react-content';
 
 // survey upload generator function
 function* addContent(action) {
+  console.log('action.payload', action.payload)
   try {
     yield put({ type: 'SET_LOADING_TRUE' });
     yield axios.post('/api/content', action.payload);
     yield put({ type: 'SET_LOADING_FALSE' });
-    yield put({ type: 'GET_UNIT', payload: action.payload.selectedUnitId });
+    yield put({ type: 'GET_UNIT', payload: action.payload.unitId });
   } catch (error) {
     console.error('error posting content', error);
     yield put({ type: 'SET_LOADING_FALSE' });
