@@ -76,4 +76,23 @@ router.delete(
   }
 );
 
+router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const cohortId = req.params.id;
+    const cohortName = req.body.name;
+
+    const queryText = `
+      UPDATE "cohorts"
+      SET "name" = $1
+      WHERE "id" = $2
+      `;
+
+    await pool.query(queryText, [cohortName, cohortId]);
+    res.sendStatus(204);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log("Error updating cohort :", error);
+  }
+});
+
 module.exports = router;

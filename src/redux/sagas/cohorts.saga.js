@@ -32,9 +32,19 @@ function* deleteCohort(action) {
   }
 }
 
+function* updateCohort(action) {
+  try {
+    yield axios.put(`/api/cohort/${action.payload.id}`, action.payload);
+    yield put({ type: "FETCH_COHORTS" });
+  } catch (error) {
+    console.error("Error getting unit", error);
+  }
+}
+
 function* cohortsSaga() {
   yield takeLatest("FETCH_COHORTS", fetchCohorts);
   yield takeLatest("DELETE_COHORT", deleteCohort);
+  yield takeLatest("UPDATE_COHORT", updateCohort);
 }
 
 export default cohortsSaga;
