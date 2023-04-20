@@ -99,32 +99,6 @@ body,
   border-radius: 4px;
 }
 
-#breadCrumbs {
-  margin-left: 3%;
-}
-
-#videoCard {
-  margin: auto;
-  width: fit-content;
-  height: fit-content;
-  text-align: center;
-  background-color: #263549;
-  color: white;
-  padding: 16px;
-}
-
-#surveyCard {
-  margin: auto;
-  width: fit-content;
-  text-align: center;
-  font-weight:bolder;
-  border-radius: 4px;
-  background-color: #dde9f8;
-  color: #263549;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
 .drag {
   text-align: center;
   width: 200px; height: 200px;
@@ -170,7 +144,58 @@ body,
   font-size: xx-large;
 }
 
-/* my path page */
+/* Content Display Page */
+#breadCrumbs {
+  margin-left: 3%;
+}
+
+#videoCard {
+  margin: auto;
+  width: fit-content;
+  height: fit-content;
+  text-align: center;
+  background-color: #263549;
+  color: white;
+  padding: 16px;
+}
+
+#surveyCard {
+  margin: auto;
+  width: fit-content;
+  text-align: center;
+  font-weight:bolder;
+  border-radius: 16px;
+  background-color: #dde9f8;
+  color: #263549;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+#textFieldCard {
+  width: fit-content;
+  margin: 3%;
+  background-color: #263549;
+  padding: 16px;
+}
+
+#textFieldInput {
+  padding: 2%;
+}
+
+.studentCommentButton {
+  float: right;
+}
+
+#renderCommentCard {
+  width: fit-content;
+  height: fit-content;
+  margin: 5%;
+  padding: 16px;
+}
+
+/* End Content Display Page */
+
+/* my teacher page */
 #pathPage {
   margin: auto;
   margin-top: 4%;

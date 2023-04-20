@@ -213,16 +213,17 @@ function UnitPage() {
                                                     onDrop={() => swapContent({ contentId: id, order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId })}
                                                 >
 
-                                                    {/* is required? is complete?  */}
+                                                    {/* is required? */}
                                                     {/* {lesson.contentIsRequired[index] ?
-                                                    <>
-                                                        {lesson.contentIsComplete[index] ? 
-                                                        <div id="completed">✓</div> :
-                                                        <div id="incomplete"></div>
-                                                        } 
-                                                    </> : 
-                                                    <></>
-                                                    }  */}
+                                                        <> */}
+                                                    {/* is complete? */}
+                                                    {/* {lesson.contentIsComplete[index] ?
+                                                                <div id="completed">✓</div> :
+                                                                <div id="incomplete"></div>
+                                                            }
+                                                        </> :
+                                                        <></>
+                                                    } */}
 
                                                     {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
@@ -294,7 +295,7 @@ function UnitPage() {
                                                 </div>
                                             }
                                         </div>
-                                    )
+                                    );
                                 })}
 
                                 {/* button to add content row */}
@@ -305,9 +306,9 @@ function UnitPage() {
                                             dispatch({
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
-                                            })
-                                            setUnitId(lesson.unitId)
-                                            setLessonId(lesson.lessonId)
+                                            });
+                                            setUnitId(lesson.unitId);
+                                            setLessonId(lesson.lessonId);
 
                                         }}>
                                             Add Content to {lesson.lessonName}
