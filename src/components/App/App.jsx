@@ -26,6 +26,8 @@ import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
 import MyPathPage from "../MyPages/MyTeacherPage";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
 import Messages from '../Messages/Messages';
+import OverviewPage from "../OverviewPage/OverviewPage";
+
 
 function App() {
   //giving app access to theme and color mode
@@ -76,6 +78,13 @@ function App() {
                   path="/unit/:unitId/lesson/:lessonId/content/:contentId"
                 >
                   <ContentPage />
+                </ProtectedRoute>
+
+                <ProtectedRoute
+                  exact
+                  path="/overview/:studentId"
+                >
+                  <OverviewPage />
                 </ProtectedRoute>
 
 

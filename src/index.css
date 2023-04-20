@@ -37,7 +37,7 @@ body,
   margin: auto;
   width: 30%;
   text-align: center;
-  border-radius: 16px;
+  border-radius: 4px;
   background-color: #263549;
   color: white;
   padding: 16px;
@@ -52,7 +52,7 @@ body,
 
 #accordion {
   border: 2px solid #276184;
-  border-radius: 4px;
+  border-radius: 2px;
   margin: 4px auto;
   width: 60%;
   color: #3179a5;
@@ -62,7 +62,7 @@ body,
 #content {
   background-color: #276184;
   color: white; 
-  border-radius: 4px;
+  border-radius: 2px;
   margin: auto;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -118,7 +118,7 @@ body,
   width: fit-content;
   text-align: center;
   font-weight:bolder;
-  border-radius: 16px;
+  border-radius: 4px;
   background-color: #dde9f8;
   color: #263549;
   padding: 16px;
@@ -170,14 +170,14 @@ body,
   font-size: xx-large;
 }
 
-/* my teacher page */
+/* my path page */
 #pathPage {
   margin: auto;
   margin-top: 4%;
   width: 90%;
   background-color: #263549;
   border: 4px solid #276184;
-  border-radius: 8px;
+  border-radius: 4px;
   color: white
 }
 
@@ -199,7 +199,7 @@ body,
 .pathContent {
   background-color: #2b3d53;
   border: 2px solid white;
-  border-radius: 16px;
+  border-radius: 4px;
   margin: 3%;
   width: 300px;
   padding-left: 2%;
@@ -207,3 +207,69 @@ body,
   font-size: large;
 }
 
+#pathProgress {
+  background-color: #2b3d53;
+  border: 2px solid white;
+  border-radius: 4px;
+  margin: 3%;
+  width: 666px;
+  padding-left: 2%;
+  padding-right: 2%;
+  padding-bottom: 6%;
+  text-align: center;
+}
+
+#unitProgress {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  text-align: center;
+}
+
+#chart {
+  border: 2px solid white;
+  width: 30%;
+  height: 0px
+}
+/* end of my path page */
+
+/* start of my students page */
+#myStudentsPage {
+  background-color: #263549;
+  border: 4px solid #276184;
+  color: white;
+  width: 90%;
+  margin: auto;
+  text-align: center;
+  border-radius: 4px;
+  margin-top: 4%;
+}
+
+#myStudentsTitle {
+  margin: auto;
+  text-align: center;
+  margin-top: 16px;
+  padding: 2%;
+  border-bottom: 2px solid white;
+  width: 50%;
+}
+
+#overviewPage {
+  margin: auto;
+  margin-top: 4%;
+  width: 50%;
+  background-color: #263549;
+  border: 4px solid #276184;
+  border-radius: 4px;
+  color: white;
+  text-align: center;
+}
+
+#studentListRow {
+  display: flex;
+  justify-content: space-around;
+  width: 30%;
+  margin: auto;
+  padding: 16px;
+  border-top: 2px solid white;
+}
