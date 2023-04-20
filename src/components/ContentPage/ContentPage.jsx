@@ -1,14 +1,16 @@
 import { useEffect } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link,  useHistory} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Checkbox, Typography, Breadcrumbs } from "@mui/material";
+import { Card, Checkbox, Button, Typography, Breadcrumbs } from "@mui/material";
 
 
 function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
-    console.log('unitId', unitId, "lessonId", lessonId, "contentId", contentId)
     const dispatch = useDispatch();
+    const history = useHistory();
+
     const content = useSelector(store => store.contentReducer);
+
 
     const user = useSelector(store => store.user);
     const userId = user.id;
@@ -19,9 +21,32 @@ function ContentPage() {
             type: 'GET_UNIT_LESSON_CONTENT',
             payload: { unitId: Number(unitId), lessonId: Number(lessonId), contentId: Number(contentId) }
         });
-    }, []);
+    }, [unitId, lessonId, contentId]);
 
-console.log('content', content)
+    const renderCourseContent = () => {
+        if (content.contentIsSurvey) {
+            return (
+                <Card id='surveyCard'>
+                    <h4><a href={`https://${content?.contentContent}`} target="_blank" rel="noopener noreferrer">Please follow this link to complete a survey!</a></h4>
+                </Card>
+            )
+        } else if (content.contentContent) {
+            return (
+                <Card id='videoCard'>
+                    <video width="400" height="300" controls >
+                        <source src={`${content?.contentContent}`} type="video/mp4"></source>
+                    </video>
+                </Card>
+            )
+        } else {
+            return (
+                <p>LOADING</p>
+            )
+        }
+
+
+    }
+    
     return (
         <>
             <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
@@ -48,16 +73,13 @@ console.log('content', content)
                     <></>
                 }
             </Card>
-                    {content?.contentIsSurvey ?
-                            <Card id='surveyCard'>
-                                <h4><a href={`https://${content?.contentContent}`} target="_blank" rel="noopener noreferrer">Please follow this link to complete a survey!</a></h4>
-                            </Card> :
-                            <Card id='videoCard'>
-                                <video width="400" height="300" controls >
-                                    <source src={`${content?.contentContent}`} type="video/mp4"></source>
-                                </video>
-                            </Card>
-            }
+            {renderCourseContent()}
+
+            <Button type="button"
+            className="btn btn_asLink"
+            onClick={() => history.push(`/unit/${unitId}`)}>
+                <Typography variant="body1">Back</Typography>
+            </Button>
         </>
     );
 
