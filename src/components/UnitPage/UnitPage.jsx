@@ -23,6 +23,7 @@ import AddContentForm from './AddContentForm/AddContentForm';
 import LoadingBar from '../LoadingBar/LoadingBar';
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
+import accessLevel from "../../config";
 
 function UnitPage() {
     const { id } = useParams();
