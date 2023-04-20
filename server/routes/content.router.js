@@ -51,7 +51,6 @@ router.get('/:id', async (req, res) => {
 
 // posting content from content form - surveys
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
-  console.log('req.body', req.body)
   const connect = await pool.connect()
   try {
     await connect.query('BEGIN')
