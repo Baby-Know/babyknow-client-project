@@ -40,4 +40,40 @@ router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   }
 });
 
+router.delete(
+  "/:id",
+  rejectUnauthenticated,
+  rejectNonAdmin,
+  async (req, res) => {
+    const connection = await pool.connect();
+
+    try {
+      await connection.query("BEGIN");
+      //First we have to find everyone in this cohort and swap them to
+      //Baby Know
+      const usersCohortsQueryText = `
+      UPDATE "users_cohorts"
+      SET "cohorts_id" = 1
+      WHERE "cohorts_id" = $1
+      `;
+
+      await connection.query(usersCohortsQueryText, [req.params.id]);
+
+      const cohortsQueryText = `
+      DELETE FROM "cohorts"
+      WHERE "id" = $1
+      `;
+
+      await connection.query(cohortsQueryText, [req.params.id]);
+      res.sendStatus(204);
+      await connection.query("COMMIT");
+    } catch (error) {
+      res.sendStatus(500);
+      console.log("Error deleting Cohort :", error);
+    } finally {
+      connection.release();
+    }
+  }
+);
+
 module.exports = router;

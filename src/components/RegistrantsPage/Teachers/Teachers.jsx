@@ -271,7 +271,7 @@ const Teachers = () => {
     { field: "id", headerName: "ID", hide: true, filterable: false },
   ];
   return (
-    <Box>
+    <Box display="flex" justifyContent="space-between">
       <Box
         //All styling on the table and box holding it
         mt="15px"
