@@ -49,9 +49,9 @@ router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
       VALUES ($1, $2)
     `;
 
-    //If the newRegistrant is a student then their default teacher is BabyKnow
-    req.body.access === 1 &&
-      (await connection.query(usersCohortsQueryText, [1, req.params.id]));
+    //All new registrants default to BabyKnow
+    await connection.query(usersCohortsQueryText, [1, req.params.id]);
+
     await connection.query("COMMIT");
     res.sendStatus(200);
   } catch (error) {
