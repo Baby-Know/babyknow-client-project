@@ -16,7 +16,7 @@ router.get('/:userId/:contentId', rejectUnauthenticated, async (req, res) => {
     `;
     const queryParams = [req.params.userId, req.params.contentId];
     const queryResult = await pool.query(queryText, queryParams);
-    userContent = queryResult.rows;
+    userContent = queryResult.rows[0];
     console.log('userContent', userContent);
     res.send(userContent);
   } catch (error) {
@@ -69,6 +69,7 @@ router.put('/', rejectUnauthenticated, async (req, res) => {
 //PUT to submit user comment
 router.put('/newComment', rejectUnauthenticated, async (req, res) => {
   try {
+    console.log('req.body', req.body);
     const queryText = `
         UPDATE "users_content"
         SET "comment" = $2

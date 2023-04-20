@@ -21,8 +21,7 @@ function ContentPage() {
     const user = useSelector(store => store.user);
     const userId = user.id;
 
-    const userContentreducer = useSelector(store => store.userContentReducer);
-    const userContent = userContentreducer[0];
+    const userContent = useSelector(store => store.userContentReducer);
     const userContentId = userContent?.id;
     const isComplete = userContent?.isComplete;
 
@@ -61,63 +60,62 @@ function ContentPage() {
                 <p>LOADING</p>
             );
         }
-
-        //toggle the isComplete column in users_content table with the checkmark
-        const toggleComplete = (bool) => {
-            console.log(bool);
-            dispatch({
-                type: 'TOGGLE_COMPLETE',
-                payload: { userContentId, bool, userId, contentId }
-            });
-        };
-        console.log('userContent', userContent);
-
-        //handling the checkbox toggling
-        const [isCompleteControl, setIsCompleteControl] = useState(isComplete);
-
-        const handleCompleteToggle = (event) => {
-            setIsCompleteControl(event.target.isCompleteControl);
-        };
-
-        //Edit comment
-        const [commentToEdit, setCommentToEdit] = useState({ id: -1, comment: '' });
-
-        const editComment = (commentToEdit) => {
-            let comment = commentToEdit.comment;
-            console.log('comment', comment);
-            dispatch({
-                type: 'POST_COMMENT',
-                payload: { comment, userId, contentId }
-            });
-            setCommentToEdit({ id: -1, comment: '' });
-        };
-
-        const deleteComment = () => {
-            const swal = withReactContent(Swal);
-            Swal.fire({
-                title: "Are you sure you want to delete your comment?",
-                text: "Your comment will be deleted and lost forever.",
-                confirmButtonText: "Delete",
-                confirmButtonColor: "#D21304",
-                cancelButtonColor: "#263549",
-                showConfirmButton: true,
-                showCancelButton: true,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    dispatch({
-                        type: 'DELETE_STUDENT_COMMENT',
-                        payload: { userContentId, userId, contentId }
-                    });
-                }
-            });
-        };
-
-        const cancelEdit = () => {
-            setCommentToEdit({ id: -1, comment: '' });
-        };
-
-
     };
+
+    //toggle the isComplete column in users_content table with the checkmark
+    const toggleComplete = (bool) => {
+        console.log(bool);
+        dispatch({
+            type: 'TOGGLE_COMPLETE',
+            payload: { userContentId, bool, userId, contentId }
+        });
+    };
+    console.log('userContent', userContent);
+
+    //handling the checkbox toggling
+    const [isCompleteControl, setIsCompleteControl] = useState(isComplete);
+
+    const handleCompleteToggle = (event) => {
+        setIsCompleteControl(event.target.isCompleteControl);
+    };
+
+    //Edit comment
+    const [commentToEdit, setCommentToEdit] = useState({ id: -1, comment: '' });
+
+    const editComment = (commentToEdit) => {
+        let newComment = commentToEdit.comment;
+        console.log('comment', newComment);
+        dispatch({
+            type: 'POST_COMMENT',
+            payload: { userContentId, newComment, userId, contentId }
+        });
+        setCommentToEdit({ id: -1, comment: '' });
+    };
+
+    const deleteComment = () => {
+        const swal = withReactContent(Swal);
+        Swal.fire({
+            title: "Are you sure you want to delete your comment?",
+            text: "Your comment will be deleted and lost forever.",
+            confirmButtonText: "Delete",
+            confirmButtonColor: "#D21304",
+            cancelButtonColor: "#263549",
+            showConfirmButton: true,
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch({
+                    type: 'DELETE_STUDENT_COMMENT',
+                    payload: { userContentId, userId, contentId }
+                });
+            }
+        });
+    };
+
+    const cancelEdit = () => {
+        setCommentToEdit({ id: -1, comment: '' });
+    };
+
 
     return (
         <>
@@ -174,6 +172,7 @@ function ContentPage() {
                             </TextareaAutosize>
                         </>
                     }
+
                     {userContentId !== commentToEdit.id ?
                         <>
                             <Button sx={{ backgroundColor: 'teal' }}
