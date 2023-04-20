@@ -20,7 +20,6 @@ function* addContent(action) {
 function* addContentWithUpload(action) {
   try {
     yield put({ type: 'SET_LOADING_TRUE' });
-    console.log('action.payload', action.payload)
     const newFile = action.payload.contentToSend.content;
     const data = new FormData(); // IMPORTANT STEP! declare FormData
     data.append('file', newFile);
@@ -46,7 +45,6 @@ function* addContentWithUpload(action) {
 
 // get content with id
 function* getUnitLessonContent(action) {
-  console.log('action.payload in the get', action.payload)
   try {
     let response = yield axios.get(
       `/api/content/${action.payload.unitId}/${action.payload.lessonId}/${action.payload.contentId}`

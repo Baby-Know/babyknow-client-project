@@ -42,14 +42,13 @@ function UnitPage() {
     const [swappingContent, setSwappingContent] = useState(false);
     const [draggable, setDraggable] = useState(true);
     const [unitId, setUnitId] = useState(0);
-    const [lessonId, setLessonId] =useState(0);
+    const [lessonId, setLessonId] = useState(0);
 
     useEffect(() => {
         dispatch({
             type: "GET_UNIT",
             payload: id
         });
-        console.log('id', id)
     }, []);
 
     const selectContent = (unitId, lessonId, contentId) => {
@@ -142,7 +141,7 @@ function UnitPage() {
             {isLoading ?
                 <LoadingBar />
                 :
-                <AddContentForm  unitId={unitId} lessonId={lessonId}/>
+                <AddContentForm unitId={unitId} lessonId={lessonId} />
             }
 
             {unit.map((lesson, i) => {
@@ -366,6 +365,12 @@ function UnitPage() {
                         Add Lesson
                     </Button> : <></>}
             </div>
+
+            <Button type="button"
+                className="btn btn_asLink"
+                onClick={() => history.push(`/course`)}>
+                <Typography variant="body1">Back</Typography>
+            </Button>
 
 
         </Box>
