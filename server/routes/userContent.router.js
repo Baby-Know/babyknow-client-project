@@ -83,4 +83,21 @@ router.put('/newComment', rejectUnauthenticated, async (req, res) => {
   }
 });
 
+//DELETE student comment
+router.put('/comment', rejectUnauthenticated, async (req, res) => {
+  try {
+    const queryText = `
+    UPDATE "users_content"
+    SET "comment" = NULL
+    WHERE "id" =$1;
+    `;
+    const queryParams = [req.body.userContentId];
+    await pool.query(queryText, queryParams);
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log('Error in deleting student comment', error);
+  }
+});
+
 module.exports = router;

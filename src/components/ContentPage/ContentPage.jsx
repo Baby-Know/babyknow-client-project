@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Checkbox, Typography, Breadcrumbs, Button } from "@mui/material";
+import { Breadcrumbs, Button, Card, Checkbox, IconButton, TextareaAutosize, Typography } from "@mui/material";
+import DoneIcon from "@mui/icons-material/Done";
+import ClearIcon from "@mui/icons-material/Clear";
 import CommentBox from "./CommentBox/CommmentBox";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 
 function ContentPage() {
@@ -26,7 +30,7 @@ function ContentPage() {
     useEffect(() => {
         dispatch({
             type: 'GET_UNIT_LESSON_CONTENT',
-            payload: { unitId, lessonId, contentId }
+            payload: { unitId: Number(unitId), lessonId: Number(lessonId), contentId: Number(contentId) }
         });
         console.log('Fetch params contentpage', userId, contentId);
         dispatch({
@@ -55,16 +59,37 @@ function ContentPage() {
     //Edit comment
     const [commentToEdit, setCommentToEdit] = useState({ id: -1, comment: '' });
 
-    const editComment = (commentToEdit) => {
-        console.log(commentToEdit);
+    const editComment = () => {
+        let comment = commentToEdit.comment;
         dispatch({
             type: 'POST_COMMENT',
-            payload: { commentToEdit }
+            payload: { comment, userId, contentId }
+        });
+        setCommentToEdit({ id: -1, comment: '' });
+    };
+
+    const deleteComment = () => {
+        const swal = withReactContent(Swal);
+        Swal.fire({
+            title: "Are you sure you want to delete your comment?",
+            text: "Your comment will be deleted and lost forever.",
+            confirmButtonText: "Delete",
+            confirmButtonColor: "#D21304",
+            cancelButtonColor: "#263549",
+            showConfirmButton: true,
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch({
+                    type: 'DELETE_STUDENT_COMMENT',
+                    payload: { userContentId, userId, contentId }
+                });
+            }
         });
     };
 
-    const deleteComment = (comment) => {
-        console.log(comment);
+    const cancelEdit = () => {
+        setCommentToEdit({ id: -1, comment: '' });
     };
 
 
@@ -110,24 +135,38 @@ function ContentPage() {
                 </Card>
             }
             <h2 style={{ paddingLeft: "2%" }}>Student Comments and Media Upload</h2>
+
             {userContent?.comment ?
                 <Card id="renderCommentCard">
-                    <span>{user.firstName} {user.lastName}</span>
-                    <p>{userContent.comment}</p>
+                    {userContentId !== commentToEdit.id ?
+                        <>
 
-
+                            <span>{user.firstName} {user.lastName}</span>
+                            <p>{userContent.comment}</p>
+                        </> :
+                        <>
+                            <TextareaAutosize
+                                id="textFieldInput"
+                                minRows={3}
+                                style={{ width: 400 }}
+                                value={commentToEdit.comment}
+                                placeholder='Enter any questions or comments here!'
+                                onChange={(event) => setCommentToEdit({ ...commentToEdit, comment: event.target.value })}>
+                            </TextareaAutosize>
+                        </>
+                    }
                     {userContentId !== commentToEdit.id ?
                         <>
                             <Button sx={{ backgroundColor: 'teal' }}
                                 className="studentCommentButton"
-                                onClick={() => setCommentToEdit({ id: userContentId, comment: comment })}
-                            >Edit Comment</Button>
+                                onClick={() => setCommentToEdit({ id: userContentId, comment: userContent.comment })}
+                            >Edit</Button>
                             <Button sx={{ backgroundColor: 'orange' }} className="studentCommentButton" onClick={() => {
-                                deleteComment(userContent.comment);
-                            }}>Cancel</Button>
+                                deleteComment();
+                            }}>Delete</Button>
                         </> :
                         <>
-                            <IconButton onClick={() => editComment({ commentToEdit })}>
+                            <IconButton onClick={() => editComment()}>
                                 <DoneIcon />
                             </IconButton>
                             <IconButton onClick={cancelEdit} >
@@ -138,12 +177,10 @@ function ContentPage() {
                     }
 
                 </Card> :
+
+
                 <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
-
             }
-
-            <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
-
         </>
     );
 
