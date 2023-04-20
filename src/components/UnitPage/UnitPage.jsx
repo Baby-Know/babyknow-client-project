@@ -49,7 +49,6 @@ function UnitPage() {
             type: "GET_UNIT",
             payload: id
         });
-        console.log('id', id);
     }, []);
 
     const selectContent = (unitId, lessonId, contentId) => {
@@ -367,6 +366,12 @@ function UnitPage() {
                         Add Lesson
                     </Button> : <></>}
             </div>
+
+            <Button type="button"
+                className="btn btn_asLink"
+                onClick={() => history.push(`/course`)}>
+                <Typography variant="body1">Back</Typography>
+            </Button>
 
 
         </Box>

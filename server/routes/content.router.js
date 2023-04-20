@@ -53,13 +53,11 @@ router.get('/:id', async (req, res) => {
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   const connect = await pool.connect();
   try {
-    console.log('req.body', req.body);
     await connect.query('BEGIN');
     const contentSqlQuery = `
         INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired", "lessons_id")
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING "id";
-
         `;
     const sqlParams = [
       req.body.contentToSend.content,
@@ -94,7 +92,6 @@ router.post(
       await connect.query('BEGIN');
       const results = await s3Upload(req.file);
       console.log('AWS S3 upload success');
-      console.log('req.body', req.body);
 
       const contentSqlQuery = `
         INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired",  "lessons_id")
@@ -139,7 +136,6 @@ router.get(
         req.params.lessonId,
         req.params.contentId,
       ];
-      console.log("params", params)
       const unitResult = await pool.query(queryText, params);
       content = unitResult.rows[0];
       res.send(content);

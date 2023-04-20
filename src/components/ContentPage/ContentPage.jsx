@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link, useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Breadcrumbs, Button, Card, Checkbox, IconButton, TextareaAutosize, Typography } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
@@ -13,7 +13,10 @@ function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
     console.log('unitId', unitId, "lessonId", lessonId, "contentId", contentId);
     const dispatch = useDispatch();
+    const history = useHistory();
+
     const content = useSelector(store => store.contentReducer);
+
 
     const user = useSelector(store => store.user);
     const userId = user.id;
@@ -36,62 +39,85 @@ function ContentPage() {
             type: 'FETCH_USER_CONTENT',
             payload: { userId, contentId }
         });
-    }, []);
+    }, [unitId, lessonId, contentId]);
 
-    //toggle the isComplete column in users_content table with the checkmark
-    const toggleComplete = (bool) => {
-        console.log(bool);
-        dispatch({
-            type: 'TOGGLE_COMPLETE',
-            payload: { userContentId, bool, userId, contentId }
-        });
+    const renderCourseContent = () => {
+        if (content.contentIsSurvey) {
+            return (
+                <Card id='surveyCard'>
+                    <h4><a href={`https://${content?.contentContent}`} target="_blank" rel="noopener noreferrer">Please follow this link to complete a survey!</a></h4>
+                </Card>
+            );
+        } else if (content.contentContent) {
+            return (
+                <Card id='videoCard'>
+                    <video width="400" height="300" controls >
+                        <source src={`${content?.contentContent}`} type="video/mp4"></source>
+                    </video>
+                </Card>
+            );
+        } else {
+            return (
+                <p>LOADING</p>
+            );
+        }
+
+        //toggle the isComplete column in users_content table with the checkmark
+        const toggleComplete = (bool) => {
+            console.log(bool);
+            dispatch({
+                type: 'TOGGLE_COMPLETE',
+                payload: { userContentId, bool, userId, contentId }
+            });
+        };
+        console.log('userContent', userContent);
+
+        //handling the checkbox toggling
+        const [isCompleteControl, setIsCompleteControl] = useState(isComplete);
+
+        const handleCompleteToggle = (event) => {
+            setIsCompleteControl(event.target.isCompleteControl);
+        };
+
+        //Edit comment
+        const [commentToEdit, setCommentToEdit] = useState({ id: -1, comment: '' });
+
+        const editComment = (commentToEdit) => {
+            let comment = commentToEdit.comment;
+            console.log('comment', comment);
+            dispatch({
+                type: 'POST_COMMENT',
+                payload: { comment, userId, contentId }
+            });
+            setCommentToEdit({ id: -1, comment: '' });
+        };
+
+        const deleteComment = () => {
+            const swal = withReactContent(Swal);
+            Swal.fire({
+                title: "Are you sure you want to delete your comment?",
+                text: "Your comment will be deleted and lost forever.",
+                confirmButtonText: "Delete",
+                confirmButtonColor: "#D21304",
+                cancelButtonColor: "#263549",
+                showConfirmButton: true,
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    dispatch({
+                        type: 'DELETE_STUDENT_COMMENT',
+                        payload: { userContentId, userId, contentId }
+                    });
+                }
+            });
+        };
+
+        const cancelEdit = () => {
+            setCommentToEdit({ id: -1, comment: '' });
+        };
+
+
     };
-    console.log('userContent', userContent);
-
-    //handling the checkbox toggling
-    const [isCompleteControl, setIsCompleteControl] = useState(isComplete);
-
-    const handleCompleteToggle = (event) => {
-        setIsCompleteControl(event.target.isCompleteControl);
-    };
-
-    //Edit comment
-    const [commentToEdit, setCommentToEdit] = useState({ id: -1, comment: '' });
-
-    const editComment = (commentToEdit) => {
-        let comment = commentToEdit.comment;
-        console.log('comment', comment);
-        dispatch({
-            type: 'POST_COMMENT',
-            payload: { comment, userId, contentId }
-        });
-        setCommentToEdit({ id: -1, comment: '' });
-    };
-
-    const deleteComment = () => {
-        const swal = withReactContent(Swal);
-        Swal.fire({
-            title: "Are you sure you want to delete your comment?",
-            text: "Your comment will be deleted and lost forever.",
-            confirmButtonText: "Delete",
-            confirmButtonColor: "#D21304",
-            cancelButtonColor: "#263549",
-            showConfirmButton: true,
-            showCancelButton: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                dispatch({
-                    type: 'DELETE_STUDENT_COMMENT',
-                    payload: { userContentId, userId, contentId }
-                });
-            }
-        });
-    };
-
-    const cancelEdit = () => {
-        setCommentToEdit({ id: -1, comment: '' });
-    };
-
 
     return (
         <>
@@ -123,18 +149,11 @@ function ContentPage() {
                     </> :
                     <></>
                 }
-            </Card>
-            {content?.contentIsSurvey ?
-                <Card id='surveyCard'>
-                    <h4><a href={`https://${content.contentContent}`}>Please follow this link to complete a survey!</a></h4>
-                </Card> :
-                <Card id='videoCard'>
-                    <video width="320" height="240" controls >
-                        <source src={`${content?.contentContent}`} type="video/*"></source>
-                    </video>
-                </Card>
-            }
-            <h2 style={{ paddingLeft: "2%" }}>Student Comments and Media Upload</h2>
+            </Card>;
+
+            {renderCourseContent()}
+
+            <h2 style={{ paddingLeft: "2%" }}>Student Comments and Media Upload</h2>;
 
             {userContent?.comment ?
                 <Card id="renderCommentCard">
@@ -178,9 +197,15 @@ function ContentPage() {
 
                 </Card> :
 
-
                 <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
-            }
+            };
+
+
+            <Button type="button"
+                className="btn btn_asLink"
+                onClick={() => history.push(`/unit/${unitId}`)}>
+                <Typography variant="body1">Back</Typography>
+            </Button>
         </>
     );
 
