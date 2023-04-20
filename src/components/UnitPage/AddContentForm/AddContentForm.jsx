@@ -20,12 +20,13 @@ import Close from "@mui/icons-material/Close";
 import { useState } from "react";
 
 
-function AddContentForm({ selectedId, selectedUnitId }) {
+function AddContentForm({ lessonId, unitId }) {
     const dispatch = useDispatch();
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
     const showForm = useSelector((store) => store.conditionalForms?.showContentForm);
+
 
     const [contentToSend, setContentToSend] = useState({
         content: "",
@@ -42,18 +43,18 @@ function AddContentForm({ selectedId, selectedUnitId }) {
             contentToSend.isSurvey ? 
             dispatch({
                 type: "ADD_CONTENT",
-                payload: { contentToSend, selectedId, selectedUnitId },
+                payload: { contentToSend, lessonId, unitId },
                 callback: setContentToSend
             })
     :
             // dispatching video content
             dispatch({
                 type: "ADD_CONTENT_WITH_UPLOAD",
-                payload: { contentToSend, selectedId, selectedUnitId },
+                payload: { contentToSend, lessonId, unitId },
                 callback: setContentToSend
             })
         };   
-        dispatch({type: 'SELECTED_LESSON_ID', payload: selectedId})
+        // dispatch({type: 'SELECTED_LESSON_ID', payload: selectedLessonId})
     }
     
     return (

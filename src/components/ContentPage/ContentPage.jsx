@@ -54,7 +54,7 @@ function ContentPage() {
                             </Card> :
                             <Card id='videoCard'>
                                 <video width="320" height="240" controls >
-                                    <source src={`${content?.contentContent}`} type="video/mp4"></source>
+                                    <source src={`${content?.contentContent}`} type="video/*"></source>
                                 </video>
                             </Card>
             }
