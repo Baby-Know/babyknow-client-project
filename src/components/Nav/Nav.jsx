@@ -108,7 +108,10 @@ function Nav() {
             >
               <Typography variant="body1">About</Typography>
             </Button>
+<<<<<<< HEAD
             
+=======
+>>>>>>> 1ec702fdad8df1d0e31db044eb524ed4c58de6ad
 
             {/* logout */}
             <Button onClick={() => dispatch({ type: "LOGOUT" })}>
