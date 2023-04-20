@@ -21,7 +21,7 @@ function ContentPage() {
         });
     }, []);
 
-
+console.log('content', content)
     return (
         <>
             <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
@@ -53,8 +53,8 @@ function ContentPage() {
                                 <h4><a href={`https://${content?.contentContent}`} target="_blank" rel="noopener noreferrer">Please follow this link to complete a survey!</a></h4>
                             </Card> :
                             <Card id='videoCard'>
-                                <video width="320" height="240" controls >
-                                    <source src={`${content?.contentContent}`} type="video/*"></source>
+                                <video width="400" height="300" controls >
+                                    <source src={`${content?.contentContent}`} type="video/mp4"></source>
                                 </video>
                             </Card>
             }
