@@ -11,10 +11,9 @@ import withReactContent from "sweetalert2-react-content";
 
 function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
+    console.log('unitId', unitId, "lessonId", lessonId, "contentId", contentId);
     const dispatch = useDispatch();
-    const location = useLocation();
-    const contentArray = useSelector(store => store.contentReducer);
-    const content = contentArray[0];
+    const content = useSelector(store => store.contentReducer);
 
     const user = useSelector(store => store.user);
     const userId = user.id;
@@ -118,8 +117,8 @@ function ContentPage() {
             <Card id='contentHeader'>
                 {content ?
                     <>
-                        <h1>{content.contentTitle}</h1>
-                        <h2>{content.contentDescription}</h2>
+                        <h1>{content?.contentTitle}</h1>
+                        <h2>{content?.contentDescription}</h2>
                     </> :
                     <></>
                 }

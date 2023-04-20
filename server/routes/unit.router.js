@@ -38,7 +38,8 @@ router.get("/:id", rejectUnauthenticated, async (req, res) => {
         ARRAY_AGG("content".title ORDER BY "contentOrder" ASC) AS "contentTitle", 
         ARRAY_AGG("content".description ORDER BY "contentOrder" ASC) AS "contentDescription", 
         ARRAY_AGG("contentOrder" ORDER BY "contentOrder" ASC) AS "contentOrder", 
-        ARRAY_AGG("content".id ORDER BY "contentOrder" ASC) AS "contentId"
+        ARRAY_AGG("content".id ORDER BY "contentOrder" ASC) AS "contentId",
+        ARRAY_AGG("content"."isRequired" ORDER BY "contentOrder" ASC) AS "contentIsRequired"
     FROM "units"
     LEFT JOIN "lessons" ON "lessons".units_id = "units".id
     LEFT JOIN "content" ON "content".lessons_id = "lessons".id
@@ -55,6 +56,7 @@ router.get("/:id", rejectUnauthenticated, async (req, res) => {
 ;`;
 
     const params = [req.params.id];
+    console.log('params in unit router', params)
     const unitResult = await pool.query(queryText, params);
     units = unitResult.rows;
     res.send(units);

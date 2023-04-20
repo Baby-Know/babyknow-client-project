@@ -16,7 +16,7 @@ const middlewareList =
     // [sagaMiddleware, logger]:
     
     // no logger
-    [sagaMiddleware] :
+    [sagaMiddleware]:
 
 
     [sagaMiddleware];

@@ -220,11 +220,11 @@ router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
     await Promise.all(
       unitsToAdd.map(async (unit) => {
         const selectContentIdsText = `
-        SELECT "content".id AS "contentId" FROM "units"
-        JOIN "lessons" ON "lessons".units_id = "units".id
-        JOIN "content" ON "content".lessons_id = "lessons".id
-        WHERE "units".id = $1;
-        `;
+      SELECT "content".id AS "contentId" FROM "units"
+      JOIN "lessons" ON "lessons".units_id = "units".id
+      JOIN "content" ON "content".lessons_id = "lessons".id
+      WHERE "units".id = $1;
+      `;
         const selectContentIdsParams = [unit.id];
         const result = await pool.query(
           selectContentIdsText,
@@ -281,5 +281,65 @@ router.delete(
     // }
   }
 );
+
+// gets all students who share cohort with teacher id
+router.get("/:id", rejectUnauthenticated, async (req, res) => {
+    try {
+      const cohortQuery = `
+      SELECT "users_cohorts".cohorts_id FROM "users_cohorts"
+      WHERE "users_cohorts".user_id = $1;
+      `;
+
+      const cohortResults = await pool.query(cohortQuery, [req.params.id]);
+      const cohortId = cohortResults.rows[0]
+
+      const studentsQuery = `
+      SELECT "users".id, "users"."firstName", "users"."lastName", "users".email, "cohorts".name AS "cohort" FROM "users"
+      JOIN "users_cohorts" ON "users_cohorts".user_id = "users".id
+      JOIN "cohorts" ON "cohorts".id = "users_cohorts".cohorts_id
+      WHERE "users_cohorts".cohorts_id = $1 AND "users".access = 1;     
+      `
+
+      const results = await pool.query(studentsQuery, [cohortId.cohorts_id]);
+
+
+
+      res.send(results.rows);
+    } catch (error) {
+      console.log(`Error getting students :`, error);
+      res.sendStatus(500);
+    }
+  }
+);
+
+
+// updates student cohort to teachers cohort
+router.put("/", rejectUnauthenticated, async (req, res) => {
+  console.log(req.body)
+  try {
+    const cohortQuery = `
+    SELECT "users_cohorts".cohorts_id FROM "users_cohorts"
+    WHERE "users_cohorts".user_id = $1;
+    `;
+
+    const cohortResults = await pool.query(cohortQuery, [req.body.teacherId]);
+    const cohortId = cohortResults.rows[0].cohorts_id
+
+    const studentsQuery = ` 
+    UPDATE "users_cohorts"
+    SET "cohorts_id" = $1
+    WHERE "user_id" = $2; 
+    `
+
+    await pool.query(studentsQuery, [cohortId, req.body.studentId]);
+
+    res.sendStatus(201);
+  } catch (error) {
+    console.log(`Error updating student cohort :`, error);
+    res.sendStatus(500);
+  }
+}
+);
+
 
 module.exports = router;

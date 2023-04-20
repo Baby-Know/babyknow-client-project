@@ -25,7 +25,8 @@ import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
 import MyPathPage from "../MyPages/MyPath";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
-import Messages from "../Messages/Messages";
+import OverviewPage from "../OverviewPage/OverviewPage";
+
 
 function App() {
   //giving app access to theme and color mode
@@ -59,17 +60,20 @@ function App() {
                   <UnitPage />
                 </ProtectedRoute>
 
-                <ProtectedRoute exact path="/messages">
-                  {" "}
-                  <Messages />
-                </ProtectedRoute>
-
                 <ProtectedRoute
                   exact
                   path="/unit/:unitId/lesson/:lessonId/content/:contentId"
                 >
                   <ContentPage />
                 </ProtectedRoute>
+
+                <ProtectedRoute
+                  exact
+                  path="/overview/:studentId"
+                >
+                  <OverviewPage />
+                </ProtectedRoute>
+
 
                 <ProtectedRoute exact path="/registrants">
                   {user.access === 3 ? (

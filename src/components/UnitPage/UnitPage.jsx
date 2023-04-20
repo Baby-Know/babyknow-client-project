@@ -33,9 +33,6 @@ function UnitPage() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const [selectedId, setSelectedId] = useState(0);
-    const [selectedUnitId, setSelectedUnitId] = useState(0);
-
     const isLoading = useSelector((store) => store.loadingReducer);
 
     const [lessonToEdit, setLessonToEdit] = useState({ id: 0, lessonName: '', lessonDescription: '' });
@@ -44,12 +41,15 @@ function UnitPage() {
     const [contentToSwap, setContentToSwap] = useState({ contentId: 0, lessonId: 0, order: 0 });
     const [swappingContent, setSwappingContent] = useState(false);
     const [draggable, setDraggable] = useState(true);
+    const [unitId, setUnitId] = useState(0);
+    const [lessonId, setLessonId] = useState(0);
 
     useEffect(() => {
         dispatch({
             type: "GET_UNIT",
             payload: id
         });
+        console.log('id', id);
     }, []);
 
     const selectContent = (unitId, lessonId, contentId) => {
@@ -142,7 +142,7 @@ function UnitPage() {
             {isLoading ?
                 <LoadingBar />
                 :
-                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
+                <AddContentForm unitId={unitId} lessonId={lessonId} />
             }
 
             {unit.map((lesson, i) => {
@@ -308,9 +308,9 @@ function UnitPage() {
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
                                             });
+                                            setUnitId(lesson.unitId);
+                                            setLessonId(lesson.lessonId);
 
-                                            setSelectedId(lesson.lessonId);
-                                            setSelectedUnitId(lesson.unitId);
                                         }}>
                                             Add Content to {lesson.lessonName}
                                         </Button>

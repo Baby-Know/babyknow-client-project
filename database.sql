@@ -7,7 +7,6 @@
 );
 
 
-
 CREATE TABLE "users" (
 	"id" serial NOT NULL,
 	"email" varchar(255) NOT NULL UNIQUE,
@@ -30,8 +29,6 @@ CREATE TABLE "units" (
 ) WITH (
   OIDS=FALSE
 );
-
-
 
 CREATE TABLE "content" (
 	"id" serial NOT NULL,
@@ -100,6 +97,7 @@ CREATE TABLE "users_cohorts" (
 
 ALTER TABLE "users_content" ADD CONSTRAINT "users_content_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
 ALTER TABLE "users_content" ADD CONSTRAINT "users_content_fk1" FOREIGN KEY ("content_id") REFERENCES "content"("id");
+
 
 ALTER TABLE "lessons" ADD CONSTRAINT "lessons_fk0" FOREIGN KEY ("units_id") REFERENCES "units"("id") ON DELETE CASCADE;
 
