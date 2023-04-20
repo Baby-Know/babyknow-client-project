@@ -51,6 +51,7 @@ router.get('/:id', async (req, res) => {
 
 // posting content from content form - surveys
 router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  console.log('req.body', req.body)
   const connect = await pool.connect()
   try {
     await connect.query('BEGIN')
@@ -66,7 +67,7 @@ router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
       req.body.contentToSend.description,
       req.body.contentToSend.isSurvey,
       req.body.contentToSend.isRequired,
-      req.body.selectedId
+      req.body.lessonId
     ]
 
     await connect.query(contentSqlQuery, sqlParams)
@@ -93,7 +94,13 @@ router.post('/file', rejectUnauthenticated, rejectNonAdmin, upload.single('file'
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING "id";
         `
-    await connect.query(contentSqlQuery, [results.Location, req.body.title, req.body.description, req.body.isSurvey, req.body.isRequired, req.body.lessons_id])
+    await connect.query(contentSqlQuery, [
+      results.Location, 
+      req.body.title, 
+      req.body.description, 
+      req.body.isSurvey, 
+      req.body.isRequired, 
+      req.body.lessons_id])
     await connect.query('COMMIT')
     res.sendStatus(200)
   } catch (error) {
