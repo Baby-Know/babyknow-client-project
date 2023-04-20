@@ -17,7 +17,7 @@ const Students = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const studentsData = useSelector((store) => store.studentsReducer);
+  const studentsData = useSelector((store) => store.studentsReducer.allStudentsReducer);
 
   //Variable stating whether a row is being edited or not
   const [isEditing, setIsEditing] = useState(null);
