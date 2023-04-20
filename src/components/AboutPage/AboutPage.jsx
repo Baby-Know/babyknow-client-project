@@ -1,18 +1,56 @@
-import { Box, Grid } from '@mui/material';
+import { Box } from '@mui/material';
+import YouTube, { YouTubeProps } from 'react-youtube';
 
 function AboutPage() {
+
+
   return (
     <div>
-      <Box 
-      sx={{
+
+      <Box
+        sx={{
           display: 'flex',
           justifyContent: "center",
           alignItems: "center",
           margin: 'auto',
           width: '50%',
           height: '100%'
-      }}
-          >
+        }}
+      >
+        <h1>Welcome to Baby Know</h1>
+      </Box>
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "auto",
+          width: '80%',
+          height: '150%',
+          fontSize: 20
+        }}
+      >
+        <p>
+          Our course is designed to support parents and caregivers throughout their child’s first year of life by providing
+          easily accessible video lessons covering all aspects of child development in addition to strategies
+          and activities to promote the overall well-being of the entire family.
+        </p>
+      </Box>
+
+
+
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: "center",
+          alignItems: "center",
+          margin: 'auto',
+          width: '50%',
+          height: '100%'
+        }}
+      >
         <h1>About Our Program</h1>
       </Box>
 
@@ -24,7 +62,7 @@ function AboutPage() {
           margin: "auto",
           width: '80%',
           height: '150%',
-          fontSize: "150%"
+          fontSize: 20
         }}
       >
         <p>
@@ -37,7 +75,78 @@ function AboutPage() {
         </p>
 
       </Box>
-    </div>
+
+      <Box sx={{
+        display: 'flex',
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "auto",
+        width: '80%',
+        height: '150%',
+        fontSize: 20
+      }}>
+        <h3>Units are organized by developmental period:</h3>
+      </Box>
+
+
+      <Box sx={{
+        display: 'flex',
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "auto",
+        width: '80%',
+        height: '150%',
+        fontSize: 20
+      }}>
+        <ul>
+          <li>Unit 1: 0-3 Months</li>
+          <li>Unit 2: 4-6 Months</li>
+          <li>Unit 3: 7-9 Months</li>
+          <li>Unit 4: 10-12 Months</li>
+        </ul>
+      </Box>
+
+      <Box sx={{
+        display: 'flex',
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "auto",
+        width: '80%',
+        height: '150%',
+        fontSize: 20
+      }}>
+        <h3>The following topics are covered within each unit:</h3>
+      </Box>
+
+      <Box sx={{
+        display: 'flex',
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "auto",
+        width: '80%',
+        height: '150%',
+        fontSize: 20,
+      }}>
+        <ul>
+          <li>Fine Motor/Sensory</li>
+          <li>Gross Motor</li>
+          <li>Speech, Language and Play</li>
+          <li>Vision</li>
+          <li>Curriculum Based Learning/School Readiness</li>
+          <li>General New Parent Advice</li>
+        </ul>
+      </Box>
+
+      <Box sx={{
+        display: 'flex',
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "auto" }}>
+        <h3>For any questions, please email babyknowprogram@gmail.com</h3>
+      </Box>
+
+
+    </div >
   );
 }
 
