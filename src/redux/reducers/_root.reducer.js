@@ -9,7 +9,6 @@ import studentsReducer from './students.reducer';
 import teacherReducer from './teachers.reducer';
 import loadingReducer from './loading.reducer';
 import lessonsReducer from './lessons.reducer';
-import messageReducer from './message.reducer';
 import userContentReducer from './userContent.reducer';
 import progressReducer from './progress.reducer';
 
@@ -31,7 +30,6 @@ const rootReducer = combineReducers({
   loadingReducer,
   lessonsReducer,
   userContentReducer,
-  messageReducer,
   progressReducer
 });
 

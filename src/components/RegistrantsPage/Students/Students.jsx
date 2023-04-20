@@ -25,7 +25,6 @@ const Students = () => {
   // New state variable to hold the modified students list
   const [modifiedStudentData, setModifiedStudentData] = useState({
     students: [],
-    teachers: [],
     cohorts: [],
     units: [],
   });
