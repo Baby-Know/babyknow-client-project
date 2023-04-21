@@ -251,6 +251,7 @@ const NewRegistrants = () => {
           columns={columns}
           onCellEditCommit={handleEditCell}
           onEditCellChange={handleEditCellChange}
+          disableColumnSelector
           components={{
             Toolbar: GridToolbar,
           }}
