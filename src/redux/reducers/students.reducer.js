@@ -17,10 +17,19 @@ const studentsByTeacherReducer = (state =[], action) => {
       return state;
   }
 }
+const studentReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "SET_STUDENT":
+      return action.payload;
+    default:
+      return state;
+  }
+}
 
 const studentsReducer = combineReducers({
   allStudentsReducer,
-  studentsByTeacherReducer
+  studentsByTeacherReducer,
+  studentReducer
 })
 
 export default studentsReducer;

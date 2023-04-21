@@ -84,7 +84,7 @@ function CoursePage() {
   };
 
   const selectUnit = (id) => {
-    history.push(`/unit/${id}`)
+    history.push(`/unit/${id}/${user.id}`)
   }
 
 

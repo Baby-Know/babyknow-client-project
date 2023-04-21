@@ -25,7 +25,7 @@ import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
 
 function UnitPage() {
-    const { id } = useParams();
+    const { id, studentId } = useParams();
     const dispatch = useDispatch();
     const history = useHistory();
     const unit = useSelector(store => store.unit);
@@ -34,6 +34,7 @@ function UnitPage() {
     const colors = tokens(theme.palette.mode);
 
     const isLoading = useSelector((store) => store.loadingReducer);
+    const progressByLesson = useSelector((store) => store.progressReducer);
 
     const [lessonToEdit, setLessonToEdit] = useState({ id: 0, lessonName: '', lessonDescription: '' });
     const [contentToEdit, setContentToEdit] = useState({ id: 0, contentName: '', contentDescription: '' });
@@ -49,7 +50,10 @@ function UnitPage() {
             type: "GET_UNIT",
             payload: id
         });
-        console.log('id', id)
+        dispatch({
+            type: "GET_STUDENTS_UNIT_PROGRESS",
+            payload: { studentId: studentId, unitId: id }
+        });
     }, []);
 
     const selectContent = (unitId, lessonId, contentId) => {
@@ -215,15 +219,20 @@ function UnitPage() {
                                                 >
 
                                                     {/* is required? is complete?  */}
-                                                    {/* {lesson.contentIsRequired[index] ?
-                                                    <>
-                                                        {lesson.contentIsComplete[index] ? 
-                                                        <div id="completed">✓</div> :
-                                                        <div id="incomplete"></div>
+                                                    { progressByLesson[i] === undefined ? <></> :
+                                                        <>
+                                                        {progressByLesson[i][index]?.isRequired ?
+                                                        <>
+                                                            {progressByLesson[i][index]?.isComplete ? 
+                                                            <div id="completed">✓</div> :
+                                                            <div id="incomplete"></div>
+                                                            } 
+                                                        </> : 
+                                                        <></>
                                                         } 
-                                                    </> : 
-                                                    <></>
-                                                    }  */}
+                                                        </>
+                                                    }
+                                                    
 
                                                     {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>

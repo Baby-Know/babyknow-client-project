@@ -311,6 +311,24 @@ router.get("/:id", rejectUnauthenticated, async (req, res) => {
   }
 );
 
+// gets all students who share cohort with teacher id
+router.get("/overview/:id", rejectUnauthenticated, async (req, res) => {
+  try {
+    const studentQuery = `
+    SELECT "users"."firstName", "users"."lastName" FROM "users"
+    WHERE "users".id = $1  
+    `
+
+    const results = await pool.query(studentQuery, [req.params.id]);
+
+    res.send(results.rows[0]);
+  } catch (error) {
+    console.log(`Error getting students :`, error);
+    res.sendStatus(500);
+  }
+}
+);
+
 
 // updates student cohort to teachers cohort
 router.put("/", rejectUnauthenticated, async (req, res) => {
