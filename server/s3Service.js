@@ -11,8 +11,6 @@ exports.s3Upload = async (files) => {
             Body: files.buffer
     }
 
-    // console.log('params', params)
-
     // awaiting the promise
     return await s3.upload(params).promise();
 }

@@ -43,7 +43,7 @@ function UnitPage() {
     const [swappingContent, setSwappingContent] = useState(false);
     const [draggable, setDraggable] = useState(true);
     const [unitId, setUnitId] = useState(0);
-    const [lessonId, setLessonId] =useState(0);
+    const [lessonId, setLessonId] = useState(0);
 
     useEffect(() => {
         dispatch({
@@ -146,7 +146,7 @@ function UnitPage() {
             {isLoading ?
                 <LoadingBar />
                 :
-                <AddContentForm  unitId={unitId} lessonId={lessonId}/>
+                <AddContentForm unitId={unitId} lessonId={lessonId} />
             }
 
             {unit.map((lesson, i) => {
@@ -233,7 +233,6 @@ function UnitPage() {
                                                         </>
                                                     }
                                                     
-
                                                     {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
                                                             <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom: 'auto', }} />
@@ -304,7 +303,7 @@ function UnitPage() {
                                                 </div>
                                             }
                                         </div>
-                                    )
+                                    );
                                 })}
 
                                 {/* button to add content row */}
@@ -315,9 +314,9 @@ function UnitPage() {
                                             dispatch({
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
-                                            })
-                                            setUnitId(lesson.unitId)
-                                            setLessonId(lesson.lessonId)
+                                            });
+                                            setUnitId(lesson.unitId);
+                                            setLessonId(lesson.lessonId);
 
                                         }}>
                                             Add Content to {lesson.lessonName}
@@ -375,6 +374,12 @@ function UnitPage() {
                         Add Lesson
                     </Button> : <></>}
             </div>
+
+            <Button type="button"
+                className="btn btn_asLink"
+                onClick={() => history.push(`/course`)}>
+                <Typography variant="body1">Back</Typography>
+            </Button>
 
 
         </Box>

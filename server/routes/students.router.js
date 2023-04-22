@@ -1,14 +1,14 @@
-const express = require("express");
-const pool = require("../modules/pool");
+const express = require('express');
+const pool = require('../modules/pool');
 const router = express.Router();
 const {
   rejectUnauthenticated,
-} = require("../modules/authentication-middleware");
+} = require('../modules/authentication-middleware');
 
-const { rejectStudent } = require("../modules/teacher-middleware");
+const { rejectStudent } = require('../modules/teacher-middleware');
 
 //GET all students
-router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
+router.get('/', rejectUnauthenticated, rejectStudent, async (req, res) => {
   //Array to send back to client
   const studentData = {
     students: [],
@@ -35,12 +35,12 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
           email: student.email,
           cohort: {
             id: null,
-            name: "",
+            name: '',
           },
           teacher: {
             id: null,
-            firstName: "",
-            lastName: "",
+            firstName: '',
+            lastName: '',
           },
           studentUnits: [],
         };
@@ -127,7 +127,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
   }
 });
 
-router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
+router.put('/:id', rejectUnauthenticated, rejectStudent, async (req, res) => {
   const connection = await pool.connect();
   const studentId = req.body.id;
   const firstName = req.body.firstName;
@@ -137,7 +137,7 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
   const updatedStudentUnits = req.body.studentUnits;
 
   try {
-    await connection.query("BEGIN");
+    await connection.query('BEGIN');
     const usersQueryText = `
     UPDATE "users"
     SET "firstName" = $1, "lastName" = $2, "email" = $3
@@ -248,10 +248,10 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
       })
     );
 
-    await connection.query("COMMIT");
+    await connection.query('COMMIT');
     res.sendStatus(204);
   } catch (error) {
-    await connection.query("ROLLBACK");
+    await connection.query('ROLLBACK');
     console.log(`Transaction Error - Rolling back student update`, error);
     res.sendStatus(500);
   } finally {
@@ -260,7 +260,7 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
 });
 
 router.delete(
-  "/:id",
+  '/:id',
   rejectUnauthenticated,
   rejectStudent,
   async (req, res) => {
@@ -275,41 +275,38 @@ router.delete(
     } catch (error) {
       console.log(`Error deleting student :`, error);
       res.sendStatus(500);
-    } finally {
-      connection.release();
     }
+    //finally {
+    //   connection.release();
+    // }
   }
 );
 
 // gets all students who share cohort with teacher id
 router.get("/:id", rejectUnauthenticated, async (req, res) => {
-    try {
-      const cohortQuery = `
+  try {
+    const cohortQuery = `
       SELECT "users_cohorts".cohorts_id FROM "users_cohorts"
       WHERE "users_cohorts".user_id = $1;
       `;
 
-      const cohortResults = await pool.query(cohortQuery, [req.params.id]);
-      const cohortId = cohortResults.rows[0]
+    const cohortResults = await pool.query(cohortQuery, [req.params.id]);
+    const cohortId = cohortResults.rows[0];
 
-      const studentsQuery = `
+    const studentsQuery = `
       SELECT "users".id, "users"."firstName", "users"."lastName", "users".email, "cohorts".name AS "cohort" FROM "users"
       JOIN "users_cohorts" ON "users_cohorts".user_id = "users".id
       JOIN "cohorts" ON "cohorts".id = "users_cohorts".cohorts_id
       WHERE "users_cohorts".cohorts_id = $1 AND "users".access = 1;     
-      `
+      `;
 
-      const results = await pool.query(studentsQuery, [cohortId.cohorts_id]);
-
-
-
-      res.send(results.rows);
-    } catch (error) {
-      console.log(`Error getting students :`, error);
-      res.sendStatus(500);
-    }
+    const results = await pool.query(studentsQuery, [cohortId.cohorts_id]);
+    res.send(results.rows);
+  } catch (error) {
+    console.log(`Error getting students :`, error);
+    res.sendStatus(500);
   }
-);
+});
 
 // gets all students who share cohort with teacher id
 router.get("/overview/:id", rejectUnauthenticated, async (req, res) => {
@@ -326,13 +323,11 @@ router.get("/overview/:id", rejectUnauthenticated, async (req, res) => {
     console.log(`Error getting students :`, error);
     res.sendStatus(500);
   }
-}
-);
-
+});
 
 // updates student cohort to teachers cohort
 router.put("/", rejectUnauthenticated, async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   try {
     const cohortQuery = `
     SELECT "users_cohorts".cohorts_id FROM "users_cohorts"
@@ -340,13 +335,13 @@ router.put("/", rejectUnauthenticated, async (req, res) => {
     `;
 
     const cohortResults = await pool.query(cohortQuery, [req.body.teacherId]);
-    const cohortId = cohortResults.rows[0].cohorts_id
+    const cohortId = cohortResults.rows[0].cohorts_id;
 
     const studentsQuery = ` 
     UPDATE "users_cohorts"
     SET "cohorts_id" = $1
     WHERE "user_id" = $2; 
-    `
+    `;
 
     await pool.query(studentsQuery, [cohortId, req.body.studentId]);
 
@@ -355,8 +350,6 @@ router.put("/", rejectUnauthenticated, async (req, res) => {
     console.log(`Error updating student cohort :`, error);
     res.sendStatus(500);
   }
-}
-);
-
+});
 
 module.exports = router;

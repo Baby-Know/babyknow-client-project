@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState } from "react";
 
 function UnitOverviewPage () {
     const dispatch = useDispatch();
@@ -9,6 +10,7 @@ function UnitOverviewPage () {
     const unit = useSelector(store => store.unit)
     const progressByLesson = useSelector(store => store.progressReducer)
     const student = useSelector(store => store.studentsReducer.studentReducer)
+    const [showMedia, setShowMedia] = useState(false)
 
     useEffect(() => {
         dispatch({
@@ -24,6 +26,9 @@ function UnitOverviewPage () {
             payload: studentId
         });
     }, []);
+
+    console.log(showMedia)
+
 
     return (
         <div id="overviewPage">
@@ -58,8 +63,21 @@ function UnitOverviewPage () {
                                     </div>
 
                                     { progressByLesson[i] === undefined ? <></> :
+                                        <>
                                             <div>{progressByLesson[i][index]?.comment}</div>
+                                            {progressByLesson[i][index]?.media == undefined ? <></> : 
+                                                <>
+                                                <div id="photoIcon" onClick={() => setShowMedia(!showMedia)}>🗂️</div> 
+                                                    {showMedia ? 
+                                                        <video width="400" height="300" controls >
+                                                            <source src={`${progressByLesson[i][index]?.media}`} type="video/mp4"></source>
+                                                        </video> : 
+                                                    <></>}
+                                                </>
+                                            }
+                                        </>
                                     }
+
 
                                 </div>
                             )
