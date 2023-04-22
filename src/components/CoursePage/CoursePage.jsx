@@ -39,12 +39,14 @@ function CoursePage() {
 
   const [unitToSwap, setUnitToSwap] = useState({ id: 0, order: 0 });
 
+  const userId = user.id;
+
   useEffect(() => {
     dispatch({ type: "GET_UNITS" });
     dispatch({
       type: 'GET_USERS_UNITS',
-      payload: 
-   });
+      payload: userId
+    });
   }, []);
 
   //Function to set the updatedUnitToSend's initial values to the current values
