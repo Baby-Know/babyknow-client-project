@@ -67,17 +67,9 @@ const NewRegistrants = () => {
     [modifiedNewRegistrants]
   );
 
+  //Function to handle sending the updated registrant to the database
   function handleEditSelectAccess(cellValues) {
-    const { id, field, value } = cellValues;
     const registrantToUpdate = cellValues.row;
-
-    setModifiedNewRegistrants((prevNewRegistrants) =>
-      prevNewRegistrants.map((registrant) =>
-        registrant.id === cellValues.id
-          ? { ...registrant, [field]: value }
-          : registrant
-      )
-    );
 
     dispatch({
       type: "UPDATE_NEW_REGISTRANT",
@@ -85,7 +77,7 @@ const NewRegistrants = () => {
     });
   }
 
-  //Change the value of the item in the modifiedRegistrants array
+  //Change the value of the cell in the modifiedRegistrants array
   const handleEditCellChange = useCallback((params) => {
     const { id, field, value } = params;
     setModifiedNewRegistrants((prevNewRegistrants) =>
@@ -99,10 +91,13 @@ const NewRegistrants = () => {
   const handleEditCell = useCallback(
     (params) => {
       const { id, field, value } = params;
+
       const registrantToUpdate = modifiedNewRegistrants.find(
         (item) => item.id === id
       );
+
       registrantToUpdate[field] = value;
+
       dispatch({
         type: "UPDATE_NEW_REGISTRANT",
         payload: registrantToUpdate,
