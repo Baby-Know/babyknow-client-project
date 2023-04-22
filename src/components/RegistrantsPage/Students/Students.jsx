@@ -17,23 +17,34 @@ const Students = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const studentsData = useSelector((store) => store.studentsReducer);
+  const studentsData = useSelector(
+    (store) => store.studentsReducer.allStudentsReducer
+  );
+
+  //All cohorts
+  const cohorts = useSelector((store) => store.cohortReducer);
+
+  //All units
+  const units = useSelector((store) => store.unit);
 
   //Variable stating whether a row is being edited or not
   const [isEditing, setIsEditing] = useState(null);
 
   // New state variable to hold the modified students list
-  const [modifiedStudentData, setModifiedStudentData] = useState({
-    students: [],
-    teachers: [],
-    cohorts: [],
-    units: [],
-  });
+  const [modifiedStudentData, setModifiedStudentData] = useState([]);
 
-  //Fetch new registrants on page load
+  //Fetch new registrants, cohorts, and available units on page load
   useEffect(() => {
     dispatch({
       type: "FETCH_STUDENTS",
+    });
+
+    dispatch({
+      type: "FETCH_COHORTS",
+    });
+
+    dispatch({
+      type: "GET_UNITS",
     });
   }, []);
 
@@ -52,57 +63,28 @@ const Students = () => {
     });
   }
 
-  //Handle changing the value of the select option in the students array
-  //of the modifiedStudentData object
-  const handleSelectChange = useCallback(
+  //Function to handle changing the student's cohort in the modified students array
+  const handleCohortChange = useCallback(
     ({ cellValues, value }) => {
-      const field = cellValues.field === "cohort.id" ? "cohort" : "teacher";
       const id = cellValues.id;
+      //Find the new cohort for the student
+      const newCohort = cohorts?.find((cohort) => cohort.id === value);
 
-      //Finding the new value that the student will be given
-      const newValue =
-        field === "cohort"
-          ? modifiedStudentData.cohorts.find((cohort) => cohort.id === value)
-          : modifiedStudentData.teachers.find(
-              (teacher) => teacher.id === value
-            );
-
-      //New value alternates between teacher and cohort object so this is updating
-      //the student differently depending on whether the new value is a teacher or cohort
-      field === "cohort"
-        ? setModifiedStudentData((prevStudentData) => {
-            return {
-              ...prevStudentData,
-              students: prevStudentData.students.map((student) =>
-                student.id === id
-                  ? {
-                      ...student,
-                      cohort: {
-                        id: newValue.id,
-                        name: newValue.name,
-                      },
-                    }
-                  : student
-              ),
-            };
-          })
-        : setModifiedStudentData((prevStudentData) => {
-            return {
-              ...prevStudentData,
-              students: prevStudentData.students.map((student) =>
-                student.id === id
-                  ? {
-                      ...student,
-                      teacher: {
-                        id: newValue.id,
-                        firstName: newValue.firstName,
-                        lastName: newValue.lastName,
-                      },
-                    }
-                  : student
-              ),
-            };
-          });
+      setModifiedStudentData((prevStudentData) =>
+        //Mapping over the previous state to find which student to give the new
+        //cohort to
+        prevStudentData.map((student) =>
+          student.id === id
+            ? {
+                ...student,
+                cohort: {
+                  id: newCohort?.id,
+                  name: newCohort?.name,
+                },
+              }
+            : student
+        )
+      );
     },
     [modifiedStudentData]
   );
@@ -116,17 +98,16 @@ const Students = () => {
     });
   }
 
-  //Change the value of the item in the modifiedRegistrants array
+  //Change the value of the item in the modifiedStudents array
   const handleEditCellChange = useCallback((cellValues) => {
     const { id, field, value } = cellValues;
-    //Resetting the students array with the updated student
+    //Resetting the students array with the updated cell value
     setModifiedStudentData((prevStudentData) => {
-      return {
-        ...prevStudentData,
-        students: prevStudentData.students.map((student) =>
-          student.id === id ? { ...student, [field]: value } : student
-        ),
-      };
+      return prevStudentData.map((student) =>
+        //If the students id matches the upadted student's id change the value else
+        //return the student
+        student.id === id ? { ...student, [field]: value } : student
+      );
     });
   }, []);
 
@@ -134,7 +115,7 @@ const Students = () => {
   const handleEditCell = useCallback(
     (cellValues) => {
       const { id, field, value } = cellValues;
-      const studentToUpdate = modifiedStudentData.students.find(
+      const studentToUpdate = modifiedStudentData.find(
         (student) => student.id === id
       );
       studentToUpdate[field] = value;
@@ -153,22 +134,19 @@ const Students = () => {
 
       //Find the id of the units that have been changed
       value.map((unit) => {
-        let matchingUnit = modifiedStudentData.units.find(
+        let matchingUnit = units.find(
           (availableUnit) => unit === availableUnit.name
         );
         studentUnits.push(matchingUnit);
       });
 
-      //Resetting the students array with the updated student
+      //Resetting the students array with the updated units
       setModifiedStudentData((prevStudentData) => {
-        return {
-          ...prevStudentData,
-          students: prevStudentData.students.map((student) =>
-            student.id === id
-              ? { ...student, studentUnits: studentUnits }
-              : student
-          ),
-        };
+        return prevStudentData.map((student) =>
+          student.id === id
+            ? { ...student, studentUnits: studentUnits }
+            : student
+        );
       });
     },
     [modifiedStudentData]
@@ -206,15 +184,15 @@ const Students = () => {
           value={cellValues.row.cohort.id}
           onChange={(event) => {
             setIsEditing(cellValues.id);
-            handleSelectChange({
+            handleCohortChange({
               cellValues: cellValues,
               value: event.target.value,
             });
           }}
         >
-          {modifiedStudentData.cohorts.map((option, i) => (
-            <MenuItem key={i} value={option.id}>
-              {option.name}
+          {cohorts.map((cohort, i) => (
+            <MenuItem key={i} value={cohort.id}>
+              {cohort.name}
             </MenuItem>
           ))}
         </Select>
@@ -228,7 +206,7 @@ const Students = () => {
       flex: 0.7,
       renderCell: (cellValues) => {
         //Finding specific student
-        let studentObject = modifiedStudentData.students.find((student) => {
+        let studentObject = modifiedStudentData.find((student) => {
           return student.id === cellValues.id;
         });
 
@@ -261,7 +239,7 @@ const Students = () => {
               }}
             >
               {/* Mapping over available units and checking if the user is signed up for them */}
-              {modifiedStudentData?.units?.map((unit, i) => {
+              {units?.map((unit, i) => {
                 return (
                   <MenuItem key={unit.id} value={unit.name}>
                     <Checkbox
@@ -362,7 +340,7 @@ const Students = () => {
         }}
       >
         <DataGrid
-          rows={modifiedStudentData.students || []}
+          rows={modifiedStudentData || []}
           columns={columns}
           onCellEditCommit={handleEditCell}
           onEditCellChange={handleEditCellChange}

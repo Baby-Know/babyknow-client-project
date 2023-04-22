@@ -33,9 +33,6 @@ function UnitPage() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const [selectedId, setSelectedId] = useState(0);
-    const [selectedUnitId, setSelectedUnitId] = useState(0);
-
     const isLoading = useSelector((store) => store.loadingReducer);
 
     const [lessonToEdit, setLessonToEdit] = useState({ id: 0, lessonName: '', lessonDescription: '' });
@@ -44,6 +41,8 @@ function UnitPage() {
     const [contentToSwap, setContentToSwap] = useState({ contentId: 0, lessonId: 0, order: 0 });
     const [swappingContent, setSwappingContent] = useState(false);
     const [draggable, setDraggable] = useState(true);
+    const [unitId, setUnitId] = useState(0);
+    const [lessonId, setLessonId] = useState(0);
 
     useEffect(() => {
         dispatch({
@@ -53,12 +52,6 @@ function UnitPage() {
     }, []);
 
     const selectContent = (unitId, lessonId, contentId) => {
-        // const userContent = { userId: user.id, contentId: contentId, isComplete: false, media: '', comment: '' };
-        // dispatch({
-        //     type: "POST_USER_CONTENT",
-        //     payload: { userContent }
-        // });
-        // console.log('Post userContent unit page', userContent);
         history.push({
             pathname: `/unit/${unitId}/lesson/${lessonId}/content/${contentId}`
         });
@@ -113,7 +106,7 @@ function UnitPage() {
                 type: "SWAP_LESSONS",
                 payload: { lessonId: otherLessonToSwap.lessonId, order: lessonToSwap.order, unitId: otherLessonToSwap.unitId }
             });
-        } 
+        }
     };
 
     const swapContent = (otherContentToSwap) => {
@@ -148,7 +141,7 @@ function UnitPage() {
             {isLoading ?
                 <LoadingBar />
                 :
-                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
+                <AddContentForm unitId={unitId} lessonId={lessonId} />
             }
 
             {unit.map((lesson, i) => {
@@ -220,20 +213,21 @@ function UnitPage() {
                                                     onDrop={() => swapContent({ contentId: id, order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId })}
                                                 >
 
-                                                    {/* is required? is complete?  */}
+                                                    {/* is required? */}
                                                     {/* {lesson.contentIsRequired[index] ?
-                                                    <>
-                                                        {lesson.contentIsComplete[index] ? 
-                                                        <div id="completed">✓</div> :
-                                                        <div id="incomplete"></div>
-                                                        } 
-                                                    </> : 
-                                                    <></>
-                                                    }  */}
-            
+                                                        <> */}
+                                                    {/* is complete? */}
+                                                    {/* {lesson.contentIsComplete[index] ?
+                                                                <div id="completed">✓</div> :
+                                                                <div id="incomplete"></div>
+                                                            }
+                                                        </> :
+                                                        <></>
+                                                    } */}
+
                                                     {draggable && user.access === 3 ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
-                                                            <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom:'auto', }} />
+                                                            <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom: 'auto', }} />
                                                         </IconButton> : <></>}
 
                                                     {/* content shown on screen */}
@@ -301,7 +295,7 @@ function UnitPage() {
                                                 </div>
                                             }
                                         </div>
-                                    )
+                                    );
                                 })}
 
                                 {/* button to add content row */}
@@ -312,10 +306,10 @@ function UnitPage() {
                                             dispatch({
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
-                                            })
+                                            });
+                                            setUnitId(lesson.unitId);
+                                            setLessonId(lesson.lessonId);
 
-                                            setSelectedId(lesson.lessonId);
-                                            setSelectedUnitId(lesson.unitId)
                                         }}>
                                             Add Content to {lesson.lessonName}
                                         </Button>
@@ -359,7 +353,7 @@ function UnitPage() {
 
             <div id="addLessonParent">
 
-                    {user.access === 3 ?
+                {user.access === 3 ?
                     <Button
                         id='addLesson'
                         onClick={() => {
@@ -372,6 +366,12 @@ function UnitPage() {
                         Add Lesson
                     </Button> : <></>}
             </div>
+
+            <Button type="button"
+                className="btn btn_asLink"
+                onClick={() => history.push(`/course`)}>
+                <Typography variant="body1">Back</Typography>
+            </Button>
 
 
         </Box>

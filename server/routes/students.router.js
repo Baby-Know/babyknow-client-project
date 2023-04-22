@@ -10,16 +10,13 @@ const { rejectStudent } = require("../modules/teacher-middleware");
 //GET all students
 router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
   //Array to send back to client
-  const studentData = {
-    students: [],
-    cohorts: [],
-    units: [],
-  };
+  const studentData = [];
 
   try {
     const studentsQuery = `
     SELECT * FROM "users" 
-    WHERE "access" = 1;
+    WHERE "access" = 1
+    ORDER BY "id";
     `;
 
     const studentsResponse = await pool.query(studentsQuery);
@@ -45,7 +42,6 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
           studentUnits: [],
         };
 
-        console.log(student.id)
         const usersCohortsStudentQuery = `
         SELECT 
            uc.cohorts_id, c.name FROM "users_cohorts" AS UC
@@ -67,7 +63,6 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
           },
         };
 
-        console.log(studentObject.cohort.id)
         //Selecting the student's teacher
         const usersCohortsTeacherQuery = `
         SELECT 
@@ -80,7 +75,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
           usersCohortsTeacherQuery,
           [usersCohortsStudentResponse.rows[0].cohorts_id]
         );
-        
+
         studentObject = {
           ...studentObject,
           teacher: {
@@ -103,25 +98,9 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
 
         studentObject.studentUnits = usersUnitsResponse.rows;
 
-        studentData.students.push(studentObject);
+        studentData.push(studentObject);
       })
     );
-
-    const cohortsQuery = `
-    SELECT * FROM "cohorts";
-    `;
-
-    const cohortsResponse = await pool.query(cohortsQuery);
-
-    studentData.cohorts = cohortsResponse.rows;
-
-    const unitsQuery = `
-    SELECT * FROM "units";
-    `;
-    const unitsResponse = await pool.query(unitsQuery);
-
-    studentData.units = unitsResponse.rows;
-
     res.send(studentData);
   } catch (error) {
     console.log(`Error fetching students : `, error);
@@ -136,7 +115,7 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
   const lastName = req.body.lastName;
   const email = req.body.email;
   const cohort = req.body.cohort;
-  const studentUnits = req.body.studentUnits;
+  const updatedStudentUnits = req.body.studentUnits;
 
   try {
     await connection.query("BEGIN");
@@ -159,42 +138,73 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
     `;
     await connection.query(usersCohortsQueryText, [cohort.id, studentId]);
 
-    //Query to delete all of the student's previous units
-    const deleteUsersUnitsQueryText = `
-    DELETE FROM "users_units" 
-    WHERE "users_id" = $1;
+    //Selecting current units that the student is signed up for
+    const usersUnitsQuery = `
+    SELECT * FROM "users_units" 
+    WHERE "users_units".users_id = $1
     `;
-    await connection.query(deleteUsersUnitsQueryText, [studentId]);
 
-    //Map over the array of the students new unit objects and insert new values
+    const usersUnitsResponse = await connection.query(usersUnitsQuery, [
+      studentId,
+    ]);
+
+    const currentStudentUnits = usersUnitsResponse.rows;
+
+    //This will be comparing what the student has versus what the update contains.
+    const matchingUnits = updatedStudentUnits.filter((unit) => {
+      return currentStudentUnits.some(
+        (currentUnit) => currentUnit.units_id === unit.id
+      );
+    });
+
+    //Check if there are units to add
+    const unitsToAdd = updatedStudentUnits.filter((unit) => {
+      return !matchingUnits.some((matchingUnit) => matchingUnit.id === unit.id);
+    });
+
+    //Checking if there are units to remove
+    const unitsToRemove = currentStudentUnits.filter((unit) => {
+      return !updatedStudentUnits.some(
+        (updatedUnit) => updatedUnit.id === unit.units_id
+      );
+    });
+
+    //Mapping over and removing the units
     await Promise.all(
-      studentUnits.map(async (unit) => {
-        const updateUsersUnitsQueryText = `
+      unitsToRemove.map(async (unit) => {
+        const deleteUsersUnitsQueryText = `
+         DELETE FROM "users_units"
+         WHERE "users_id" = $1 AND "units_id" = $2;`;
+
+        return connection.query(deleteUsersUnitsQueryText, [
+          studentId,
+          unit.units_id,
+        ]);
+      })
+    );
+
+    //Mapping over all of the new units and adding them
+    await Promise.all(
+      unitsToAdd.map((unit) => {
+        const insertUsersUnitsQueryText = `
         INSERT INTO "users_units" ("users_id", "units_id")
-        VALUES ($1, $2);
+        VALUES($1, $2)
         `;
-        return await connection.query(updateUsersUnitsQueryText, [
+        return connection.query(insertUsersUnitsQueryText, [
           studentId,
           unit.id,
         ]);
       })
     );
 
-    //Delete user_content by user ID to update
-    const deleteUserContentQueryText = `
-      DELETE FROM "users_content"
-      WHERE "user_id" = $1;
-  `;
-    await connection.query(deleteUserContentQueryText, [studentId]);
-
-    //Map over array of units by ID to insert user-content relationship into user_content table
+    //Map over array of units to add to insert user-content relationship into user_content table
     await Promise.all(
-      studentUnits.map(async (unit) => {
+      unitsToAdd.map(async (unit) => {
         const selectContentIdsText = `
       SELECT "content".id AS "contentId" FROM "units"
       JOIN "lessons" ON "lessons".units_id = "units".id
       JOIN "content" ON "content".lessons_id = "lessons".id
-      WHERE "units".id = $1 AND "content"."isRequired" = true;
+      WHERE "units".id = $1;
       `;
         const selectContentIdsParams = [unit.id];
         const result = await pool.query(
@@ -206,9 +216,9 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
         await Promise.all(
           contentIds.map(async (contentId) => {
             const insertUserContentText = `
-            INSERT INTO "users_content" ("user_id", "content_id")
-            VALUES ($1, $2)
-          `;
+              INSERT INTO "users_content" ("user_id", "content_id")
+              VALUES ($1, $2);
+            `;
             const insertUserContentParams = [studentId, contentId.contentId];
             return await connection.query(
               insertUserContentText,
@@ -246,10 +256,61 @@ router.delete(
     } catch (error) {
       console.log(`Error deleting student :`, error);
       res.sendStatus(500);
-    } finally {
-      connection.release();
     }
   }
 );
+
+// gets all students who share cohort with teacher id
+router.get("/:id", rejectUnauthenticated, async (req, res) => {
+  try {
+    const cohortQuery = `
+      SELECT "users_cohorts".cohorts_id FROM "users_cohorts"
+      WHERE "users_cohorts".user_id = $1;
+      `;
+
+    const cohortResults = await pool.query(cohortQuery, [req.params.id]);
+    const cohortId = cohortResults.rows[0];
+
+    const studentsQuery = `
+      SELECT "users".id, "users"."firstName", "users"."lastName", "users".email, "cohorts".name AS "cohort" FROM "users"
+      JOIN "users_cohorts" ON "users_cohorts".user_id = "users".id
+      JOIN "cohorts" ON "cohorts".id = "users_cohorts".cohorts_id
+      WHERE "users_cohorts".cohorts_id = $1 AND "users".access = 1;     
+      `;
+
+    const results = await pool.query(studentsQuery, [cohortId.cohorts_id]);
+    res.send(results.rows);
+  } catch (error) {
+    console.log(`Error getting students :`, error);
+    res.sendStatus(500);
+  }
+});
+
+// updates student cohort to teachers cohort
+router.put("/", rejectUnauthenticated, async (req, res) => {
+  console.log(req.body);
+  try {
+    const cohortQuery = `
+    SELECT "users_cohorts".cohorts_id FROM "users_cohorts"
+    WHERE "users_cohorts".user_id = $1;
+    `;
+
+    const cohortResults = await pool.query(cohortQuery, [req.body.teacherId]);
+    const cohortId = cohortResults.rows[0].cohorts_id;
+
+    const studentsQuery = ` 
+    UPDATE "users_cohorts"
+    SET "cohorts_id" = $1
+    WHERE "user_id" = $2; 
+    `;
+
+    await pool.query(studentsQuery, [cohortId, req.body.studentId]);
+
+    res.sendStatus(201);
+  } catch (error) {
+    console.log(`Error updating student cohort :`, error);
+    res.sendStatus(500);
+  }
+});
 
 module.exports = router;

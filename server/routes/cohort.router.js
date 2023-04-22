@@ -7,6 +7,24 @@ const {
 
 const { rejectNonAdmin } = require("../modules/admin-middleware");
 
+//GET all cohorts
+router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const queryText = `
+    SELECT * FROM "cohorts"
+    `;
+
+    const cohortsResponse = await pool.query(queryText);
+    const cohorts = cohortsResponse.rows;
+
+    res.send(cohorts);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log("Error getting all Cohorts :", error);
+  }
+});
+
+//POST new cohort
 router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const query = `
@@ -19,6 +37,61 @@ router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   } catch (error) {
     res.sendStatus(500);
     console.log("Error posting Cohort :", error);
+  }
+});
+
+router.delete(
+  "/:id",
+  rejectUnauthenticated,
+  rejectNonAdmin,
+  async (req, res) => {
+    const connection = await pool.connect();
+
+    try {
+      await connection.query("BEGIN");
+      //First we have to find everyone in this cohort and swap them to
+      //Baby Know
+      const usersCohortsQueryText = `
+      UPDATE "users_cohorts"
+      SET "cohorts_id" = 1
+      WHERE "cohorts_id" = $1
+      `;
+
+      await connection.query(usersCohortsQueryText, [req.params.id]);
+
+      const cohortsQueryText = `
+      DELETE FROM "cohorts"
+      WHERE "id" = $1
+      `;
+
+      await connection.query(cohortsQueryText, [req.params.id]);
+      res.sendStatus(204);
+      await connection.query("COMMIT");
+    } catch (error) {
+      res.sendStatus(500);
+      console.log("Error deleting Cohort :", error);
+    } finally {
+      connection.release();
+    }
+  }
+);
+
+router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+  try {
+    const cohortId = req.params.id;
+    const cohortName = req.body.name;
+
+    const queryText = `
+      UPDATE "cohorts"
+      SET "name" = $1
+      WHERE "id" = $2
+      `;
+
+    await pool.query(queryText, [cohortName, cohortId]);
+    res.sendStatus(204);
+  } catch (error) {
+    res.sendStatus(500);
+    console.log("Error updating cohort :", error);
   }
 });
 

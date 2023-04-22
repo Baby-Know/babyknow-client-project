@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux"
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 
 function MyPathPage () {
     const user = useSelector(store => store.user);
@@ -36,13 +36,11 @@ function MyPathPage () {
             totalRequired++
 
         }
-        {unit[0] ? units.push( {name: unit[0].name, progress: completed/required * 100} )  : null }
+        {unit[0] ? units.push({name: unit[0].name, progress: Math.round(completed/required * 100)})  : null }
     
     }
 
-    console.log(progressArrays)
-
-
+    const totalProgress = Math.round(totalCompleted/totalRequired * 100)
 
     return (
     <div id="pathPage">
@@ -62,20 +60,26 @@ function MyPathPage () {
                     <div>{teacher.email}</div>
                     <div>{teacher.organization}</div>
             </div>
-            <div className="pathContent">
+            <div id="pathProgress">
                 <h2>My Progress</h2>
 
+                    <div id="unitProgress">
                     {units.map((unit, i) => {
                         return (
-                            <div key={i}>
-                                <h3>{unit.name}</h3>
-                                <div>{unit.progress} % </div>
-                            </div>
+                                <div>
+                                    <h3>{unit.name}</h3>
+                                    <div id="pie" style={{ width: '80px', height: '80px', background: `linear-gradient( -45deg, #276184 ${unit.progress}%, #2b3d53 0% )`, border: '4px solid #276184', borderRadius: '50%' }}  />
+                                    <h3>{unit.progress} %</h3>
+                                
+                                </div>
                         )
                     })}
+                    </div>
                 
                     <h3>Total Progress</h3>
-                        <div>{totalCompleted/totalRequired * 100} %</div>
+                    <div id="pie" style={{ margin: 'auto', width: '160px', height: '160px', background: `linear-gradient( -45deg, #276184 ${totalProgress}%, #2b3d53 0% )`, border: '4px solid #276184', borderRadius: '50%' }}  />
+                    <h3>{totalProgress}%</h3>
+                    
             </div>
         </div>
     </div>
