@@ -2,7 +2,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import { Box, useTheme } from "@mui/system";
 import { tokens } from "../../../theme";
 import {
