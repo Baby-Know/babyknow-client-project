@@ -28,7 +28,7 @@ function UnitOverviewPage () {
     return (
         <div id="overviewPage">
             <h2>{student.firstName} {student.lastName}</h2>
-            <h1>Unit Overview Page</h1>
+            <h1>{unit[0] ? unit[0].unitName : 'Unit' } Overview</h1>
             {unit.map((lesson, i) => {
                 return (
                     <div key={i}>

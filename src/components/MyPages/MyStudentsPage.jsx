@@ -48,15 +48,21 @@ function MyStudentsPage () {
     return (
 
         <div id="myStudentsPage">
-            <h1 id="myStudentsTitle">My Students</h1>
 
-            {myStudents[0]? <h2>{myStudents[0].cohort} Students</h2> : <h2>Students</h2>}
+            {myStudents[0] ? <h1 id="myStudentsTitle">{myStudents[0].cohort} Students</h1> : <h1 id="myStudentsTitle">Students</h1>}
+
+            <div id="studentListRowTop">
+                <h3 className="studentListContent" style={{fontSize:'16px'}}>first name</h3> 
+                <h3 className="studentListContent" style={{fontSize:'16px'}}>last name</h3>
+                <h3 className="studentListContent" style={{fontSize:'16px'}}>email</h3>
+            </div>
 
             {myStudents?.map((student, i) => {
                 return (
                     <div id="studentListRow" onClick={() => selectStudent(student.id)} style={{ cursor:'pointer'}} key={i}>
-                        <h3>{student.firstName} {student.lastName}</h3>
-                        <h3>{student.email}</h3>
+                        <h3 className="studentListContent" style={{fontSize:'12px'}}>{student.firstName}</h3> 
+                        <h3 className="studentListContent" style={{fontSize:'12px'}}>{student.lastName}</h3>
+                        <h3 className="studentListContent" style={{fontSize:'12px'}}>{student.email}</h3>
                     </div>
                 )
             })}
@@ -64,12 +70,11 @@ function MyStudentsPage () {
             <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                // bruh what tf is this
                 isOptionEqualToValue={(option, value) => option.id === value.id}    
                 onChange={(event, newValue) => setStudentIdToAdd(newValue.studentId)}
                 options={selectableStudents || []}
-                sx={{ margin:'auto', width: 300, backgroundColor:'white' }}
-                renderInput={(params) => <TextField {...params} label="Search Students" variant="standard" />}
+                sx={{ margin:'auto', width: 300, backgroundColor:'white', borderRadius:'4px' }}
+                renderInput={(params) => <TextField {...params} label="Search Students To Add" variant="standard" />}
             />
             <div><Button sx={{backgroundColor: 'white', border: '2px solid black'}} onClick={addStudent}>Add Student</Button></div>
 

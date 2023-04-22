@@ -251,7 +251,7 @@ body,
   margin-top: 16px;
   padding: 2%;
   border-bottom: 2px solid white;
-  width: 50%;
+  width: 70%;
 }
 
 #overviewPage {
@@ -267,11 +267,18 @@ body,
 
 #studentListRow {
   display: flex;
-  justify-content: space-around;
-  width: 30%;
+  justify-content:left;
+  width: 50%;
   margin: auto;
   padding: 16px;
   border-top: 2px solid white;
+}
+#studentListRowTop {
+  display: flex;
+  justify-content:left;
+  width: 50%;
+  margin: auto;
+  padding: 16px;
 }
 
 #required {
@@ -299,5 +306,10 @@ body,
   border-radius: 4px;
   margin-top: 2%;
   margin-bottom: 2%;
+  background-color: #2e415a;
+}
 
+.studentListContent {
+  text-align: left;
+  width: 33%;
 }
