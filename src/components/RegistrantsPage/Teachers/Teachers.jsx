@@ -59,12 +59,13 @@ const Teachers = () => {
       const field = cellValues.field;
       const id = cellValues.id;
 
-      //Finding the new value that the student will be given
+      //Finding the new value that the teacher will be given based upon what field was changed
       const newValue =
         field === "cohort"
           ? modifiedTeachers.allCohorts.find((cohort) => cohort.name === value)
           : accessOptions.find((option) => option.value === value);
 
+      //Changing the teacher's data based upon what field was altered
       field === "cohort"
         ? setModifiedTeachers((prevTeachers) => {
             return {
