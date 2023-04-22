@@ -44,7 +44,7 @@ function CoursePage() {
   useEffect(() => {
     dispatch({ type: "GET_UNITS" });
     dispatch({
-      type: 'GET_USERS_UNITS',
+      type: ' ',
       payload: userId
     });
   }, []);

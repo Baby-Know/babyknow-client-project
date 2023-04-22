@@ -10,6 +10,7 @@ import lessonSaga from './lesson.saga';
 import teachersSaga from './teachers.saga';
 import usersContentSaga from './usersContent.saga';
 import progressSaga from './progress.saga';
+import userUnitSaga from './usersUnits.saga';
 
 // rootSaga is the primary saga.
 // It bundles up all of the other sagas so our project can use them.
@@ -30,6 +31,7 @@ export default function* rootSaga() {
     lessonSaga(),
     teachersSaga(),
     usersContentSaga(),
-    progressSaga()
+    progressSaga(),
+    userUnitSaga(),
   ]);
 }
