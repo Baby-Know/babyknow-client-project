@@ -25,8 +25,9 @@ import RegisterPage from "../RegisterPage/RegisterPage";
 import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
 import MyPathPage from "../MyPages/MyPath";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
-import OverviewPage from "../OverviewPage/OverviewPage";
 import accessLevel from "../../config";
+import OverviewPage from "../OverviewPages/OverviewPage";
+import UnitOverviewPage from "../OverviewPages/UnitOverviewPage";
 
 
 function App() {
@@ -57,7 +58,7 @@ function App() {
                   <CoursePage />
                 </ProtectedRoute>
 
-                <ProtectedRoute exact path="/unit/:id">
+                <ProtectedRoute exact path="/unit/:id/:studentId">
                   <UnitPage />
                 </ProtectedRoute>
 
@@ -73,6 +74,13 @@ function App() {
                   path="/overview/:studentId"
                 >
                   <OverviewPage />
+                </ProtectedRoute>
+
+                <ProtectedRoute
+                  exact
+                  path="/unitOverview/:unitId/:studentId"
+                >
+                  <UnitOverviewPage />
                 </ProtectedRoute>
 
 

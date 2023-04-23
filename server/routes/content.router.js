@@ -163,7 +163,7 @@ router.delete(
       await pool.query(query, params);
       res.sendStatus(200);
     } catch (error) {
-      console.log('Error deleting lesson :', error);
+      console.log('Error deleting content :', error);
       res.sendStatus(500);
     }
   }

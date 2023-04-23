@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CheckIcon from "@mui/icons-material/Check";
-import { Select, MenuItem, Tooltip } from "@mui/material";
+import { Select, MenuItem, Tooltip, Button } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
+import CohortsList from "./CohortsList/CohortsList";
 
 const Teachers = () => {
   const dispatch = useDispatch();
@@ -58,12 +59,13 @@ const Teachers = () => {
       const field = cellValues.field;
       const id = cellValues.id;
 
-      //Finding the new value that the student will be given
+      //Finding the new value that the teacher will be given based upon what field was changed
       const newValue =
         field === "cohort"
           ? modifiedTeachers.allCohorts.find((cohort) => cohort.name === value)
           : accessOptions.find((option) => option.value === value);
 
+      //Changing the teacher's data based upon what field was altered
       field === "cohort"
         ? setModifiedTeachers((prevTeachers) => {
             return {
@@ -270,7 +272,7 @@ const Teachers = () => {
     { field: "id", headerName: "ID", hide: true, filterable: false },
   ];
   return (
-    <Box>
+    <Box display="flex" justifyContent="space-between">
       <Box
         //All styling on the table and box holding it
         mt="15px"
@@ -310,6 +312,7 @@ const Teachers = () => {
           }}
         />
       </Box>
+      <CohortsList />
     </Box>
   );
 };

@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import AddUnitForm from "./AddUnitForm/AddUnitForm";
-import AddCohortForm from "./AddCohortForm/AddCohortForm";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
-import DragHandleIcon from '@mui/icons-material/DragHandle';
+import DragHandleIcon from "@mui/icons-material/DragHandle";
 import {
   Box,
   Button,
@@ -104,8 +103,8 @@ function CoursePage() {
   };
 
   const selectUnit = (id) => {
-    history.push(`/unit/${id}`);
-  };
+    history.push(`/unit/${id}/${user.id}`)
+  }
 
 
   const swapUnits = (otherUnitToSwap) => {
@@ -129,31 +128,52 @@ function CoursePage() {
         "& .MuiButton-sizeMedium:hover": {
           backgroundColor: colors.tealAccent[700],
         },
-        display: 'box',
-        gridTemplateColumns: 'repeat(3, 1fr)'
+        display: "box",
+        gridTemplateColumns: "repeat(3, 1fr)",
       }}
-      className="container">
-      <h1 style={{ marginLeft: 20 }} >Course</h1>
-      <h2 style={{ marginLeft: 20 }} >Welcome, {user.firstName}!</h2>
+      className="container"
+    >
+      <h1 style={{ marginLeft: 20 }}>Course</h1>
+      <h2 style={{ marginLeft: 20 }}>Welcome, {user.firstName}!</h2>
       <AddUnitForm />
-      <AddCohortForm />
 
       <div>
         <Grid
           container
           m={4}
-          sx={{ display: 'flex', justifyContent: 'space-around', marginLeft: 0 }}
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            marginLeft: 0,
+          }}
         >
           {units.map((unit, i) => {
             //Variable to check if this card is currently being edited
             const isCurrentlyEditing = updatedUnitToSend.id === unit.id;
             return (
-              <div id='unitGrid' key={i} style={{ display: 'grid', justifyContent: 'space-between', cursor: 'pointer', marginLeft: 100, marginRight: 100, marginBottom: 25, marginTop: 25 }} >
+              <div
+                id="unitGrid"
+                key={i}
+                style={{
+                  display: "grid",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  marginLeft: 100,
+                  marginRight: 100,
+                  marginBottom: 25,
+                  marginTop: 25,
+                }}
+              >
                 {isCurrentlyEditing ? (
                   <form>
                     <Card
                       key={unit.id}
-                      sx={{ maxWidth: 320, maxHeight: 1000, justifyContent: 'center', backgroundColor: 'rgb(245, 245, 245)' }}
+                      sx={{
+                        maxWidth: 320,
+                        maxHeight: 1000,
+                        justifyContent: "center",
+                        backgroundColor: "rgb(245, 245, 245)",
+                      }}
                     >
                       <CardContent>
                         <TextField
@@ -189,8 +209,7 @@ function CoursePage() {
                         />
                       </CardContent>
                       <>
-                        <IconButton
-                          onClick={postEditedUnit}>
+                        <IconButton onClick={postEditedUnit}>
                           <DoneIcon />
                         </IconButton>
                         <IconButton onClick={cancelEdit}>
@@ -200,17 +219,47 @@ function CoursePage() {
                     </Card>
                   </form>
                 ) : (
-                  <Card draggable={user.access === 3 ? 'true' : 'false'} onDragStart={() => setUnitToSwap({ id: unit.id, order: unit.unitOrder })} onDragOver={(event) => event.preventDefault()} onDrop={() => swapUnits({ id: unit.id, order: unit.unitOrder })} key={unit.id} sx={{ width: 200, height: 200, textAlign: 'center', justifyContent: 'center', backgroundColor: 'rgb(245, 245, 245)' }}>
-                    {user.access === 3 ?
-                      <IconButton>
-                        <DragHandleIcon sx={{ 'cursor': 'grab' }} />
-                      </IconButton> : <></>
+                  <Card
+                    draggable={user.access === 3 ? "true" : "false"}
+                    onDragStart={() =>
+                      setUnitToSwap({ id: unit.id, order: unit.unitOrder })
                     }
-                    <CardContent sx={{ mb: 2 }} onClick={() => selectUnit(unit.id)}>
-                      <p style={{ marginTop: '0', fontWeight: 'bold', fontSize: 18 }} >{unit.name}</p>
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() =>
+                      swapUnits({ id: unit.id, order: unit.unitOrder })
+                    }
+                    key={unit.id}
+                    sx={{
+                      width: 200,
+                      height: 200,
+                      textAlign: "center",
+                      justifyContent: "center",
+                      backgroundColor: "rgb(245, 245, 245)",
+                    }}
+                  >
+                    {user.access === 3 ? (
+                      <IconButton>
+                        <DragHandleIcon sx={{ cursor: "grab" }} />
+                      </IconButton>
+                    ) : (
+                      <></>
+                    )}
+                    <CardContent
+                      sx={{ mb: 2 }}
+                      onClick={() => selectUnit(unit.id)}
+                    >
+                      <p
+                        style={{
+                          marginTop: "0",
+                          fontWeight: "bold",
+                          fontSize: 18,
+                        }}
+                      >
+                        {unit.name}
+                      </p>
                       <p>{unit.subtitle}</p>
-                    </CardContent >
-                    {user.access === 3 ?
+                    </CardContent>
+                    {user.access === 3 ? (
                       <>
                         <IconButton
                           onClick={() => {
@@ -227,7 +276,10 @@ function CoursePage() {
                         <IconButton onClick={() => deleteUnit(unit.id)}>
                           <DeleteForeverIcon />
                         </IconButton>
-                      </> : <></>}
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </Card>
                 )}
               </div>
@@ -236,8 +288,8 @@ function CoursePage() {
         </Grid>
       </div>
 
-      {user.access === 3 ?
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
+      {user.access === 3 ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
           <Button
             sx={{ margin: 10 }}
             onClick={() => {
@@ -246,27 +298,15 @@ function CoursePage() {
                 payload: true,
               });
             }}
-
           >
             Add Unit
           </Button>
-          <Button
-            sx={{ margin: 10 }}
-            onClick={() => {
-              dispatch({
-                type: "SET_SHOW_ADD_COHORT",
-                payload: true,
-              });
-            }}
-
-          >
-            Add Cohort
-          </Button>
-        </div> : <></>}
-
+        </div>
+      ) : (
+        <></>
+      )}
     </Box>
   );
 }
 
-// this allows us to use <App /> in index.js
 export default CoursePage;

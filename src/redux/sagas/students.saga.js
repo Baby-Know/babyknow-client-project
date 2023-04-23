@@ -50,6 +50,15 @@ function* getStudentsByTeacher(action) {
   }
 }
 
+function* getStudent(action) {
+  try {
+    let response = yield axios.get(`/api/students/overview/${action.payload}`);
+    yield put({ type: "SET_STUDENT", payload: response.data });
+  } catch (error) {
+    console.error("Error getting students", error);
+  }
+}
+
 function* updateStudentCohort(action) {
   try {
     yield axios.put(`/api/students`, action.payload);
@@ -64,6 +73,7 @@ function* studentsSaga() {
   yield takeLatest("UPDATE_STUDENT", updateStudent);
   yield takeLatest("DELETE_STUDENT", deleteStudent);
   yield takeLatest("GET_STUDENTS_BY_TEACHER", getStudentsByTeacher);
+  yield takeLatest("GET_STUDENT", getStudent);
   yield takeLatest("UPDATE_STUDENT_COHORT", updateStudentCohort);
 }
 

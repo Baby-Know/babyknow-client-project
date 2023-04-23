@@ -5,8 +5,6 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 
-
-
 const CommentBox = ({ userId, contentId, userContentId }) => {
     const user = useSelector((store) => store.user);
     const dispatch = useDispatch();
