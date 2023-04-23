@@ -134,7 +134,7 @@ function ContentPage() {
         <>
             <span>
                 <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
-                    <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}`}>
+                    <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}/${userId}`}>
                         <h3>{content?.unitName}</h3>
                     </Link>
                     <Typography color="text.primary">{content?.lessonName}</Typography>

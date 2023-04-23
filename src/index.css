@@ -130,7 +130,7 @@ body,
   font-size: xx-large;
 }
 
-#incomplete {
+#incompleted {
   position: absolute;
   left: -66px;
   top: 16px;
@@ -276,7 +276,7 @@ body,
   margin-top: 16px;
   padding: 2%;
   border-bottom: 2px solid white;
-  width: 50%;
+  width: 70%;
 }
 
 #overviewPage {
@@ -292,9 +292,53 @@ body,
 
 #studentListRow {
   display: flex;
-  justify-content: space-around;
-  width: 30%;
+  justify-content:left;
+  width: 50%;
   margin: auto;
   padding: 16px;
   border-top: 2px solid white;
+}
+#studentListRowTop {
+  display: flex;
+  justify-content:left;
+  width: 50%;
+  margin: auto;
+  padding: 16px;
+}
+
+#required {
+  width: 24px;
+  height: 24px;
+  border: 1px solid white;
+  border-radius: 2px;
+  margin-bottom: 0px;
+  margin-left: 8px;
+  color: rgb(0, 200, 0);
+  position: absolute;
+  left: 38%;
+}
+
+#contentOverview {
+  display: flex;
+  justify-content: center;
+}
+
+#contentOverviewRow {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  border: 2px solid white;
+  border-radius: 4px;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  background-color: #2e415a;
+}
+
+.studentListContent {
+  text-align: left;
+  width: 33%;
+}
+
+#photoIcon {
+  cursor: pointer;
 }
