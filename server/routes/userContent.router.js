@@ -44,7 +44,7 @@ router.get('/:userId/:contentId', rejectUnauthenticated, async (req, res) => {
     res.send(userContent);
   } catch (error) {
     res.sendStatus(500);
-    console.log('Error getting user-content:', error);
+    console.log('Error getting user-content', error);
   }
 });
 

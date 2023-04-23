@@ -1,3 +1,4 @@
+
 import { combineReducers } from "redux";
 import errors from "./errors.reducer";
 import user from "./user.reducer";
@@ -11,6 +12,7 @@ import loadingReducer from "./loading.reducer";
 import lessonsReducer from "./lessons.reducer";
 import userContentReducer from "./userContent.reducer";
 import progressReducer from "./progress.reducer";
+import userUnitReducer from './userUnit.reducer';
 import cohortReducer from "./cohort.reducer";
 
 // rootReducer is the primary reducer for our entire project
@@ -32,6 +34,7 @@ const rootReducer = combineReducers({
   lessonsReducer,
   userContentReducer,
   progressReducer,
+  userUnitReducer,
   cohortReducer,
 });
 
