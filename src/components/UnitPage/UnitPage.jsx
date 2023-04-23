@@ -225,8 +225,8 @@ function UnitPage() {
                                                             {progressByLesson[i][index]?.isRequired ?
                                                                 <>
                                                                     {progressByLesson[i][index]?.isComplete ?
-                                                                        <div id="completed">✓</div> :
-                                                                        <div id="incomplete"></div>
+                                                                        <div id="require">✓</div> :
+                                                                        <div id="require"></div>
                                                                     }
                                                                 </> :
                                                                 <></>
