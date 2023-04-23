@@ -23,9 +23,10 @@ import AddContentForm from './AddContentForm/AddContentForm';
 import LoadingBar from '../LoadingBar/LoadingBar';
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
+import accessLevel from "../../config";
 
 function UnitPage() {
-    const { id } = useParams();
+    const { id, studentId } = useParams();
     const dispatch = useDispatch();
     const history = useHistory();
     const unit = useSelector(store => store.unit);
@@ -33,10 +34,8 @@ function UnitPage() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const [selectedId, setSelectedId] = useState(0);
-    const [selectedUnitId, setSelectedUnitId] = useState(0);
-
     const isLoading = useSelector((store) => store.loadingReducer);
+    const progressByLesson = useSelector((store) => store.progressReducer);
 
     const [lessonToEdit, setLessonToEdit] = useState({ id: 0, lessonName: '', lessonDescription: '' });
     const [contentToEdit, setContentToEdit] = useState({ id: 0, contentName: '', contentDescription: '' });
@@ -44,21 +43,21 @@ function UnitPage() {
     const [contentToSwap, setContentToSwap] = useState({ contentId: 0, lessonId: 0, order: 0 });
     const [swappingContent, setSwappingContent] = useState(false);
     const [draggable, setDraggable] = useState(true);
+    const [unitId, setUnitId] = useState(0);
+    const [lessonId, setLessonId] = useState(0);
 
     useEffect(() => {
         dispatch({
             type: "GET_UNIT",
             payload: id
         });
+        dispatch({
+            type: "GET_STUDENTS_UNIT_PROGRESS",
+            payload: { studentId: studentId, unitId: id }
+        });
     }, []);
 
     const selectContent = (unitId, lessonId, contentId) => {
-        // const userContent = { userId: user.id, contentId: contentId, isComplete: false, media: '', comment: '' };
-        // dispatch({
-        //     type: "POST_USER_CONTENT",
-        //     payload: { userContent }
-        // });
-        // console.log('Post userContent unit page', userContent);
         history.push({
             pathname: `/unit/${unitId}/lesson/${lessonId}/content/${contentId}`
         });
@@ -113,7 +112,7 @@ function UnitPage() {
                 type: "SWAP_LESSONS",
                 payload: { lessonId: otherLessonToSwap.lessonId, order: lessonToSwap.order, unitId: otherLessonToSwap.unitId }
             });
-        } 
+        }
     };
 
     const swapContent = (otherContentToSwap) => {
@@ -148,7 +147,7 @@ function UnitPage() {
             {isLoading ?
                 <LoadingBar />
                 :
-                <AddContentForm selectedId={selectedId} selectedUnitId={selectedUnitId} />
+                <AddContentForm unitId={unitId} lessonId={lessonId} />
             }
 
             {unit.map((lesson, i) => {
@@ -167,7 +166,7 @@ function UnitPage() {
                         <Accordion id="accordion" >
                             {/* lesson header */}
                             <AccordionSummary
-                                draggable={user.access === 3 && draggable ? 'true' : 'false'}
+                                draggable={user.access === accessLevel.admin && draggable ? 'true' : 'false'}
                                 onDragStart={() => {
                                     setLessonToSwap({ lessonId: lesson.lessonId, order: lesson.lessonOrder });
                                     setSwappingContent(false);
@@ -176,7 +175,7 @@ function UnitPage() {
                                 onDrop={() => swapLessons({ lessonId: lesson.lessonId, order: lesson.lessonOrder, unitId: lesson.unitId })}
                                 expandIcon={<ExpandMoreIcon sx={{ color: '#276184' }} />}
                             >
-                                {draggable ?
+                                {draggable && user.access === accessLevel.admin ?
                                     <IconButton sx={{ padding: '0', marginRight: '16px', color: '#276184' }}>
                                         <DragHandleIcon sx={{ 'cursor': 'grab' }} />
                                     </IconButton> : <></>}
@@ -211,7 +210,7 @@ function UnitPage() {
                                             {/* content row within a lesson */}
                                             {lesson.contentId[index] === null ? <></> :
                                                 <div id='content'
-                                                    draggable={user.access === 3 && draggable ? 'true' : 'false'}
+                                                    draggable={user.access === accessLevel.admin && draggable ? 'true' : 'false'}
                                                     onDragStart={() => {
                                                         setContentToSwap({ contentId: id, lessonId: lesson.lessonId, order: unit[i].contentOrder[index] });
                                                         setSwappingContent(true);
@@ -220,21 +219,24 @@ function UnitPage() {
                                                     onDrop={() => swapContent({ contentId: id, order: unit[i].contentOrder[index], lessonId: lesson.lessonId, unitId: lesson.unitId })}
                                                 >
 
-                                                    {/* is required? */}
-                                                    {lesson.contentIsRequired[index] ?
-                                                    <>
-                                                        {/* is complete? */}
-                                                        {lesson.contentIsComplete[index] ? 
-                                                        <div id="completed">✓</div> :
-                                                        <div id="incomplete"></div>
-                                                        } 
-                                                    </> : 
-                                                    <></>
+                                                    {/* is required? is complete?  */}
+                                                    {progressByLesson[i] === undefined ? <></> :
+                                                        <>
+                                                            {progressByLesson[i][index]?.isRequired ?
+                                                                <>
+                                                                    {progressByLesson[i][index]?.isComplete ?
+                                                                        <div id="completed">✓</div> :
+                                                                        <div id="incomplete"></div>
+                                                                    }
+                                                                </> :
+                                                                <></>
+                                                            }
+                                                        </>
                                                     }
-            
-                                                    {draggable && user.access === 3 ?
+
+                                                    {draggable && user.access === accessLevel.admin ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
-                                                            <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom:'auto', }} />
+                                                            <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom: 'auto', }} />
                                                         </IconButton> : <></>}
 
                                                     {/* content shown on screen */}
@@ -277,7 +279,7 @@ function UnitPage() {
                                                     }
 
                                                     {/* icons for content */}
-                                                    {user.access === 3 ?
+                                                    {user.access === accessLevel.admin ?
                                                         <div id='contentIcons'>
                                                             {id !== contentToEdit.id ?
                                                                 <>
@@ -306,17 +308,17 @@ function UnitPage() {
                                 })}
 
                                 {/* button to add content row */}
-                                {lesson.lessonName && user.access === 3 ?
+                                {lesson.lessonName && user.access === accessLevel.admin ?
                                     <div id='lessonBottom'>
                                         {/* button to add content row */}
                                         <Button onClick={() => {
                                             dispatch({
                                                 type: "SET_SHOW_ADD_CONTENT",
                                                 payload: true,
-                                            })
+                                            });
+                                            setUnitId(lesson.unitId);
+                                            setLessonId(lesson.lessonId);
 
-                                            setSelectedId(lesson.lessonId);
-                                            setSelectedUnitId(lesson.unitId)
                                         }}>
                                             Add Content to {lesson.lessonName}
                                         </Button>
@@ -360,7 +362,7 @@ function UnitPage() {
 
             <div id="addLessonParent">
 
-                    {user.access === 3 ?
+                {user.access === accessLevel.admin ?
                     <Button
                         id='addLesson'
                         onClick={() => {
@@ -373,6 +375,12 @@ function UnitPage() {
                         Add Lesson
                     </Button> : <></>}
             </div>
+
+            <Button type="button"
+                className="btn btn_asLink"
+                onClick={() => history.push(`/course`)}>
+                <Typography variant="body1">Back</Typography>
+            </Button>
 
 
         </Box>

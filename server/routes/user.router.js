@@ -37,9 +37,6 @@ router.post("/register", async (req, res, next) => {
         access,
         organization,
       ])
-    const cohortQuery = `INSERT INTO "users_cohorts" ("user_id")
-      VALUES ($1)`
-      pool.query(cohortQuery, [results.rows[0].id])
       res.sendStatus(201)
     }
     catch (err) {

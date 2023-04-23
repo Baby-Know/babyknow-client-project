@@ -1,4 +1,4 @@
-const userContentReducer = (state = [], action) => {
+const userContentReducer = (state = {}, action) => {
   switch (action.type) {
     case 'SET_USER_CONTENT':
       return action.payload;

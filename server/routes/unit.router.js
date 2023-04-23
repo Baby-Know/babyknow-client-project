@@ -39,12 +39,10 @@ router.get("/:id", rejectUnauthenticated, async (req, res) => {
         ARRAY_AGG("content".description ORDER BY "contentOrder" ASC) AS "contentDescription", 
         ARRAY_AGG("contentOrder" ORDER BY "contentOrder" ASC) AS "contentOrder", 
         ARRAY_AGG("content".id ORDER BY "contentOrder" ASC) AS "contentId",
-        ARRAY_AGG("content"."isRequired" ORDER BY "contentOrder" ASC) AS "contentIsRequired",
-        ARRAY_AGG("users_content"."isComplete" ORDER BY "contentOrder" ASC) AS "contentIsComplete"
+        ARRAY_AGG("content"."isRequired" ORDER BY "contentOrder" ASC) AS "contentIsRequired"
     FROM "units"
     LEFT JOIN "lessons" ON "lessons".units_id = "units".id
     LEFT JOIN "content" ON "content".lessons_id = "lessons".id
-    LEFT JOIN "users_content" ON "users_content".content_id = "content".id
     WHERE "units".id = $1
     GROUP BY 
         "units".id, 
