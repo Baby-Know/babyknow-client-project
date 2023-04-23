@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-
+import babyfeet from './babyfeet.avif'
 function AboutPage() {
 
 
@@ -37,7 +37,21 @@ function AboutPage() {
         </p>
       </Box>
 
-
+      <Box
+        sx={{
+          justifyContent: "center",
+          alignItems: "center",
+          maxWidth: '100%',
+          height: 'auto',
+        }}
+      >
+        <img style={{
+        display: 'block', 
+        marginLeft:'auto', 
+        marginRight:'auto', 
+        width: '40%', 
+        border: '3px solid black'}} src={babyfeet}/>
+      </Box>
 
 
       <Box
