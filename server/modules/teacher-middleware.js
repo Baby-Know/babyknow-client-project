@@ -1,6 +1,8 @@
+import accessLevel from '../../src/config';
+
 const rejectStudent = (req, res, next) => {
   // check if logged in
-  if (req.user.access >= 2) {
+  if (req.user.access >= accessLevel.teacher) {
     // They are admins! User may do the next thing
     next();
   } else {

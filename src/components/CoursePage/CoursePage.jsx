@@ -232,7 +232,7 @@ function CoursePage() {
                   </form>
                 ) : (
                   <Card
-                    draggable={user.access === 3 ? "true" : "false"}
+                    draggable={user.access === accessLevel.admin ? "true" : "false"}
                     onDragStart={() =>
                       setUnitToSwap({ id: unit.id, order: unit.unitOrder })
                     }
@@ -249,7 +249,7 @@ function CoursePage() {
                       backgroundColor: "rgb(245, 245, 245)",
                     }}
                   >
-                    {user.access === 3 ? (
+                    {user.access === accessLevel.admin ? (
                       <IconButton>
                         <DragHandleIcon sx={{ cursor: "grab" }} />
                       </IconButton>
@@ -271,7 +271,7 @@ function CoursePage() {
                       </p>
                       <p>{unit.subtitle}</p>
                     </CardContent>
-                    {user.access === 3 ? (
+                    {user.access === accessLevel.admin ? (
                       <>
                         <IconButton
                           onClick={() => {
@@ -300,7 +300,7 @@ function CoursePage() {
         </Grid>
       </div>
 
-      {user.access === 3 ? (
+      {user.access === accessLevel.admin ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
           <Button
             sx={{ margin: 10 }}

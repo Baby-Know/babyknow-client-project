@@ -7,6 +7,7 @@ import { tokens, ColorModeContext } from "../../theme";
 import { IconButton, Button, Box, Typography } from "@mui/material";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import accessLevel from "../../src/config";
 
 function Nav() {
   const theme = useTheme();
@@ -86,13 +87,13 @@ function Nav() {
             </Button>
 
             {/* conditionally renders registrants, my students, my teacher or contacts page */}
-            {user.access === 3 ?
+            {user.access === accessLevel.admin ?
               <Button onClick={() => history.push("/registrants")}>
                 <Typography variant="body1">Registrants</Typography>
-              </Button> : user.access === 2 ?
+              </Button> : user.access === accessLevel.teacher ?
                 <Button onClick={() => history.push("/myStudents")}>
                   <Typography variant="body1">My Students</Typography>
-                </Button> : user.access === 1 ?
+                </Button> : user.access === accessLevel.student ?
                   <Button onClick={() => history.push("/myPath")}>
                     <Typography variant="body1">My Path</Typography>
                   </Button> :
@@ -108,7 +109,7 @@ function Nav() {
             >
               <Typography variant="body1">About</Typography>
             </Button>
-            
+
 
             {/* logout */}
             <Button onClick={() => dispatch({ type: "LOGOUT" })}>
