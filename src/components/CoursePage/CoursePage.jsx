@@ -201,17 +201,6 @@ function CoursePage() {
                           autoFocus
                           margin="dense"
                           fullWidth
-                          type="number"
-                          label="Unit Order"
-                          value={updatedUnitToSend.unitOrder}
-                          onChange={(event) =>
-                            handleEditField(event, "unitOrder")
-                          }
-                        />
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          fullWidth
                           type="text"
                           label="Unit Subtitle"
                           value={updatedUnitToSend.subtitle}
