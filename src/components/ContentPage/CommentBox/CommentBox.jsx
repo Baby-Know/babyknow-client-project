@@ -13,7 +13,6 @@ const CommentBox = ({ userId, contentId, userContentId }) => {
 
     //Submit student comment
     const submitComment = () => {
-        console.log(newComment);
         dispatch({
             type: 'POST_COMMENT',
             payload: { userContentId, newComment, userId, contentId }
@@ -51,11 +50,11 @@ const CommentBox = ({ userId, contentId, userContentId }) => {
                     onChange={(event) => setNewComment(event.target.value)}>
                 </TextareaAutosize>
                 <div>
-                    <Button sx={{ backgroundColor: 'teal' }} className="studentCommentButton" disabled={newComment.length < 1}
+                    <Button sx={{ backgroundColor: 'white', marginLeft: '8px' }} className="studentCommentButton" disabled={newComment.length < 1}
                         onClick={() => {
                             submitComment();
                         }}> Submit</Button>
-                    <Button sx={{ backgroundColor: 'orange' }} className="studentCommentButton" onClick={() => {
+                    <Button sx={{ backgroundColor: '#276184', color: 'white' }} className="studentCommentButton" onClick={() => {
                         handleCancel();
                     }}>Cancel</Button>
                 </div>
