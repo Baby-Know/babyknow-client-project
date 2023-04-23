@@ -26,6 +26,7 @@ import RegistrantsPage from "../RegistrantsPage/RegistrantsPage";
 import MyPathPage from "../MyPages/MyPath";
 import MyStudentsPage from "../MyPages/MyStudentsPage";
 import OverviewPage from "../OverviewPage/OverviewPage";
+import accessLevel from "../../config";
 
 
 function App() {
@@ -76,7 +77,7 @@ function App() {
 
 
                 <ProtectedRoute exact path="/registrants">
-                  {user.access === 3 ? (
+                  {user.access === accessLevel.admin ? (
                     <RegistrantsPage />
                   ) : (
                     <Redirect to="/about" />
@@ -84,7 +85,7 @@ function App() {
                 </ProtectedRoute>
 
                 <ProtectedRoute exact path="/myStudents">
-                  {user.access === 2 ? (
+                  {user.access === accessLevel.teacher ? (
                     <MyStudentsPage />
                   ) : (
                     <Redirect to="/about" />
@@ -92,7 +93,7 @@ function App() {
                 </ProtectedRoute>
 
                 <ProtectedRoute exact path="/myPath">
-                  {user.access === 1 ? (
+                  {user.access === accessLevel.student ? (
                     <MyPathPage />
                   ) : (
                     <Redirect to="/about" />

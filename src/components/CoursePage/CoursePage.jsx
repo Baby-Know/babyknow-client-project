@@ -27,7 +27,7 @@ function CoursePage() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const user = useSelector((store) => store.user);
-  const units = useSelector((store) => store.unit);
+  const allUnits = useSelector((store) => store.unit);
   const userUnits = useSelector((store) => store.userUnitReducer);
 
   //Updated unit to send to the database
@@ -43,14 +43,25 @@ function CoursePage() {
   const userId = user.id;
 
   useEffect(() => {
+    //get all units
     dispatch({ type: "GET_UNITS" });
+    //get IDs of units user has access to
     dispatch({
       type: 'FETCH_USER_UNIT',
       payload: { userId: userId }
     });
   }, []);
 
-  console.log('userId, userUnits', userId, userUnits);
+
+  //If a user's access level is that of a student, map over all available units and include only
+  //the units that have a matching ID to what the user has access to. This will create a curated
+  //units array to render
+  let units = [];
+
+  user.access === accessLevel.student ?
+    allUnits.map((unit, i) => {
+      userUnits.includes(unit.id) ? units.push(unit) : <></>;
+    }) : units = allUnits;
 
   //Function to set the updatedUnitToSend's initial values to the current values
   const handleEditField = (event, key) => {
