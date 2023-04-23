@@ -51,16 +51,19 @@ function CoursePage() {
     });
   }, []);
 
-
+  //If a user's access level is that of newRigistrant, show no units
   //If a user's access level is that of a student, map over all available units and include only
   //the units that have a matching ID to what the user has access to. This will create a curated
   //units array to render
   let units = [];
 
-  user.access === accessLevel.student ?
+  if (user.access === accessLevel.newRegistrant) {
+    units = [];
+  } else if (user.access === accessLevel.student) {
     allUnits?.map((unit, i) => {
       userUnits?.includes(unit.id) ? units.push(unit) : <></>;
-    }) : units = allUnits;
+    });
+  } else units = allUnits;
 
   //Function to set the updatedUnitToSend's initial values to the current values
   const handleEditField = (event, key) => {
@@ -103,8 +106,8 @@ function CoursePage() {
   };
 
   const selectUnit = (id) => {
-    history.push(`/unit/${id}/${user.id}`)
-  }
+    history.push(`/unit/${id}/${user.id}`);
+  };
 
 
   const swapUnits = (otherUnitToSwap) => {
@@ -133,8 +136,17 @@ function CoursePage() {
       }}
       className="container"
     >
-      <h1 style={{ marginLeft: 20 }}>Course</h1>
+      <h1 style={{ marginLeft: 20 }}>Courses</h1>
       <h2 style={{ marginLeft: 20 }}>Welcome, {user.firstName}!</h2>
+
+      {/* If new registrant, display this greeting */}
+      {user.access === accessLevel.newRegistrant ?
+        <Card id="content">
+          <h3>Thank you for joining Baby Know!</h3>
+          <p>Your account has been registered and our administration is working to assign your courses!</p>
+          <p>If you have any questions, please contact us at babyknowprogram@gmail.com</p>
+        </Card> : <></>
+      }
       <AddUnitForm />
 
       <div>
