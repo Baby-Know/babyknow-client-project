@@ -13,7 +13,6 @@ import withReactContent from "sweetalert2-react-content";
 
 function ContentPage() {
     const { unitId, lessonId, contentId } = useParams();
-    console.log('unitId', unitId, "lessonId", lessonId, "contentId", contentId);
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -50,7 +49,7 @@ function ContentPage() {
         } else if (content.contentContent) {
             return (
                 <Card id='videoCard'>
-                    <video width="400" height="300" controls >
+                    <video width="800" height="600" controls >
                         <source src={`${content?.contentContent}`} type="video/mp4"></source>
                     </video>
                 </Card>
@@ -86,7 +85,6 @@ function ContentPage() {
             payload: { userContentId, bool, userId, contentId }
         });
     };
-    console.log('userContent', userContent.id);
 
     //handling the checkbox toggling
     const [isCompleteControl, setIsCompleteControl] = useState(isComplete);
@@ -133,7 +131,7 @@ function ContentPage() {
 
     return (
         <>
-            <span>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Breadcrumbs aria-label="breadcrumb" id='breadCrumbs'>
                     <Link underline="hover" color="inherit" href="/" to={`/unit/${unitId}/${userId}`}>
                         <h3>{content?.unitName}</h3>
@@ -144,16 +142,16 @@ function ContentPage() {
 
                 {content?.contentIsRequired ?
 
-                    <Typography style={{ float: "right", paddingLeft: "2%" }}>
+                    <Typography >
                         Check the box when you've finished the lesson! <Checkbox checked={isComplete ? true : false}
                             onClick={() => toggleComplete(!isComplete)} onChange={handleCompleteToggle}
                         />
                     </Typography> :
                     <></>
                 }
-            </span>
+            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ margin: 'auto' }}>
             <Card id='contentHeader'>
                 {content ?
                     <>
@@ -172,12 +170,12 @@ function ContentPage() {
                 display: 'grid',
                 justifyContent: "center",
                 alignItems: "center",
+                textAlign: 'center',
                 margin: 'auto',
                 width: '50%',
-                height: '100%'
             }}>
 
-                <h2 style={{ paddingLeft: "2%" }}>Student Comments and Media Upload</h2>
+                <h2>Student Comments and Media Upload</h2>
 
                 {userContent?.comment ?
                     <Card id="renderCommentCard">
@@ -201,7 +199,7 @@ function ContentPage() {
 
                         {userContentId !== commentToEdit.id ?
                             <>
-                                <Button sx={{ backgroundColor: 'teal' }}
+                                <Button sx={{ backgroundColor: '#276184' }}
                                     className="studentCommentButton"
                                     onClick={() => setCommentToEdit({ id: userContentId, comment: userContent.comment })}
                                 >Edit</Button>
@@ -244,9 +242,10 @@ function ContentPage() {
             </div>
 
             <Button type="button"
+                sx={{ marginLeft: '90%' , width: '10%', backgroundColor: '#263549', color: 'white' }}
                 className="btn btn_asLink"
                 onClick={() => history.push(`/unit/${unitId}`)}>
-                <Typography variant="body1">Back</Typography>
+                <Typography variant="body1">Return To Unit</Typography>
             </Button>
         </>
     );
