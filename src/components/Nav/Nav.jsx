@@ -7,7 +7,7 @@ import { tokens, ColorModeContext } from "../../theme";
 import { IconButton, Button, Box, Typography } from "@mui/material";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import accessLevel from "../../src/config";
+import accessLevel from "../../config";
 
 function Nav() {
   const theme = useTheme();

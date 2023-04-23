@@ -1,8 +1,6 @@
-import accessLevel from "../../src/config";
-
 const rejectNonAdmin = (req, res, next) => {
   // check if logged in
-  if (req.user.access >= accessLevel.admin) {
+  if (req.user.access >= 3) {
     // They are admins! User may do the next thing
     next();
   } else {
