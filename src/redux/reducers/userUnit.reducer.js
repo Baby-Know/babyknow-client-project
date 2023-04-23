@@ -1,4 +1,4 @@
-const userUnitReducer = (state = [], action) => {
+const userUnitReducer = (state = {}, action) => {
   switch (action.type) {
     case 'SET_USER_UNIT':
       return action.payload;

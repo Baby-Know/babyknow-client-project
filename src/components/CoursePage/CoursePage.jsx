@@ -28,6 +28,7 @@ function CoursePage() {
   const colors = tokens(theme.palette.mode);
   const user = useSelector((store) => store.user);
   const units = useSelector((store) => store.unit);
+  const userUnits = useSelector((store) => store.userUnitReducer);
 
   //Updated unit to send to the database
   const [updatedUnitToSend, setUpdatedUnitToSend] = useState({
@@ -44,10 +45,12 @@ function CoursePage() {
   useEffect(() => {
     dispatch({ type: "GET_UNITS" });
     dispatch({
-      type: ' ',
-      payload: userId
+      type: 'FETCH_USER_UNIT',
+      payload: { userId: userId }
     });
   }, []);
+
+  console.log('userId, userUnits', userId, userUnits);
 
   //Function to set the updatedUnitToSend's initial values to the current values
   const handleEditField = (event, key) => {
