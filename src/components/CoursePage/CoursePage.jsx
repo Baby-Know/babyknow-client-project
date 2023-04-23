@@ -59,8 +59,8 @@ function CoursePage() {
   let units = [];
 
   user.access === accessLevel.student ?
-    allUnits.map((unit, i) => {
-      userUnits.includes(unit.id) ? units.push(unit) : <></>;
+    allUnits?.map((unit, i) => {
+      userUnits?.includes(unit.id) ? units.push(unit) : <></>;
     }) : units = allUnits;
 
   //Function to set the updatedUnitToSend's initial values to the current values
