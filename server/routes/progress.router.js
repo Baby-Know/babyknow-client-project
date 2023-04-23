@@ -77,7 +77,6 @@ router.get("/:studentId/:unitId", async (req, res) => {
           req.params.studentId,
           lesson.lessonId,
         ]);
-        console.log("hell0",results.rows)
         progress[i] = results.rows;
       })
     );

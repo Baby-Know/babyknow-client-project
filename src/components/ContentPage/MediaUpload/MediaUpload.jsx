@@ -13,7 +13,8 @@ function MediaUpload({ userId, contentId, userContentId }) {
     const isLoading = useSelector((store) => store.loadingReducer);
     
 
-    const handleAddMedia = () => {
+    const handleAddMedia = (event) => {
+        event.preventDefault();
         dispatch({ type: 'POST_MEDIA', 
         payload: {mediaToSend, userContentId, userId, contentId }})
     }
