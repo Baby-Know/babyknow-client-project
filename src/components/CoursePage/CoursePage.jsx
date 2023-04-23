@@ -139,8 +139,8 @@ function CoursePage() {
       <h1 style={{ marginLeft: 20 }}>Courses</h1>
       <h2 style={{ marginLeft: 20 }}>Welcome, {user.firstName}!</h2>
 
-      {/* If new registrant, display this greeting */}
-      {user.access === accessLevel.newRegistrant ?
+      {/* If new registrant or student without units assigned, display this greeting */}
+      {user.access === accessLevel.newRegistrant || user.access === accessLevel.student && units === [] ?
         <Card id="content">
           <h3>Thank you for joining Baby Know!</h3>
           <p>Your account has been registered and our administration is working to assign your courses!</p>
