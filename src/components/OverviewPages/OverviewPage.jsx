@@ -9,7 +9,7 @@ function OverviewPage () {
     const { studentId } = useParams()
     const progressArrays = useSelector((store) => store.progressReducer);
     const student = useSelector((store) => store.studentsReducer.studentReducer);
-    console.log(student)
+    console.log('progressA: ', progressArrays)
 
     let totalCompleted = 0;
     let totalRequired = 0;
@@ -27,7 +27,7 @@ function OverviewPage () {
         required++;
         totalRequired++;
       }
-      {unit[0] ? units.push({ id: unit[0].id, name: unit[0].name, progress: Math.round((completed / required) * 100)}) : null}
+      {unit[0] ? units.unshift({ id: unit[0].id, name: unit[0].name, progress: Math.round((completed / required) * 100)}) : null}
     }
 
     const totalProgress = Math.round((totalCompleted / totalRequired) * 100);
