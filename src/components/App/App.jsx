@@ -134,7 +134,24 @@ function App() {
 
                 {/* If none of the other routes matched, we will show a 404. */}
                 <Route>
-                  <h1>404</h1>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center', 
+                    height: '100vh', 
+                    flexDirection: 'column' }}>
+
+                    <h1 style={{ 
+                      fontSize: '3em',
+                       marginBottom: 0 }}
+                       >
+                        404</h1>
+                    <p style={{ 
+                      fontSize: '1.5em',
+                      marginTop: 0 }}
+                      >
+                        Sorry, the page you are looking for could not be found.</p>
+                  </div>
                 </Route>
               </Switch>
               <Footer />

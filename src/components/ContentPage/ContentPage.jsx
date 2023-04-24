@@ -29,14 +29,15 @@ function ContentPage() {
     //on page load get the content title, info, video/survey and the user-specific tracker for complete, comments, media
     useEffect(() => {
         dispatch({
-            type: 'GET_UNIT_LESSON_CONTENT',
-            payload: { unitId: Number(unitId), lessonId: Number(lessonId), contentId: Number(contentId) }
-        });
-        dispatch({
             type: 'FETCH_USER_CONTENT',
             payload: { userId, contentId, userContentId }
         });
-    }, [unitId, lessonId, contentId]);
+        dispatch({
+            type: 'GET_UNIT_LESSON_CONTENT',
+            payload: { unitId: Number(unitId), lessonId: Number(lessonId), contentId: Number(contentId) }
+        });
+        
+    }, [unitId, lessonId, contentId, userContentId]);
 
     const renderCourseContent = () => {
         if (content.contentIsSurvey) {
