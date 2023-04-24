@@ -60,66 +60,77 @@ function CohortsList() {
         backgroundColor: colors.primary[700],
       }}
     >
-      <Typography variant="h2" fontWeight="bold" textAlign="center">
-        All Cohorts
-      </Typography>
+      <Box>
+        <Typography
+          variant="h2"
+          fontWeight="bold"
+          textAlign="center"
+          marginTop="5%"
+        >
+          All Cohorts
+        </Typography>
 
-      {cohorts?.map((cohort, i) => {
-        //Variable to check if this cohort is currently being edited
-        const isCurrentlyEditing = updatedCohortToSend.id === cohort.id;
-        return (
-          <Box
-            key={i}
-            display="flex"
-            justifyContent="space-between"
-            width="70%"
-            margin="auto"
-          >
-            {!isCurrentlyEditing ? (
-              <>
-                <Typography variant="h4">{cohort.name}</Typography>
-                <Box>
-                  <IconButton
-                    onClick={() => {
-                      setUpdatedCohortToSend({
-                        name: cohort.name,
-                        id: cohort.id,
-                      });
-                    }}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(cohort.id)}>
-                    <DeleteForever />
-                  </IconButton>
-                </Box>
-              </>
-            ) : (
-              <>
-                <TextField
-                  key={i}
-                  variant="standard"
-                  value={updatedCohortToSend.name}
-                  onChange={(event) => {
-                    setUpdatedCohortToSend({
-                      ...updatedCohortToSend,
-                      name: event.target.value,
-                    });
-                  }}
-                />
-                <IconButton
-                  onClick={() => setUpdatedCohortToSend({ id: null, name: "" })}
-                >
-                  <Cancel />
-                </IconButton>
-                <IconButton onClick={handleEdit}>
-                  <CheckIcon />
-                </IconButton>
-              </>
-            )}
-          </Box>
-        );
-      })}
+        <Box marginTop="5%" overflow="auto">
+          {cohorts?.map((cohort, i) => {
+            //Variable to check if this cohort is currently being edited
+            const isCurrentlyEditing = updatedCohortToSend.id === cohort.id;
+            return (
+              <Box
+                key={i}
+                display="flex"
+                justifyContent="space-between"
+                width="70%"
+                margin="auto"
+              >
+                {!isCurrentlyEditing ? (
+                  <>
+                    <Typography variant="h4">{cohort.name}</Typography>
+                    <Box>
+                      <IconButton
+                        onClick={() => {
+                          setUpdatedCohortToSend({
+                            name: cohort.name,
+                            id: cohort.id,
+                          });
+                        }}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(cohort.id)}>
+                        <DeleteForever />
+                      </IconButton>
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <TextField
+                      key={i}
+                      variant="standard"
+                      value={updatedCohortToSend.name}
+                      onChange={(event) => {
+                        setUpdatedCohortToSend({
+                          ...updatedCohortToSend,
+                          name: event.target.value,
+                        });
+                      }}
+                    />
+                    <IconButton
+                      onClick={() =>
+                        setUpdatedCohortToSend({ id: null, name: "" })
+                      }
+                    >
+                      <Cancel />
+                    </IconButton>
+                    <IconButton onClick={handleEdit}>
+                      <CheckIcon />
+                    </IconButton>
+                  </>
+                )}
+              </Box>
+            );
+          })}
+        </Box>
+      </Box>
     </Box>
   );
 }

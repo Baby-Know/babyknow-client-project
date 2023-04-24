@@ -275,7 +275,7 @@ const Teachers = () => {
     <Box display="flex" justifyContent="space-between">
       <Box
         //All styling on the table and box holding it
-        mt="15px"
+        ml="2.5%"
         height="70vh"
         width="62vw"
         sx={{
@@ -312,7 +312,9 @@ const Teachers = () => {
           }}
         />
       </Box>
-      <CohortsList />
+      <Box display="flex" alignItems="center" mr="2.5%">
+        <CohortsList />
+      </Box>
     </Box>
   );
 };

@@ -24,7 +24,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
 
     //Mapping over all of the students
     await Promise.all(
-      allStudents.map(async (student) => {
+      allStudents.map(async (student, i) => {
         let studentObject = {
           id: student.id,
           firstName: student.firstName,
@@ -98,7 +98,7 @@ router.get("/", rejectUnauthenticated, rejectStudent, async (req, res) => {
 
         studentObject.studentUnits = usersUnitsResponse.rows;
 
-        studentData.push(studentObject);
+        studentData[i] = studentObject;
       })
     );
     res.send(studentData);
@@ -169,6 +169,14 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
       );
     });
 
+    //Query for selecting the content ids
+    const selectContentIdsText = `
+      SELECT "content".id AS "contentId" FROM "units"
+      JOIN "lessons" ON "lessons".units_id = "units".id
+      JOIN "content" ON "content".lessons_id = "lessons".id
+      WHERE "units".id = $1;
+      `;
+
     //Mapping over and removing the units
     await Promise.all(
       unitsToRemove.map(async (unit) => {
@@ -176,7 +184,7 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
          DELETE FROM "users_units"
          WHERE "users_id" = $1 AND "units_id" = $2;`;
 
-        return connection.query(deleteUsersUnitsQueryText, [
+        return await connection.query(deleteUsersUnitsQueryText, [
           studentId,
           unit.units_id,
         ]);
@@ -185,41 +193,67 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
 
     //Mapping over all of the new units and adding them
     await Promise.all(
-      unitsToAdd.map((unit) => {
+      unitsToAdd.map(async (unit) => {
         const insertUsersUnitsQueryText = `
         INSERT INTO "users_units" ("users_id", "units_id")
         VALUES($1, $2)
         `;
-        return connection.query(insertUsersUnitsQueryText, [
+        return await connection.query(insertUsersUnitsQueryText, [
           studentId,
           unit.id,
         ]);
       })
     );
 
-    //Map over array of units to add to insert user-content relationship into user_content table
+    //Map over array of units to delete to delete them from user_content
+    await Promise.all(
+      unitsToRemove.map(async (unit) => {
+        const selectContentIdsParams = [unit.units_id];
+
+        const result = await connection.query(
+          selectContentIdsText,
+          selectContentIdsParams
+        );
+
+        const contentIds = result.rows;
+        await Promise.all(
+          contentIds.map(async (contentIdObject) => {
+            const deleteUserContentText = `
+            DELETE FROM "users_content"
+            WHERE user_id = $1 and content_id = $2 
+            `;
+            deleteUserContentParams = [studentId, contentIdObject.contentId];
+
+            return await connection.query(
+              deleteUserContentText,
+              deleteUserContentParams
+            );
+          })
+        );
+      })
+    );
+
+    //Map over array of units to add to insert user_content relationship into user_content table
     await Promise.all(
       unitsToAdd.map(async (unit) => {
-        const selectContentIdsText = `
-      SELECT "content".id AS "contentId" FROM "units"
-      JOIN "lessons" ON "lessons".units_id = "units".id
-      JOIN "content" ON "content".lessons_id = "lessons".id
-      WHERE "units".id = $1;
-      `;
         const selectContentIdsParams = [unit.id];
-        const result = await pool.query(
+
+        const result = await connection.query(
           selectContentIdsText,
           selectContentIdsParams
         );
         const contentIds = result.rows;
 
         await Promise.all(
-          contentIds.map(async (contentId) => {
+          contentIds.map(async (contentIdObject) => {
             const insertUserContentText = `
               INSERT INTO "users_content" ("user_id", "content_id")
               VALUES ($1, $2);
             `;
-            const insertUserContentParams = [studentId, contentId.contentId];
+            const insertUserContentParams = [
+              studentId,
+              contentIdObject.contentId,
+            ];
             return await connection.query(
               insertUserContentText,
               insertUserContentParams
@@ -292,7 +326,7 @@ router.get("/overview/:id", rejectUnauthenticated, async (req, res) => {
     const studentQuery = `
     SELECT "users"."firstName", "users"."lastName" FROM "users"
     WHERE "users".id = $1  
-    `
+    `;
 
     const results = await pool.query(studentQuery, [req.params.id]);
 
@@ -305,7 +339,6 @@ router.get("/overview/:id", rejectUnauthenticated, async (req, res) => {
 
 // updates student cohort to teachers cohort
 router.put("/", rejectUnauthenticated, async (req, res) => {
-  console.log(req.body);
   try {
     const cohortQuery = `
     SELECT "users_cohorts".cohorts_id FROM "users_cohorts"

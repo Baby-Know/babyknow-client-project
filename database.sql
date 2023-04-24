@@ -126,7 +126,7 @@ VALUES ('thisbabyknows@gmail.com', '$2a$10$cY0xmRTmMIOEvpWg4cH0c.HabDOSGZdnO6/QJ
  ('superminion@minions.com', 'bananna', 'Kevin', 'Evil', 0, 'Evil Corp.');
 
 INSERT INTO "cohorts" ("name")
-VALUES ('BabyKnow'), ('Snoops'), ('WW Chemistry');
+VALUES ('BabyKnow'),
 
 INSERT INTO "users_cohorts"("cohorts_id", "user_id")
 VALUES (1, 1), (2, 2), (3, 3), (1, 4), (2, 5), (3, 6), (1, 7);
