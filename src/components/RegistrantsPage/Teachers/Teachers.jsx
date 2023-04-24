@@ -10,6 +10,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Select, MenuItem, Tooltip, Button } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CohortsList from "./CohortsList/CohortsList";
+import CohortsForm from "./CohortsForm/CohortsForm";
 
 const Teachers = () => {
   const dispatch = useDispatch();
@@ -314,6 +315,7 @@ const Teachers = () => {
       </Box>
       <Box display="flex" alignItems="center" mr="2.5%">
         <CohortsList />
+        <CohortsForm />
       </Box>
     </Box>
   );

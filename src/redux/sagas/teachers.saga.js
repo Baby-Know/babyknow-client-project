@@ -14,8 +14,8 @@ function* fetchTeachers() {
 
 function* getTeacher(action) {
   try {
-     let response = yield axios.get(`/api/teachers/${action.payload}`);
-     yield put({ type: "SET_TEACHER", payload: response.data })
+    let response = yield axios.get(`/api/teachers/${action.payload}`);
+    yield put({ type: "SET_TEACHER", payload: response.data });
   } catch (error) {
     console.error("Error getting teachers", error);
   }
@@ -24,7 +24,7 @@ function* deleteTeacher(action) {
   const swal = withReactContent(Swal);
   try {
     let sweet = yield swal.fire({
-      title: "Are you sure you want to delete this registrant?",
+      title: "Are you sure you want to delete this teacher?",
       confirmButtonText: "Delete",
       confirmButtonColor: "#D21304",
       cancelButtonColor: "#263549",
