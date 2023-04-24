@@ -27,8 +27,6 @@ function UnitOverviewPage () {
         });
     }, []);
 
-    console.log(showMedia)
-
 
     return (
         <div id="overviewPage">

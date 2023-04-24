@@ -323,3 +323,7 @@ body,
 #photoIcon {
   cursor: pointer;
 }
+
+.underline {
+  text-decoration: underline;
+}

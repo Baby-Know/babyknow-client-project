@@ -273,12 +273,13 @@ const Teachers = () => {
     { field: "id", headerName: "ID", hide: true, filterable: false },
   ];
   return (
-    <Box display="flex" justifyContent="space-between">
+    <Box>
       <Box
         //All styling on the table and box holding it
-        ml="2.5%"
+        mt="15px"
+        margin="auto"
         height="70vh"
-        width="62vw"
+        width="80vw"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -313,10 +314,7 @@ const Teachers = () => {
           }}
         />
       </Box>
-      <Box display="flex" alignItems="center" mr="2.5%">
-        <CohortsList />
-        <CohortsForm />
-      </Box>
+      <CohortsList />
     </Box>
   );
 };

@@ -312,9 +312,10 @@ const Students = () => {
   return (
     <Box
       //All styling on the table and box holding it
+      mt="15px"
       margin="auto"
-      width="70vw"
       height="70vh"
+      width="80vw"
       sx={{
         "& .MuiDataGrid-root": {
           border: "none",
@@ -326,11 +327,11 @@ const Students = () => {
               ? colors.darkTealAccent[900]
               : colors.darkTealAccent[700]
           }`,
-          fontSize: "1rem",
+          fontSize: "0.9rem",
         },
         "& .MuiDataGrid-columnHeader": {
           backgroundColor: colors.darkTealAccent[800],
-          fontSize: "1rem",
+          fontSize: "0.9rem",
         },
         "& .MuiDataGrid-footerContainer": {
           borderTop: "none",

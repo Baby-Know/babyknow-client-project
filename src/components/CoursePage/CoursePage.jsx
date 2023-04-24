@@ -28,6 +28,7 @@ function CoursePage() {
   const user = useSelector((store) => store.user);
   const allUnits = useSelector((store) => store.unit);
   const userUnits = useSelector((store) => store.userUnitReducer);
+  const content = useSelector(store => store.contentReducer);
 
   //Updated unit to send to the database
   const [updatedUnitToSend, setUpdatedUnitToSend] = useState({
