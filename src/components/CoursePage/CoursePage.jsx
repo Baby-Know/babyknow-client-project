@@ -232,8 +232,8 @@ function CoursePage() {
                     }
                     key={unit.id}
                     sx={{
-                      width: 200,
-                      height: 200,
+                      width: 250,
+                      height: 250,
                       textAlign: "center",
                       justifyContent: "center",
                       backgroundColor: "rgb(245, 245, 245)",

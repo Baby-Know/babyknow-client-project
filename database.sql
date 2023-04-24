@@ -110,31 +110,19 @@ ALTER TABLE "users_cohorts" ADD CONSTRAINT "users_cohorts_fk1" FOREIGN KEY ("use
 ALTER TABLE "content" ADD CONSTRAINT "content_fk0" FOREIGN KEY ("lessons_id") REFERENCES "lessons"("id") ON DELETE CASCADE;
 
 INSERT INTO "units" ("name", "subtitle")
-VALUES('Unit 1', 'describe unit 1'), ('Unit 2', 'this is about unit 2');
+VALUES('Baby Know: 0-3 Months', 'Engaging our whole selves during the first year of life.'), ('Baby Know: 4-6 Months', 'The next months of life with your baby');
 
 
 INSERT INTO "lessons" ("name", "description", "units_id")
-VALUES('Lesson 1', '1st description', 1), ('Lesson 2', 'description for 2', 1), ('Lesson 3', 'about lesson 3', 1), ('Lesson 1', '1st description', 2), ('Lesson 2', 'description for 2', 2), ('Lesson 3', 'about lesson 3', 2);
+VALUES('Speech, Language and Play', 'Speech, Language and Play', 1), ('ABCs for Grown Ups', 'Affirmations for Well-Being: Attitude', 1), ('New Parent Advice', 'Learning about your baby cries', 1), ('ABCs for Grown Ups', 'Affirmations for Well-Being: Beautiful', 2), ('Fine Motor/Sensory', 'Small details are essential for stimulation', 2), ('ABCs for Grown-Ups', 'Affirmations for Well-Being: Care', 2);
 
 
 INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequired", "lessons_id")
-VALUES ('Video 1', 'Video 1', 'about the first video', false, true, 1), ('Video 2', 'Video 2', 'describe second video', false, true, 1), ('Survey 1', 'Survey 1', 'about the first survey', true, false, 1), ('Video 1', 'Video 1', 'about the first video', false, true, 4), ('Video 2', 'Video 2', 'describe second video', false, true, 4), ('Survey 1', 'Survey 1', 'about the first survey', true, false, 4);
+VALUES ('Video 1', 'Speech', 'Speech is important in a baby life', false, true, 1), ('Video 2', 'Play', 'Play is so important', false, true, 1), ('Survey 1', 'Survey 1', 'about the first survey', true, false, 1), ('Video 1', 'Video 1', 'about the first video', false, true, 4), ('Video 2', 'Video 2', 'describe second video', false, true, 4), ('Survey 1', 'Survey 1', 'about the first survey', true, false, 4);
 
 INSERT INTO "users" ("email", "password", "firstName", "lastName", "access", "organization" )
-VALUES ('thisbabyknows@gmail.com', '$2a$10$cY0xmRTmMIOEvpWg4cH0c.HabDOSGZdnO6/QJfovDBhtsgJpxqfkC', 'Baby', 'Know', 3, 'BabyKnow'), ('pimpin@baby.com', 'Pimpin', 'Snoop', 'Dogg', 2, 'LA'), ('heisenberg@baby.com', 'Science', 'Walter', 'White', 2, 'Chemistry'), ('bigboned@baby.com', 'HippyHater', 'Eric', 'Cartman', 1, 'Shakeys'),
- ('middleearth@baby.com', 'Myprecious', 'Bilbo', 'Baggins', 1, 'Burglar'), ('coach@baby.com', 'Tenessewhiskey', 'Ted', 'Lasso', 1, 'Richmond FC'),
- ('superminion@minions.com', 'bananna', 'Kevin', 'Evil', 0, 'Evil Corp.');
+VALUES ('thisbabyknows@gmail.com', '$2a$10$cY0xmRTmMIOEvpWg4cH0c.HabDOSGZdnO6/QJfovDBhtsgJpxqfkC', 'Baby', 'Know', 3, 'BabyKnow');
 
-INSERT INTO "cohorts" ("name")
-VALUES ('BabyKnow'),
-
-INSERT INTO "users_cohorts"("cohorts_id", "user_id")
-VALUES (1, 1), (2, 2), (3, 3), (1, 4), (2, 5), (3, 6), (1, 7);
-
-INSERT INTO "users_units" ("users_id", "units_id")
-VALUES(4, 1), (5, 1), (4, 2);
-
---USERS: New Registrants--
 insert into users (email, password, "firstName", "lastName", access, organization) values ('kgreatbatch0@bbc.co.uk', 'Vlf86NuAed', 'Kerby', 'Greatbatch', 0, 'Universidad de Ciencias y Humanidades');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('gvonderdell1@google.ru', 'n3Nm9z1X', 'Gunilla', 'Vonderdell', 0, 'Saitama Medical School');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('cmccloch2@list-manage.com', 'xBzhmS', 'Cleo', 'McCloch', 0, 'University of the Netherlands Antilles, Curacao');
@@ -142,6 +130,29 @@ insert into users (email, password, "firstName", "lastName", access, organizatio
 insert into users (email, password, "firstName", "lastName", access, organization) values ('nkrzyzanowski4@ca.gov', '1GTCBYm7d', 'Nissie', 'Krzyzanowski', 0, 'Indian Institute of Technology, Roorkee');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('hbaack5@zdnet.com', 'ZC4hsckszJ', 'Hinda', 'Baack', 0, 'Suez Canal University');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('kwilden6@unicef.org', 'B4dpLPNR', 'Kittie', 'Wilden', 0, 'Universidad Católica Nuestra Senora de la Asunción');
+
+INSERT INTO "cohorts" ("name")
+VALUES ('BabyKnow');
+
+INSERT INTO "cohorts" ("name")
+VALUES
+ ('Amethyst'), 
+ ('Childbirth Education'), 
+ ('Ms. Johnson 1st Period'),
+ ('Community Education'),
+ ('Parent-Child Coalition'), 
+ ('All Parents Together'),
+ ('Mr. Talagio 2nd Period Health'),
+ ('Health Class @ MNHS');
+
+INSERT INTO "users_cohorts" ("cohorts_id", "user_id")
+VALUES (1, 1), (2, 2), (3, 3), (1, 4), (2, 5), (3, 6), (1, 7);
+
+INSERT INTO "users_units" ("users_id", "units_id")
+VALUES(4, 1), (5, 1), (4, 2);
+
+--USERS: New Registrants--
+
 insert into users (email, password, "firstName", "lastName", access, organization) values ('mwenban7@amazon.co.uk', 'lkZeuKyF', 'Maximilianus', 'Wenban', 0, 'Université Euro-Afrique');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('dhaglington8@pbs.org', '4HSvGsxWx24', 'Doria', 'Haglington', 0, 'Agricultural University of Tirane');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('bbiddlestone9@usda.gov', 'HBWtnWjN6', 'Bentley', 'Biddlestone', 0, 'Okinawa University');
@@ -235,20 +246,4 @@ insert into users (email, password, "firstName", "lastName", access, organizatio
 insert into users (email, password, "firstName", "lastName", access, organization) values ('lwhitemarsh2p@go.com', 'GIFBfQiS7fs', 'Lukas', 'Whitemarsh', 0, 'Norwegian State Academy of Music');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('btallman2q@people.com.cn', 'x87k56HI', 'Beatrisa', 'Tallman', 0, 'Universiteit Doesburg (UNDO)');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('bfittall2r@whitehouse.gov', 'nykFgLqhaok', 'Burl', 'Fittall', 0, 'University of Minnesota - Duluth');
---COHORTS--
-INSERT INTO "cohorts" ("name")
-VALUES
- ('Breastfeeding Basics'), 
- ('Childbirth Education'), 
- ('Baby Nutrition and Feeding'),
- ('Early Childhood Development'),
- ('Parent-Child Bonding and Communication'), 
- ('Baby Nutrition and Eating Habits'),
- ('Early Childhood Education'),
- ('Baby Brain Development and Stimulation'), 
- ('Toddler Socialization and Playtime'), 
- ('Baby Sensory Play and Activities'), 
- ('Postpartum Depression and Anxiety Support');
 
- 
- 
