@@ -157,7 +157,7 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
       );
     });
 
-    //Check if there are units to add
+    //Checking if there are units to add
     const unitsToAdd = updatedStudentUnits.filter((unit) => {
       return !matchingUnits.some((matchingUnit) => matchingUnit.id === unit.id);
     });
@@ -177,45 +177,29 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
       WHERE "units".id = $1;
       `;
 
-    //Mapping over and removing the units
+    //Mapping over and removing the units and content
     await Promise.all(
       unitsToRemove.map(async (unit) => {
         const deleteUsersUnitsQueryText = `
          DELETE FROM "users_units"
          WHERE "users_id" = $1 AND "units_id" = $2;`;
 
-        return await connection.query(deleteUsersUnitsQueryText, [
+        //Deleting all of the units
+        await connection.query(deleteUsersUnitsQueryText, [
           studentId,
           unit.units_id,
         ]);
-      })
-    );
 
-    //Mapping over all of the new units and adding them
-    await Promise.all(
-      unitsToAdd.map(async (unit) => {
-        const insertUsersUnitsQueryText = `
-        INSERT INTO "users_units" ("users_id", "units_id")
-        VALUES($1, $2)
-        `;
-        return await connection.query(insertUsersUnitsQueryText, [
-          studentId,
-          unit.id,
-        ]);
-      })
-    );
-
-    //Map over array of units to delete to delete them from user_content
-    await Promise.all(
-      unitsToRemove.map(async (unit) => {
         const selectContentIdsParams = [unit.units_id];
 
-        const result = await connection.query(
+        //Grabbing all of the content Ids to give to remove "users_content"
+        const contentIdResults = await connection.query(
           selectContentIdsText,
           selectContentIdsParams
         );
 
-        const contentIds = result.rows;
+        const contentIds = contentIdResults.rows;
+        //Mapping over all of the content ids to remove each one from "users_content"
         await Promise.all(
           contentIds.map(async (contentIdObject) => {
             const deleteUserContentText = `
@@ -233,17 +217,25 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
       })
     );
 
-    //Map over array of units to add to insert user_content relationship into user_content table
+    //Mapping over all of the new units and adding them plus their content
     await Promise.all(
       unitsToAdd.map(async (unit) => {
+        const insertUsersUnitsQueryText = `
+        INSERT INTO "users_units" ("users_id", "units_id")
+        VALUES($1, $2)
+        `;
+        //Inserting all of the new units
+        await connection.query(insertUsersUnitsQueryText, [studentId, unit.id]);
         const selectContentIdsParams = [unit.id];
 
-        const result = await connection.query(
+        //Grabbing all of the content Ids to give to add to "users_content"
+        const contentIdResults = await connection.query(
           selectContentIdsText,
           selectContentIdsParams
         );
-        const contentIds = result.rows;
+        const contentIds = contentIdResults.rows;
 
+        //Mapping over all of the content ids to add each one into "users_content"
         await Promise.all(
           contentIds.map(async (contentIdObject) => {
             const insertUserContentText = `
@@ -262,7 +254,6 @@ router.put("/:id", rejectUnauthenticated, rejectStudent, async (req, res) => {
         );
       })
     );
-
     await connection.query("COMMIT");
     res.sendStatus(204);
   } catch (error) {
