@@ -212,46 +212,46 @@ const NewRegistrants = () => {
     { field: "id", headerName: "ID", hide: true },
   ];
   return (
-    <Box>
-      <Box
-        //All styling on the table and box holding it
-        mt="15px"
-        height="70vh"
-        width="62vw"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-            fontSize: "small",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: `${
-              theme.palette.mode === "light"
-                ? colors.darkTealAccent[900]
-                : colors.darkTealAccent[700]
-            }`,
-            fontSize: "0.9rem",
-          },
-          "& .MuiDataGrid-columnHeader": {
-            backgroundColor: colors.darkTealAccent[800],
-            fontSize: "0.9rem",
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.darkTealAccent[800],
-          },
+    <Box
+      //All styling on the table and box holding it
+      mt="15px"
+      margin="auto"
+      height="70vh"
+      width="80vw"
+      sx={{
+        "& .MuiDataGrid-root": {
+          border: "none",
+          fontSize: "small",
+        },
+        "& .MuiDataGrid-virtualScroller": {
+          backgroundColor: `${
+            theme.palette.mode === "light"
+              ? colors.darkTealAccent[900]
+              : colors.darkTealAccent[700]
+          }`,
+          fontSize: "0.9rem",
+        },
+        "& .MuiDataGrid-columnHeader": {
+          backgroundColor: colors.darkTealAccent[800],
+          fontSize: "0.9rem",
+        },
+        "& .MuiDataGrid-footerContainer": {
+          borderTop: "none",
+          backgroundColor: colors.darkTealAccent[800],
+        },
+      }}
+      j
+    >
+      <DataGrid
+        rows={modifiedNewRegistrants}
+        columns={columns}
+        onCellEditCommit={handleEditCell}
+        onEditCellChange={handleEditCellChange}
+        disableColumnSelector
+        components={{
+          Toolbar: GridToolbar,
         }}
-      >
-        <DataGrid
-          rows={modifiedNewRegistrants}
-          columns={columns}
-          onCellEditCommit={handleEditCell}
-          onEditCellChange={handleEditCellChange}
-          disableColumnSelector
-          components={{
-            Toolbar: GridToolbar,
-          }}
-        />
-      </Box>
+      />
     </Box>
   );
 };

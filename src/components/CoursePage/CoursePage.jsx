@@ -28,6 +28,7 @@ function CoursePage() {
   const user = useSelector((store) => store.user);
   const allUnits = useSelector((store) => store.unit);
   const userUnits = useSelector((store) => store.userUnitReducer);
+  const content = useSelector(store => store.contentReducer);
 
   //Updated unit to send to the database
   const [updatedUnitToSend, setUpdatedUnitToSend] = useState({
@@ -201,17 +202,6 @@ function CoursePage() {
                           autoFocus
                           margin="dense"
                           fullWidth
-                          type="number"
-                          label="Unit Order"
-                          value={updatedUnitToSend.unitOrder}
-                          onChange={(event) =>
-                            handleEditField(event, "unitOrder")
-                          }
-                        />
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          fullWidth
                           type="text"
                           label="Unit Subtitle"
                           value={updatedUnitToSend.subtitle}
@@ -242,8 +232,8 @@ function CoursePage() {
                     }
                     key={unit.id}
                     sx={{
-                      width: 200,
-                      height: 200,
+                      width: 250,
+                      height: 250,
                       textAlign: "center",
                       justifyContent: "center",
                       backgroundColor: "rgb(245, 245, 245)",

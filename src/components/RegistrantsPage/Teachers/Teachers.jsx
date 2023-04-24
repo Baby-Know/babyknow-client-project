@@ -10,6 +10,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Select, MenuItem, Tooltip, Button } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CohortsList from "./CohortsList/CohortsList";
+import CohortsForm from "./CohortsForm/CohortsForm";
 
 const Teachers = () => {
   const dispatch = useDispatch();
@@ -272,12 +273,13 @@ const Teachers = () => {
     { field: "id", headerName: "ID", hide: true, filterable: false },
   ];
   return (
-    <Box display="flex" justifyContent="space-between">
+    <Box>
       <Box
         //All styling on the table and box holding it
         mt="15px"
+        margin="auto"
         height="70vh"
-        width="62vw"
+        width="80vw"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
