@@ -18,6 +18,7 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
+import accessLevel from "../../config";
 
 function CoursePage() {
   const dispatch = useDispatch();
@@ -25,7 +26,8 @@ function CoursePage() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const user = useSelector((store) => store.user);
-  const units = useSelector((store) => store.unit);
+  const allUnits = useSelector((store) => store.unit);
+  const userUnits = useSelector((store) => store.userUnitReducer);
 
   //Updated unit to send to the database
   const [updatedUnitToSend, setUpdatedUnitToSend] = useState({
@@ -37,9 +39,31 @@ function CoursePage() {
 
   const [unitToSwap, setUnitToSwap] = useState({ id: 0, order: 0 });
 
+  const userId = user.id;
+
   useEffect(() => {
+    //get all units
     dispatch({ type: "GET_UNITS" });
+    //get IDs of units user has access to
+    dispatch({
+      type: 'FETCH_USER_UNIT',
+      payload: { userId: userId }
+    });
   }, []);
+
+  //If a user's access level is that of newRigistrant, show no units
+  //If a user's access level is that of a student, map over all available units and include only
+  //the units that have a matching ID to what the user has access to. This will create a curated
+  //units array to render
+  let units = [];
+
+  if (user.access === accessLevel.newRegistrant) {
+    units = [];
+  } else if (user.access === accessLevel.student) {
+    allUnits?.map((unit, i) => {
+      userUnits?.includes(unit.id) ? units.push(unit) : <></>;
+    });
+  } else units = allUnits;
 
   //Function to set the updatedUnitToSend's initial values to the current values
   const handleEditField = (event, key) => {
@@ -82,8 +106,8 @@ function CoursePage() {
   };
 
   const selectUnit = (id) => {
-    history.push(`/unit/${id}/${user.id}`)
-  }
+    history.push(`/unit/${id}/${user.id}`);
+  };
 
 
   const swapUnits = (otherUnitToSwap) => {
@@ -112,8 +136,17 @@ function CoursePage() {
       }}
       className="container"
     >
-      <h1 style={{ marginLeft: 20 }}>Course</h1>
+      <h1 style={{ marginLeft: 20 }}>Courses</h1>
       <h2 style={{ marginLeft: 20 }}>Welcome, {user.firstName}!</h2>
+
+      {/* If new registrant or student without units assigned, display this greeting */}
+      {user.access === accessLevel.newRegistrant || user.access === accessLevel.student && units === [] ?
+        <Card id="content">
+          <h3>Thank you for joining Baby Know!</h3>
+          <p>Your account has been registered and our administration is working to assign your courses!</p>
+          <p>If you have any questions, please contact us at babyknowprogram@gmail.com</p>
+        </Card> : <></>
+      }
       <AddUnitForm />
 
       <div>
@@ -168,17 +201,6 @@ function CoursePage() {
                           autoFocus
                           margin="dense"
                           fullWidth
-                          type="number"
-                          label="Unit Order"
-                          value={updatedUnitToSend.unitOrder}
-                          onChange={(event) =>
-                            handleEditField(event, "unitOrder")
-                          }
-                        />
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          fullWidth
                           type="text"
                           label="Unit Subtitle"
                           value={updatedUnitToSend.subtitle}
@@ -199,7 +221,7 @@ function CoursePage() {
                   </form>
                 ) : (
                   <Card
-                    draggable={user.access === 3 ? "true" : "false"}
+                    draggable={user.access === accessLevel.admin ? "true" : "false"}
                     onDragStart={() =>
                       setUnitToSwap({ id: unit.id, order: unit.unitOrder })
                     }
@@ -216,7 +238,7 @@ function CoursePage() {
                       backgroundColor: "rgb(245, 245, 245)",
                     }}
                   >
-                    {user.access === 3 ? (
+                    {user.access === accessLevel.admin ? (
                       <IconButton>
                         <DragHandleIcon sx={{ cursor: "grab" }} />
                       </IconButton>
@@ -238,7 +260,7 @@ function CoursePage() {
                       </p>
                       <p>{unit.subtitle}</p>
                     </CardContent>
-                    {user.access === 3 ? (
+                    {user.access === accessLevel.admin ? (
                       <>
                         <IconButton
                           onClick={() => {
@@ -267,7 +289,7 @@ function CoursePage() {
         </Grid>
       </div>
 
-      {user.access === 3 ? (
+      {user.access === accessLevel.admin ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)" }}>
           <Button
             sx={{ margin: 10 }}

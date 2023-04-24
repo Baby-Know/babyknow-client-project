@@ -23,6 +23,7 @@ import AddContentForm from './AddContentForm/AddContentForm';
 import LoadingBar from '../LoadingBar/LoadingBar';
 import { tokens } from "../../theme";
 import { useTheme } from "@emotion/react";
+import accessLevel from "../../config";
 
 function UnitPage() {
     const { id, studentId } = useParams();
@@ -165,7 +166,7 @@ function UnitPage() {
                         <Accordion id="accordion" >
                             {/* lesson header */}
                             <AccordionSummary
-                                draggable={user.access === 3 && draggable ? 'true' : 'false'}
+                                draggable={user.access === accessLevel.admin && draggable ? 'true' : 'false'}
                                 onDragStart={() => {
                                     setLessonToSwap({ lessonId: lesson.lessonId, order: lesson.lessonOrder });
                                     setSwappingContent(false);
@@ -174,7 +175,7 @@ function UnitPage() {
                                 onDrop={() => swapLessons({ lessonId: lesson.lessonId, order: lesson.lessonOrder, unitId: lesson.unitId })}
                                 expandIcon={<ExpandMoreIcon sx={{ color: '#276184' }} />}
                             >
-                                {draggable && user.access === 3 ?
+                                {draggable && user.access === accessLevel.admin ?
                                     <IconButton sx={{ padding: '0', marginRight: '16px', color: '#276184' }}>
                                         <DragHandleIcon sx={{ 'cursor': 'grab' }} />
                                     </IconButton> : <></>}
@@ -209,7 +210,7 @@ function UnitPage() {
                                             {/* content row within a lesson */}
                                             {lesson.contentId[index] === null ? <></> :
                                                 <div id='content'
-                                                    draggable={user.access === 3 && draggable ? 'true' : 'false'}
+                                                    draggable={user.access === accessLevel.admin && draggable ? 'true' : 'false'}
                                                     onDragStart={() => {
                                                         setContentToSwap({ contentId: id, lessonId: lesson.lessonId, order: unit[i].contentOrder[index] });
                                                         setSwappingContent(true);
@@ -219,21 +220,21 @@ function UnitPage() {
                                                 >
 
                                                     {/* is required? is complete?  */}
-                                                    { progressByLesson[i] === undefined ? <></> :
+                                                    {progressByLesson[i] === undefined ? <></> :
                                                         <>
-                                                        {progressByLesson[i][index]?.isRequired ?
-                                                        <>
-                                                            {progressByLesson[i][index]?.isComplete ? 
-                                                            <div id="completed">✓</div> :
-                                                            <div id="incomplete"></div>
-                                                            } 
-                                                        </> : 
-                                                        <></>
-                                                        } 
+                                                            {progressByLesson[i][index]?.isRequired ?
+                                                                <>
+                                                                    {progressByLesson[i][index]?.isComplete ?
+                                                                        <div id="require">✓</div> :
+                                                                        <div id="require"></div>
+                                                                    }
+                                                                </> :
+                                                                <></>
+                                                            }
                                                         </>
                                                     }
-                                                    
-                                                    {draggable && user.access === 3 ?
+
+                                                    {draggable && user.access === accessLevel.admin ?
                                                         <IconButton id='dragIcon' sx={{ padding: '0', marginRight: '16px', color: 'white' }}>
                                                             <DragHandleIcon sx={{ cursor: 'grab', marginTop: 'auto', marginBottom: 'auto', }} />
                                                         </IconButton> : <></>}
@@ -278,7 +279,7 @@ function UnitPage() {
                                                     }
 
                                                     {/* icons for content */}
-                                                    {user.access === 3 ?
+                                                    {user.access === accessLevel.admin ?
                                                         <div id='contentIcons'>
                                                             {id !== contentToEdit.id ?
                                                                 <>
@@ -307,7 +308,7 @@ function UnitPage() {
                                 })}
 
                                 {/* button to add content row */}
-                                {lesson.lessonName && user.access === 3 ?
+                                {lesson.lessonName && user.access === accessLevel.admin ?
                                     <div id='lessonBottom'>
                                         {/* button to add content row */}
                                         <Button onClick={() => {
@@ -361,7 +362,7 @@ function UnitPage() {
 
             <div id="addLessonParent">
 
-                {user.access === 3 ?
+                {user.access === accessLevel.admin ?
                     <Button
                         id='addLesson'
                         onClick={() => {

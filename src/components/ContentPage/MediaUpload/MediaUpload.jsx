@@ -23,7 +23,7 @@ function MediaUpload({ userId, contentId, userContentId }) {
          {isLoading ?
                 <LoadingBar /> : <></>}
 
-        <form onSubmit={(event) => handleAddMedia(event)}>
+        <form style={{backgroundColor: '#263549', color: 'white', padding: '4%', display: 'flex', justifyContent: 'space-around', borderRadius: '4px', margin: '4px'}} onSubmit={(event) => handleAddMedia(event)}>
 
             <input
                 autoFocus
@@ -40,6 +40,7 @@ function MediaUpload({ userId, contentId, userContentId }) {
             />
 
             <Button 
+            sx={{ backgroundColor: 'white'}}
             variant="outlined"
             type='submit'
             value='Submit' > Upload </Button>
