@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 function MyStudentsPage () {
     const user = useSelector(store => store.user)
     const myStudents = useSelector(store => store.studentsReducer.studentsByTeacherReducer)
-    const allStudents = useSelector(store => store.studentsReducer.allStudentsReducer.students)
+    const allStudents = useSelector(store => store.studentsReducer.allStudentsReducer)
     const dispatch = useDispatch()
     const history = useHistory()
     const [studentIdToAdd, setStudentIdToAdd] = useState({name: '', studentId: 0})
@@ -23,6 +23,7 @@ function MyStudentsPage () {
             type: "FETCH_STUDENTS"
         });
     }, []);
+
 
     const addStudent = () => {
         dispatch({
