@@ -18,27 +18,27 @@ function RegistrantsPage() {
         },
       }}
     >
-      {showPage === "newRegistrants" ? (
-        <h1>New Registrants</h1>
-      ) : showPage === "students" ? (
-        <h1>Students</h1>
-      ) : showPage === "teachers" ? (
-        <h1>Teachers</h1>
-      ) : (
-        <></>
-      )}
-      <Box display="inline-flex" justifyContent={"space-between"} width="20vw">
+      <div style={{margin: 'auto', width: '40vw', textAlign:'center'}}>
+        {showPage === "newRegistrants" ? (
+          <h1>New Registrants</h1>
+        ) : showPage === "students" ? (
+          <h1>Students</h1>
+        ) : showPage === "teachers" ? (
+          <h1>Teachers</h1>
+        ) : (
+          <></>
+        )}
+      </div>
+
+      <Box display="flex" justifyContent="space-around" width="40vw" margin='auto'>
         {" "}
-        <h3 onClick={() => setShowPage("teachers")} className="page-links">
+        <h3 onClick={() => setShowPage("teachers")} style={{ cursor: 'pointer'}} className={showPage === 'teachers' ? 'underline' : ''}>
           Teachers
         </h3>
-        <h3 onClick={() => setShowPage("students")} className="page-links">
+        <h3 onClick={() => setShowPage("students")} style={{ cursor: 'pointer'}} className={showPage === 'students' ? 'underline' : ''} >
           Students
         </h3>
-        <h3
-          onClick={() => setShowPage("newRegistrants")}
-          className="page-links"
-        >
+        <h3 onClick={() => setShowPage("newRegistrants")} style={{ cursor: 'pointer'}} className={showPage === 'newRegistrants' ? 'underline' : ''}>
           New Registrants
         </h3>
       </Box>

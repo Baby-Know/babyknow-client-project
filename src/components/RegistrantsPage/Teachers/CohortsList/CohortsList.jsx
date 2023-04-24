@@ -57,10 +57,12 @@ function CohortsList() {
       sx={{
         width: "30vw",
         height: "40vh",
-        backgroundColor: colors.primary[700],
+        backgroundColor: colors.primary[500],
+        color: 'white',
+        margin: 'auto'
       }}
     >
-      <Typography variant="h2" fontWeight="bold" textAlign="center">
+      <Typography variant="h2" fontWeight="bold" textAlign="center" marginTop='32px' marginBottom='32px' padding='16px' borderBottom='2px solid white'>
         All Cohorts
       </Typography>
 

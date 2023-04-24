@@ -216,8 +216,9 @@ const NewRegistrants = () => {
       <Box
         //All styling on the table and box holding it
         mt="15px"
+        margin='auto'
         height="70vh"
-        width="62vw"
+        width="80vw"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
