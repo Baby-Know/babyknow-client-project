@@ -1,13 +1,9 @@
-import React from 'react';
-import './Footer.css';
-
-// This is one of our simplest components
-// It doesn't have local state, so it can be a function component.
-// It doesn't dispatch any redux actions or display any part of redux state
-// or even care what the redux state is, so it doesn't need 'connect()'
+import React from "react";
+import "./Footer.css";
 
 function Footer() {
-  return <footer>&copy; Baby Know</footer>;
+  let year = new Date().getFullYear();
+  return <footer style={{ fontSize: "1.1em" }}>&copy; Baby Know {year}</footer>;
 }
 
 export default Footer;

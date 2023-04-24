@@ -1,14 +1,14 @@
-const express = require('express');
-const pool = require('../modules/pool');
+const express = require("express");
+const pool = require("../modules/pool");
 const router = express.Router();
 const {
   rejectUnauthenticated,
-} = require('../modules/authentication-middleware');
+} = require("../modules/authentication-middleware");
 
-const { rejectNonAdmin } = require('../modules/admin-middleware');
+const { rejectNonAdmin } = require("../modules/admin-middleware");
 
 //GET all cohorts
-router.get('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.get("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const queryText = `
     SELECT * FROM "cohorts"
@@ -20,35 +20,35 @@ router.get('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     res.send(cohorts);
   } catch (error) {
     res.sendStatus(500);
-    console.log('Error getting all Cohorts :', error);
+    console.log("Error getting all Cohorts :", error);
   }
 });
 
 //POST new cohort
-router.post('/', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.post("/", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const query = `
     INSERT INTO "cohorts" ("name")
     VALUES ($1)`;
 
-    await pool.query(query, [req.body.cohort]);
+    await pool.query(query, [req.body.name]);
 
     res.sendStatus(201);
   } catch (error) {
     res.sendStatus(500);
-    console.log('Error posting Cohort :', error);
+    console.log("Error posting Cohort :", error);
   }
 });
 
 router.delete(
-  '/:id',
+  "/:id",
   rejectUnauthenticated,
   rejectNonAdmin,
   async (req, res) => {
     const connection = await pool.connect();
 
     try {
-      await connection.query('BEGIN');
+      await connection.query("BEGIN");
       //First we have to find everyone in this cohort and swap them to
       //Baby Know
       const usersCohortsQueryText = `
@@ -66,17 +66,17 @@ router.delete(
 
       await connection.query(cohortsQueryText, [req.params.id]);
       res.sendStatus(204);
-      await connection.query('COMMIT');
+      await connection.query("COMMIT");
     } catch (error) {
       res.sendStatus(500);
-      console.log('Error deleting Cohort :', error);
+      console.log("Error deleting Cohort :", error);
     } finally {
       connection.release();
     }
   }
 );
 
-router.put('/:id', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
+router.put("/:id", rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
   try {
     const cohortId = req.params.id;
     const cohortName = req.body.name;
@@ -91,7 +91,7 @@ router.put('/:id', rejectUnauthenticated, rejectNonAdmin, async (req, res) => {
     res.sendStatus(204);
   } catch (error) {
     res.sendStatus(500);
-    console.log('Error updating cohort :', error);
+    console.log("Error updating cohort :", error);
   }
 });
 

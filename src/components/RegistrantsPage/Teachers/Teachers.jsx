@@ -10,6 +10,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Select, MenuItem, Tooltip, Button } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CohortsList from "./CohortsList/CohortsList";
+import CohortsForm from "./CohortsForm/CohortsForm";
 
 const Teachers = () => {
   const dispatch = useDispatch();
@@ -276,7 +277,7 @@ const Teachers = () => {
       <Box
         //All styling on the table and box holding it
         mt="15px"
-        margin='auto'
+        margin="auto"
         height="70vh"
         width="80vw"
         sx={{
@@ -313,9 +314,7 @@ const Teachers = () => {
           }}
         />
       </Box>
-      
-        <CohortsList />
-    
+      <CohortsList />
     </Box>
   );
 };

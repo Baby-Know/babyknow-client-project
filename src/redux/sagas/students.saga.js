@@ -25,7 +25,7 @@ function* deleteStudent(action) {
   const swal = withReactContent(Swal);
   try {
     let sweet = yield swal.fire({
-      title: "Are you sure you want to delete this unit?",
+      title: "Are you sure you want to delete this student?",
       confirmButtonText: "Delete",
       confirmButtonColor: "#D21304",
       cancelButtonColor: "#263549",
@@ -62,7 +62,10 @@ function* getStudent(action) {
 function* updateStudentCohort(action) {
   try {
     yield axios.put(`/api/students`, action.payload);
-    yield put({ type: "GET_STUDENTS_BY_TEACHER", payload: action.payload.teacherId });
+    yield put({
+      type: "GET_STUDENTS_BY_TEACHER",
+      payload: action.payload.teacherId,
+    });
   } catch (error) {
     console.error("Error getting students", error);
   }

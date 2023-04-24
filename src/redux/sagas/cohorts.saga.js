@@ -16,7 +16,7 @@ function* deleteCohort(action) {
   const swal = withReactContent(Swal);
   try {
     let sweet = yield swal.fire({
-      title: "Are you sure you want to delete this registrant?",
+      title: "Are you sure you want to delete this cohort?",
       confirmButtonText: "Delete",
       confirmButtonColor: "#D21304",
       cancelButtonColor: "#263549",
@@ -41,10 +41,20 @@ function* updateCohort(action) {
   }
 }
 
+function* addCohort(action) {
+  try {
+    yield axios.post(`/api/cohort/`, action.payload);
+    yield put({ type: "FETCH_COHORTS" });
+  } catch (error) {
+    console.error("Error getting unit", error);
+  }
+}
+
 function* cohortsSaga() {
   yield takeLatest("FETCH_COHORTS", fetchCohorts);
   yield takeLatest("DELETE_COHORT", deleteCohort);
   yield takeLatest("UPDATE_COHORT", updateCohort);
+  yield takeLatest("ADD_COHORT", addCohort);
 }
 
 export default cohortsSaga;
