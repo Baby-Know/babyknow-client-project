@@ -36,26 +36,26 @@ function AddContentForm({ lessonId, unitId }) {
     });
 
     function handleAddContent(event) {
-        event.preventDefault()
+        event.preventDefault();
         {
             //dispatching survey content
-            contentToSend.isSurvey ? 
-            dispatch({
-                type: "ADD_CONTENT",
-                payload: { contentToSend, lessonId, unitId },
-                callback: setContentToSend
-            })
-    :
-            // dispatching video content
-            dispatch({
-                type: "ADD_CONTENT_WITH_UPLOAD",
-                payload: { contentToSend, lessonId, unitId },
-                callback: setContentToSend
-            })
-        };   
+            contentToSend.isSurvey ?
+                dispatch({
+                    type: "ADD_CONTENT",
+                    payload: { contentToSend, lessonId, unitId },
+                    callback: setContentToSend
+                })
+                :
+                // dispatching video content
+                dispatch({
+                    type: "ADD_CONTENT_WITH_UPLOAD",
+                    payload: { contentToSend, lessonId, unitId },
+                    callback: setContentToSend
+                });
+        };
         // dispatch({type: 'SELECTED_LESSON_ID', payload: selectedLessonId})
     }
-    
+
     return (
         <Box>
             <Dialog
@@ -66,7 +66,15 @@ function AddContentForm({ lessonId, unitId }) {
                     },
                 }}
             >
-                <DialogTitle variant="h3" color={colors.primary[500]} mb="5%">
+                <DialogTitle variant="h3" color={colors.primary[500]} mb="5%"
+                    onClick={() => {
+                        setContentToSend({
+                            content: "https://docs.google.com/forms/d/e/1FAIpQLSes6AGQaMXRene0RczlaQ58pMnsf0ffckOh9LwwSaw0d9RAww/viewform",
+                            title: "Speech Lesson Survey",
+                            description: "Take the survey before you begin!",
+                            isSurvey: true
+                        });
+                    }}>
                     Add Content
                     <IconButton
                         onClick={() => {
@@ -89,7 +97,7 @@ function AddContentForm({ lessonId, unitId }) {
                                 defaultValue="video"
                                 name="radio-buttons-group"
                                 value={contentToSend.isSurvey}
-                                onChange={() => { setContentToSend({ ...contentToSend, isSurvey: !contentToSend.isSurvey }) }}
+                                onChange={() => { setContentToSend({ ...contentToSend, isSurvey: !contentToSend.isSurvey }); }}
                             >
                                 <FormControlLabel value={false} control={<Radio />} label="Video Upload" />
                                 <FormControlLabel value={true} control={<Radio />} label="Survey" />
@@ -107,7 +115,7 @@ function AddContentForm({ lessonId, unitId }) {
                                                 ...contentToSend,
                                                 content: event.target.files[0]
                                             });
-                                            console.log('in onChange', event.target.files[0])
+                                            console.log('in onChange', event.target.files[0]);
                                         }}
                                     />
 
@@ -143,17 +151,17 @@ function AddContentForm({ lessonId, unitId }) {
                                     />
 
                                     <FormControlLabel control={<Checkbox />} label="Required"
-                                        onChange={() => { setContentToSend({ ...contentToSend, isRequired: !contentToSend.isRequired }) }} />
-                                    <Button 
-                                    variant="outlined" 
-                                    type='submit' 
-                                    value='Submit'
-                                    onClick={() => {
-                                        dispatch({
-                                          type: "SET_SHOW_ADD_CONTENT",
-                                          payload: false
-                                        });
-                                      }}> Save</Button>
+                                        onChange={() => { setContentToSend({ ...contentToSend, isRequired: !contentToSend.isRequired }); }} />
+                                    <Button
+                                        variant="outlined"
+                                        type='submit'
+                                        value='Submit'
+                                        onClick={() => {
+                                            dispatch({
+                                                type: "SET_SHOW_ADD_CONTENT",
+                                                payload: false
+                                            });
+                                        }}> Save</Button>
 
                                 </>
                                 :
@@ -203,17 +211,17 @@ function AddContentForm({ lessonId, unitId }) {
                                         }}
                                     />
                                     <FormControlLabel control={<Checkbox />} label="Required"
-                                        onChange={() => { setContentToSend({ ...contentToSend, isRequired: !contentToSend.isRequired }) }} />
-                                     <Button 
-                                    variant="outlined" 
-                                    type='submit' 
-                                    value='Submit'
-                                    onClick={() => {
-                                        dispatch({
-                                          type: "SET_SHOW_ADD_CONTENT",
-                                          payload: false
-                                        });
-                                      }}> Save</Button>
+                                        onChange={() => { setContentToSend({ ...contentToSend, isRequired: !contentToSend.isRequired }); }} />
+                                    <Button
+                                        variant="outlined"
+                                        type='submit'
+                                        value='Submit'
+                                        onClick={() => {
+                                            dispatch({
+                                                type: "SET_SHOW_ADD_CONTENT",
+                                                payload: false
+                                            });
+                                        }}> Save</Button>
                                 </>
                             }
 
