@@ -47,7 +47,12 @@ const CommentBox = ({ userId, contentId, userContentId }) => {
                     style={{ width: 400 }}
                     value={newComment}
                     placeholder='Enter any questions or comments here!'
-                    onChange={(event) => setNewComment(event.target.value)}>
+                    onChange={(event) => setNewComment(event.target.value)}
+                    onClick={() => {
+                        setNewComment(
+                            "Ralph is responding to the bell stimuli and my voice. He always smiles and laughs when I talk to him!"
+                        );
+                    }}>
                 </TextareaAutosize>
                 <div>
                     <Button sx={{ backgroundColor: 'white', marginLeft: '8px' }} className="studentCommentButton" disabled={newComment.length < 1}
