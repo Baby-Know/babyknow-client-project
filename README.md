@@ -64,7 +64,7 @@ Before you get started, make sure you have the following software installed on y
   your application secure. Here's a site that can help you: [https://passwordsgenerator.net/](https://passwordsgenerator.net/). 
   If you don't do this step, create a secret with less than eight characters, or leave it as `superDuperSecret`, you will get a warning.
   
-  8. Create a database named `baby_know` in PostgresSQL. If you would like to name your database something else, you will need to change `baby_know` to the name of your new database name in `server/modules/pool.js`
+  8. Create a database named `baby-know` in PostgresSQL. If you would like to name your database something else, you will need to change `baby-know` to the name of your new database name in `server/modules/pool.js`
   9. The queries in the database.sql file are set up to create all the necessary tables that you need, as well as a demo data table to test the app. Copy and paste those queries in the SQL query of the database. If this is going to production, leave out the demo data.
   10. Run `npm run server` in your VS Code terminal.
   11. Open a second terminal and run `npm run client`
