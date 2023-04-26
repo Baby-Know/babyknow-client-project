@@ -92,4 +92,4 @@ You can find a deployed version of the app here:
 ## Acknowledgments
 Thank you to Prime Digital Academy who equipped our team with the skills to make this application a reality.
 Many thanks to Candi and Wendy Walz of Baby Know for the opportunity to build an impactful app.
-<3 Amethyst Cohort forever <3
+❤️ Amethyst Cohort forever ❤️
