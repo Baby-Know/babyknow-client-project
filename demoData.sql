@@ -10,7 +10,7 @@ INSERT INTO "content" ("content", "title", "description", "isSurvey", "isRequire
 VALUES ('Video 1', 'Speech', 'Speech is important in a baby life', false, true, 1), ('Video 2', 'Play', 'Learn more about how to play!', false, true, 1), ('Survey 1', 'End of Lesson Survey', 'Please complete after the lesson', true, false, 1), ('Video 1', 'Vision', 'Engaging the baby gaze', false, true, 2), ('Video 2', 'Gross Motor', 'Testing the full range of motion', false, true, 2), ('Survey 1', 'End of Lesson Survey', 'Please complete after the lesson', true, false, 2), ('Video 1', 'Play Based Learning', 'How to engage with their surroundings', false, true, 3), ('Video 2', 'School Readiness', 'Basic learning strategies', false, true, 3), ('Survey 1', 'End of Lesson Survey', 'Please complete after the lesson', true, false, 3);
 
 INSERT INTO "users" ("email", "password", "firstName", "lastName", "access", "organization" )
-VALUES ('thisbabyknows@gmail.com', '$2a$10$cY0xmRTmMIOEvpWg4cH0c.HabDOSGZdnO6/QJfovDBhtsgJpxqfkC', 'Baby', 'Know', 3, 'BabyKnow');
+VALUES ('babyknow@gmail.com', 'KnowledgableBaby33', 'Baby', 'Know', 3, 'BabyKnow');
 
 insert into users (email, password, "firstName", "lastName", access, organization) values ('kgreatbatch0@northwood.com', 'Vlf86NuAed', 'Kerby', 'Greatbatch', 0, 'Northwood High School');
 insert into users (email, password, "firstName", "lastName", access, organization) values ('gvonderdell1@gmail.com', 'n3Nm9z1X', 'Gunilla', 'Vonderdell', 0, 'Westview Academy');
