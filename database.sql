@@ -22,7 +22,7 @@ CREATE TABLE "users" (
 
 CREATE TABLE "units" (
 	"id" serial NOT NULL,
-	"name" varchar(255) NOT NULL UNIQUE,
+	"name" varchar(255) NOT NULL,
 	"unitOrder" serial NOT NULL,
 	"subtitle" varchar(255) NOT NULL,
 	CONSTRAINT "units_pk" PRIMARY KEY ("id")
