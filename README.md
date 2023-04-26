@@ -60,12 +60,26 @@ Before you get started, make sure you have the following software installed on y
 ```
   SERVER_SESSION_SECRET=superDuperSecret
   ```
-  While you're in your new `.env` file, take the time to replace `superDuperSecret` with some long random string like `25POUbVtx6RKVNWszd9ERB9Bb6` to keep your application secure. Here's a site that can help you: [https://passwordsgenerator.net/](https://passwordsgenerator.net/). If you don't do this step, create a secret with less than eight characters, or leave it as `superDuperSecret`, you will get a warning.
-8. Create a database named `baby_know` in PostgresSQL
-If you would like to name your database something else, you will need to change `baby_know` to the name of your new database name in `server/modules/pool.js`
-9. The queries in the database.sql file are set up to create all the necessary tables that you need, as well as a demo data table to test the app. Copy and paste those queries in the SQL query of the database. If this is going to production, leave out the demo data.
-10. Run `npm run server` in your VS Code terminal
-11. Open a second terminal and run `npm run client`
+  While you're in your new `.env` file, take the time to replace `superDuperSecret` with some long random string like `25POUbVtx6RKVNWszd9ERB9Bb6` to keep
+  your application secure. Here's a site that can help you: [https://passwordsgenerator.net/](https://passwordsgenerator.net/). 
+  If you don't do this step, create a secret with less than eight characters, or leave it as `superDuperSecret`, you will get a warning.
+  
+  8. Create a database named `baby_know` in PostgresSQL. If you would like to name your database something else, you will need to change `baby_know` to the name of your new database name in `server/modules/pool.js`
+  9. The queries in the database.sql file are set up to create all the necessary tables that you need, as well as a demo data table to test the app. Copy and paste those queries in the SQL query of the database. If this is going to production, leave out the demo data.
+  10. Run `npm run server` in your VS Code terminal.
+  11. Open a second terminal and run `npm run client`
+
+## AWS S3 Bucket Setup
+
+1. To manage your AWS settings online, access the AWS Management Console in the My Account tab on https://aws.amazon.com/
+2. Please update this account’s location (us-east-2 for Minnesota).
+3. Setting up an account will require you to add payment information prior to being able to create an S3 Bucket to store uploaded files.  
+4. Once you have added payment information to your AWS account, you can follow the beginning of [this tutorial](https://medium.com/@khelif96/uploading-files-from-a-react-app-to-aws-s3-the-right-way-541dd6be689) for how to set up an S3 Bucket on your account.  Disregard anything after “Back End” — this has been provided for you already.
+5. When setting up your account, be sure to record the AWSAccessKeyId AND the AWSSecretKey.  This information should be held securely as it is what will allow your app to access your AWS S3 storage bucket.  These keys will look like:
+- Access key ID example: AKIAIOSFODNN7EXAMPLE
+- Secret key example: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+6. You will also need to update permissions on your S3 Bucket.  From the same place you accessed your CORS settings in the tutorial above, you will need to select BLOCK PUBLIC ACCESS and turn off any settings that are blocking public access.  No boxes on this page should be checked with how your app is currently set up.
+
 
 ## Usage
 
