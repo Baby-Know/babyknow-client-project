@@ -47,7 +47,8 @@ const CommentBox = ({ userId, contentId, userContentId }) => {
                     style={{ width: 400 }}
                     value={newComment}
                     placeholder='Enter any questions or comments here!'
-                    onChange={(event) => setNewComment(event.target.value)}>
+                    onChange={(event) => setNewComment(event.target.value)}
+                >
                 </TextareaAutosize>
                 <div>
                     <Button sx={{ backgroundColor: 'white', marginLeft: '8px' }} className="studentCommentButton" disabled={newComment.length < 1}

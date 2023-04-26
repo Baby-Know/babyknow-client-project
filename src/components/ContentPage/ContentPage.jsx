@@ -8,7 +8,7 @@ import CommentBox from "./CommentBox/CommentBox";
 import MediaUpload from './MediaUpload/MediaUpload';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
+import axios from "axios";
 
 
 function ContentPage() {
@@ -36,7 +36,7 @@ function ContentPage() {
             type: 'GET_UNIT_LESSON_CONTENT',
             payload: { unitId: Number(unitId), lessonId: Number(lessonId), contentId: Number(contentId) }
         });
-        
+
     }, [unitId, lessonId, contentId, userContentId]);
 
     const renderCourseContent = () => {
@@ -45,15 +45,14 @@ function ContentPage() {
                 <Card id='surveyCard'>
                     <h4><a href={`https://${content?.contentContent}`} target="_blank" rel="noopener noreferrer">Please follow this link to complete a survey!</a></h4>
                 </Card>
-            )
+            );
         } else if (content.contentContent) {
             return (
                 <Card id='videoCard'>
-                    <video width="800" height="600" controls >
-                        <source src={`${content?.contentContent}`} type="video/mp4"></source>
+                    <video width="800" height="600" controls src={content.contentContent} type="video/mp4">
                     </video>
                 </Card>
-            )
+            );
         } else {
             return (
                 <p>LOADING</p>
@@ -66,17 +65,16 @@ function ContentPage() {
             return (
                 <Card id='videoCard'>
                     <h2>Your uploaded media</h2>
-                    <video width="400" height="300" controls >
-                        <source src={`${userContent?.media}`} type="video/mp4"></source>
+                    <video width="400" height="300" controls src={userContent?.media} type="video/mp4">
                     </video>
                 </Card>
-            )
+            );
         } else {
             return (
                 <></>
-            )
+            );
         }
-    }
+    };
 
     //toggle the isComplete column in users_content table with the checkmark
     const toggleComplete = (bool) => {
@@ -152,97 +150,97 @@ function ContentPage() {
             </div>
 
             <div style={{ margin: 'auto' }}>
-            <Card id='contentHeader'>
-                {content ?
-                    <>
-                        <h1>{content?.contentTitle}</h1>
-                        <h2>{content?.contentDescription}</h2>
-                    </> :
-                    <></>
-                }
-            </Card>
+                <Card id='contentHeader'>
+                    {content ?
+                        <>
+                            <h1>{content?.contentTitle}</h1>
+                            <h2>{content?.contentDescription}</h2>
+                        </> :
+                        <></>
+                    }
+                </Card>
 
-            {/* function determines which kind of content to display - either survey or video */}
-            {renderCourseContent()}
-            
+                {/* function determines which kind of content to display - either survey or video */}
+                {renderCourseContent()}
 
-            <Box sx={{
-                display: 'grid',
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: 'center',
-                margin: 'auto',
-                width: '50%',
-            }}>
 
-                <h2>Student Comments and Media Upload</h2>
+                <Box sx={{
+                    display: 'grid',
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: 'center',
+                    margin: 'auto',
+                    width: '50%',
+                }}>
 
-                {userContent?.comment ?
-                    <Card id="renderCommentCard">
-                        {userContentId !== commentToEdit.id ?
-                            <>
+                    <h2>Student Comments and Media Upload</h2>
 
-                                <span>{user.firstName} {user.lastName}</span>
-                                <p>{userContent.comment}</p>
-                            </> :
-                            <>
-                                <TextareaAutosize
-                                    id="textFieldInput"
-                                    minRows={3}
-                                    style={{ width: 400 }}
-                                    value={commentToEdit.comment}
-                                    placeholder='Enter any questions or comments here!'
-                                    onChange={(event) => setCommentToEdit({ ...commentToEdit, comment: event.target.value })}>
-                                </TextareaAutosize>
-                            </>
-                        }
+                    {userContent?.comment ?
+                        <Card id="renderCommentCard">
+                            {userContentId !== commentToEdit.id ?
+                                <>
 
-                        {userContentId !== commentToEdit.id ?
-                            <>
-                                <Button sx={{ backgroundColor: '#276184' }}
-                                    className="studentCommentButton"
-                                    onClick={() => setCommentToEdit({ id: userContentId, comment: userContent.comment })}
-                                >Edit</Button>
-                                <Button sx={{ backgroundColor: 'orange' }} className="studentCommentButton" onClick={() => {
-                                    deleteComment();
-                                }}>Delete</Button>
-                            </> :
-                            <>
-                                <IconButton onClick={() => editComment(commentToEdit)}>
-                                    <DoneIcon />
-                                </IconButton>
-                                <IconButton onClick={cancelEdit} >
-                                    <ClearIcon />
-                                </IconButton>
-                            </>
+                                    <span>{user.firstName} {user.lastName}</span>
+                                    <p>{userContent.comment}</p>
+                                </> :
+                                <>
+                                    <TextareaAutosize
+                                        id="textFieldInput"
+                                        minRows={3}
+                                        style={{ width: 400 }}
+                                        value={commentToEdit.comment}
+                                        placeholder='Enter any questions or comments here!'
+                                        onChange={(event) => setCommentToEdit({ ...commentToEdit, comment: event.target.value })}>
+                                    </TextareaAutosize>
+                                </>
+                            }
 
-                        }
+                            {userContentId !== commentToEdit.id ?
+                                <>
+                                    <Button sx={{ backgroundColor: '#276184' }}
+                                        className="studentCommentButton"
+                                        onClick={() => setCommentToEdit({ id: userContentId, comment: userContent.comment })}
+                                    >Edit</Button>
+                                    <Button sx={{ backgroundColor: 'orange' }} className="studentCommentButton" onClick={() => {
+                                        deleteComment();
+                                    }}>Delete</Button>
+                                </> :
+                                <>
+                                    <IconButton onClick={() => editComment(commentToEdit)}>
+                                        <DoneIcon />
+                                    </IconButton>
+                                    <IconButton onClick={cancelEdit} >
+                                        <ClearIcon />
+                                    </IconButton>
+                                </>
 
-                    </Card> :
+                            }
 
-                    <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
-                }
+                        </Card> :
 
-            </Box>
+                        <CommentBox userId={userId} contentId={contentId} userContentId={userContentId} />
+                    }
 
-            <Box sx={{
-                display: 'grid',
-                justifyContent: "center",
-                alignItems: "center",
-                margin: 'auto',
-                width: '50%',
-                height: '100%'
-            }}>
-                {!content.isSurvey ? <MediaUpload userId={userId} contentId={contentId} userContentId={userContentId} /> : <></>}
+                </Box>
 
-                {/* function to render the student's upload */}
-                {renderUserMedia()}
+                <Box sx={{
+                    display: 'grid',
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: 'auto',
+                    width: '50%',
+                    height: '100%'
+                }}>
+                    {!content.isSurvey ? <MediaUpload userId={userId} contentId={contentId} userContentId={userContentId} /> : <></>}
 
-            </Box>
+                    {/* function to render the student's upload */}
+                    {renderUserMedia()}
+
+                </Box>
             </div>
 
             <Button type="button"
-                sx={{ marginLeft: '90%' , width: '10%', backgroundColor: '#263549', color: 'white' }}
+                sx={{ marginLeft: '90%', width: '10%', backgroundColor: '#263549', color: 'white' }}
                 className="btn btn_asLink"
                 onClick={() => history.push(`/unit/${unitId}`)}>
                 <Typography variant="body1">Return To Unit</Typography>
