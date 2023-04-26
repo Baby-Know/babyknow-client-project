@@ -66,15 +66,7 @@ function AddContentForm({ lessonId, unitId }) {
                     },
                 }}
             >
-                <DialogTitle variant="h3" color={colors.primary[500]} mb="5%"
-                    onClick={() => {
-                        setContentToSend({
-                            content: "https://docs.google.com/forms/d/e/1FAIpQLSes6AGQaMXRene0RczlaQ58pMnsf0ffckOh9LwwSaw0d9RAww/viewform",
-                            title: "Speech Lesson Survey",
-                            description: "Take the survey before you begin!",
-                            isSurvey: true
-                        });
-                    }}>
+                <DialogTitle variant="h3" color={colors.primary[500]} mb="5%">
                     Add Content
                     <IconButton
                         onClick={() => {

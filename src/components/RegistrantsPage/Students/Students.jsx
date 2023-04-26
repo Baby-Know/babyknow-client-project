@@ -76,12 +76,12 @@ const Students = () => {
         prevStudentData.map((student) =>
           student.id === id
             ? {
-                ...student,
-                cohort: {
-                  id: newCohort?.id,
-                  name: newCohort?.name,
-                },
-              }
+              ...student,
+              cohort: {
+                id: newCohort?.id,
+                name: newCohort?.name,
+              },
+            }
             : student
         )
       );
@@ -190,7 +190,7 @@ const Students = () => {
             });
           }}
         >
-          {cohorts.map((cohort, i) => (
+          {cohorts?.map((cohort, i) => (
             <MenuItem key={i} value={cohort.id}>
               {cohort.name}
             </MenuItem>
@@ -322,11 +322,10 @@ const Students = () => {
           fontSize: "small",
         },
         "& .MuiDataGrid-virtualScroller": {
-          backgroundColor: `${
-            theme.palette.mode === "light"
+          backgroundColor: `${theme.palette.mode === "light"
               ? colors.darkTealAccent[900]
               : colors.darkTealAccent[700]
-          }`,
+            }`,
           fontSize: "0.9rem",
         },
         "& .MuiDataGrid-columnHeader": {
